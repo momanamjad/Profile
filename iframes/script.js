@@ -46,14 +46,14 @@ document.querySelectorAll(".app img").forEach((app) => {
         if(app.id == "recursion"){
             const recursionIframe = document.createElement("iframe");
             recursionIframe.id = "recursionIframe";
-            recursionIframe.src = "https://shobhitmaste.github.io/Shobhit-Singh-Portfolio/";
+            recursionIframe.src = "https://momanamjad.github.io/Portfolio/";
             // console.log("#" + app.id + "Window" + " .appWindow");
             document.querySelector("#" + app.id + "Window" + " .appWindow").appendChild(recursionIframe);
         }
     });
 });
 
-//<iframe id="recursion" src="http://localhost:5173/Shobhit-Singh-Portfolio/"></iframe>
+//<iframe id="recursion" src="http://localhost:5173/Portfolio/"></iframe>
 // document.querySelector(".appWindow").addEventListener( "wheel", (e) => {
 //     e.preventDefault();
 //     console.log("daw");

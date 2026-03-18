@@ -1,7 +1,7 @@
 if(window.innerWidth <= 450){
-  window.location.href = "https://shobhitmaste.github.io/portfolio-website-mobile-site/";
+  window.location.href = "https://momanamjad.github.io/portfolio-website-mobile-site/";
 } else {
-  // window.location.href = "http://localhost:5173/Shobhit-Singh-Portfolio/";
+  // window.location.href = "http://localhost:5173/Portfolio/";
 }
 
 import * as THREE from "three";
@@ -257,7 +257,7 @@ const iframe = document.createElement( 'iframe' );
 iframe.style.width = '1128px';
 iframe.style.height = '645px';
 iframe.style.border = '0px';
-iframe.src = 'https://shobhitmaste.github.io/portfolioSideMission/';
+iframe.src = 'https://momanamjad.github.io/portfolioSideMission/';
 iframe.style.pointerEvents = 'auto';
 div.appendChild( iframe );
 
@@ -424,7 +424,7 @@ window.addEventListener(
     bloomComposer.setSize(window.innerWidth, window.innerHeight);
     css3dRenderer.setSize(window.innerWidth, window.innerHeight);
     if(window.innerWidth <= 450){
-      window.location.href = "https://shobhitmaste.github.io/portfolio-website-mobile-site/";
+      window.location.href = "https://momanamjad.github.io/portfolio-website-mobile-site/";
     }
   },
   false
@@ -688,6 +688,65 @@ function changeScene(to){
 
 window.changeScene = changeScene
 
+// Contact Form AJAX Submission
+document.addEventListener('DOMContentLoaded', () => {
+  const contactForm = document.getElementById('contact-form');
+  const formStatus = document.getElementById('form-status');
+
+  if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = contactForm.querySelector('.contactSubmit');
+      const originalBtnText = submitBtn.textContent;
+      
+      // Loading state
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+      formStatus.style.display = 'block';
+      formStatus.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+      formStatus.style.color = 'white';
+      formStatus.textContent = 'Sending your message...';
+
+      const formData = new FormData(contactForm);
+
+      try {
+        const response = await fetch(contactForm.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          formStatus.style.backgroundColor = 'rgba(40, 167, 69, 0.2)';
+          formStatus.style.color = '#28a745';
+          formStatus.textContent = 'Message sent successfully!';
+          contactForm.reset();
+        } else {
+          const data = await response.json();
+          formStatus.style.backgroundColor = 'rgba(220, 53, 69, 0.2)';
+          formStatus.style.color = '#dc3545';
+          formStatus.textContent = data.message || 'Oops! There was a problem submitting your form';
+        }
+      } catch (error) {
+        formStatus.style.backgroundColor = 'rgba(220, 53, 69, 0.2)';
+        formStatus.style.color = '#dc3545';
+        formStatus.textContent = 'Oops! There was a problem connecting to the server';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+        
+        // Hide status after 5 seconds
+        setTimeout(() => {
+          formStatus.style.display = 'none';
+        }, 5000);
+      }
+    });
+  }
+});
+
 document.addEventListener('mousedown', (e) => {
   if (e.button === 1) { // 1 = middle mouse button
     e.preventDefault();
@@ -756,3 +815,145 @@ document.addEventListener('mousedown', (e) => {
 //     lastScroll = t;
 //   }
 // }
+
+// GitHub Integration Functions
+async function fetchGitHubData(username) {
+  const contentEl = document.getElementById('github-content');
+  const errorEl = document.getElementById('github-error');
+
+  if (!contentEl || !errorEl) return;
+
+  // No more explicit loader element, just fade in the content once ready
+  contentEl.style.opacity = '0.3';
+  errorEl.classList.add('displayHide');
+
+  try {
+    const [profileRes, reposRes, eventsRes] = await Promise.all([
+      fetch(`https://api.github.com/users/${username}`),
+      fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`),
+      fetch(`https://api.github.com/users/${username}/events/public?per_page=10`)
+    ]);
+
+    if (profileRes.status === 403 || reposRes.status === 403) {
+      throw new Error('RATE_LIMIT');
+    }
+
+    if (!profileRes.ok || !reposRes.ok) throw new Error('FAILED');
+
+    const profileData = await profileRes.json();
+    const reposData = await reposRes.json();
+    const eventsData = await eventsRes.json();
+
+    updateGitHubUI(profileData, reposData, eventsData);
+
+    contentEl.classList.remove('displayHide');
+    contentEl.style.opacity = '1';
+  } catch (error) {
+    console.error('GitHub Fetch Error:', error);
+    errorEl.classList.remove('displayHide');
+    if (error.message === 'RATE_LIMIT') {
+      errorEl.innerHTML = '<p>GitHub API Rate Limit reached. <br> Please wait a few minutes and try again.</p>';
+    } else {
+      errorEl.innerHTML = '<p>Failed to load GitHub data. <br> Please check your connection.</p>';
+    }
+  }
+}
+
+function updateGitHubUI(profile, repos, events) {
+  const avatar = document.getElementById('github-avatar');
+  const name = document.getElementById('github-name');
+  const bio = document.getElementById('github-bio');
+  const reposCount = document.getElementById('github-repos-count');
+  const followers = document.getElementById('github-followers');
+  const following = document.getElementById('github-following');
+  const profileLink = document.getElementById('github-profile-link');
+  const reposList = document.getElementById('github-repos-list');
+  const graph = document.getElementById('github-graph');
+  const statsCard = document.getElementById('github-stats-card');
+  const languagesCard = document.getElementById('github-languages-card');
+  const timeline = document.getElementById('github-recent-activity');
+
+  if (avatar) avatar.src = profile.avatar_url;
+  if (name) name.textContent = profile.name || profile.login;
+  if (bio) bio.textContent = profile.bio || 'No bio available';
+  if (reposCount) reposCount.textContent = profile.public_repos;
+  if (followers) followers.textContent = profile.followers;
+  if (following) following.textContent = profile.following;
+  if (profileLink) profileLink.href = profile.html_url;
+  
+  if (graph) {
+    graph.src = `https://ghchart.rshah.org/409ba5/${profile.login}`;
+  }
+
+  if (statsCard) {
+    statsCard.src = `https://github-readme-stats.vercel.app/api?username=${profile.login}&show_icons=true&theme=github_dark&hide_border=true&title_color=00c9ff&text_color=ffffff&icon_color=92fe9d`;
+  }
+
+  if (languagesCard) {
+    languagesCard.src = `https://github-readme-stats.vercel.app/api/top-langs/?username=${profile.login}&layout=compact&theme=github_dark&hide_border=true&title_color=00c9ff&text_color=ffffff`;
+  }
+
+  if (timeline && events) {
+    timeline.innerHTML = '';
+    events.slice(0, 5).forEach(event => {
+      let action = '';
+      let target = event.repo.name.split('/')[1];
+
+      switch(event.type) {
+        case 'PushEvent': action = `Pushed commits to <span class="activity-action">${target}</span>`; break;
+        case 'WatchEvent': action = `Starred <span class="activity-action">${target}</span>`; break;
+        case 'CreateEvent': action = `Created <span class="activity-action">${target}</span>`; break;
+        case 'PullRequestEvent': action = `${event.payload.action.charAt(0).toUpperCase() + event.payload.action.slice(1)} PR on <span class="activity-action">${target}</span>`; break;
+        default: action = `Activity on <span class="activity-action">${target}</span>`;
+      }
+
+      const date = new Date(event.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      
+      const item = document.createElement('div');
+      item.className = 'activity-item';
+      item.innerHTML = `
+        <span class="activity-date">${date}</span>
+        <p style="margin:0">${action}</p>
+      `;
+      timeline.appendChild(item);
+    });
+  }
+
+  if (reposList) {
+    reposList.innerHTML = '';
+    repos.forEach(repo => {
+      const repoCard = document.createElement('div');
+      repoCard.className = 'repo-card';
+      repoCard.innerHTML = `
+        <a href="${repo.html_url}" target="_blank" style="text-decoration: none; color: inherit;">
+          <h4 style="margin: 0 0 5px 0; color: #92fe9d;">${repo.name}</h4>
+          <p style="font-size: 13px; margin-bottom: 10px;">${repo.description || 'No description available'}</p>
+          <div class="repo-meta" style="display: flex; gap: 15px; font-size: 12px; opacity: 0.6;">
+            <span>⭐ ${repo.stargazers_count}</span>
+            <span>🍴 ${repo.forks_count}</span>
+            <span>${repo.language || 'JS'}</span>
+          </div>
+        </a>
+      `;
+      reposList.appendChild(repoCard);
+    });
+  }
+}
+
+// Initial fetch
+fetchGitHubData('momanamjad');
+
+// Handle scene changes to refresh data if needed
+const originalChangeScene = window.changeScene;
+window.changeScene = (to) => {
+  if (to === 'githubSection') {
+    fetchGitHubData('momanamjad');
+  }
+  if (typeof originalChangeScene === 'function') {
+    originalChangeScene(to);
+  } else {
+    // Fallback if originalChangeScene is not available (though it should be)
+    document.querySelectorAll('.fullHeight').forEach(s => s.classList.add('displayHide'));
+    document.getElementById(to).classList.remove('displayHide');
+  }
+};
