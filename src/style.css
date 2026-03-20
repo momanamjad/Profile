@@ -371,7 +371,7 @@ html {
 }
 
 .bodyHeader {
-  grid-area: 2/5/4/10;
+  grid-area: 2/5/3/12;
 }
 
 .nonscrollabelbody {
@@ -379,23 +379,16 @@ html {
 }
 
 .body {
-  grid-area: 4/5/12/12;
-  /* Adjusted vertical span for "highlighted height" */
+  grid-area: 3/5/13/13;
   overflow-y: scroll;
   overscroll-behavior: contain;
-  padding-right: 20px;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.02);
   padding: 20px;
-  transition: scale 0.3s ease;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-}
-
-.body:hover {
-  scale: 1.02;
 }
 
 .text-justify {
@@ -885,114 +878,165 @@ textarea {
 }
 
 /* GitHub Section Styles */
+
+/* ── Body wrapper ── */
 .github-body {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(13,17,23,0.95) 0%, rgba(22,27,34,0.9) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 18px !important;
+}
+
+/* ── Profile Header ── */
+.github-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+#github-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid #00c9ff;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .github-bio-box h2 {
-  margin-bottom: 5px;
-  font-size: 24px;
+  margin: 0 0 4px;
+  font-size: 18px;
+  color: #fff;
 }
 
 .github-bio-box p {
-  font-size: 14px;
-  opacity: 0.8;
+  font-size: 12px;
+  opacity: 0.7;
+  margin: 0;
+  line-height: 1.4;
 }
 
+/* ── Stats Row ── */
 .stats-grid {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 15px;
-  border-radius: 8px;
+  display: flex;
+  justify-content: space-around;
+  background: rgba(0, 201, 255, 0.06);
+  padding: 12px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,201,255,0.18);
+  margin-bottom: 16px;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
 }
 
 .stat-item h3 {
-  margin: 0;
+  margin: 0 0 2px;
+  font-size: 22px;
   color: #00c9ff;
+  font-weight: 700;
 }
 
 .stat-item p {
   margin: 0;
-  font-size: 12px;
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  opacity: 0.65;
 }
 
+/* ── Section headings inside body ── */
+.contribution-graph h5,
+.github-stats-cards h5,
+.github-languages h5,
+.github-timeline h5 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.55;
+  margin-bottom: 8px;
+}
+
+/* ── Graph / card containers ── */
 .graph-container {
   background: #0d1117;
-  padding: 15px 0;
-  margin-left: -20px;
-  margin-right: -20px;
-  width: auto;
-  overflow-x: auto;
+  padding: 10px;
+  width: 100%;
+  overflow-x: hidden;
   display: flex;
   justify-content: center;
-  border-radius: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 14px;
 }
 
 .graph-container img {
   width: 100%;
+  max-width: 100%;
   height: auto;
-  filter: invert(1) hue-rotate(180deg) brightness(1.2);
-  /* Adjust colors to match theme if needed */
+  display: block;
 }
 
-.trophy-container,
-.activity-chart-container,
 .stats-card-container,
 .languages-card-container {
   background: #0d1117;
-  padding: 10px 0;
-  margin-left: -20px;
-  margin-right: -20px;
-  width: auto;
+  padding: 10px;
+  width: 100%;
   overflow: hidden;
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 14px;
 }
 
-.trophy-container img,
-.activity-chart-container img,
 .stats-card-container img,
 .languages-card-container img {
   width: 100%;
-  /* Force fill width */
   max-width: 100%;
   height: auto;
+  display: block;
 }
 
+/* ── Activity timeline ── */
 .timeline-container {
   background: rgba(255, 255, 255, 0.02);
-  padding: 15px;
-  margin-left: -20px;
-  margin-right: -20px;
-  max-height: 300px;
+  padding: 12px 14px;
+  max-height: 220px;
   overflow-y: auto;
-  font-size: 13px;
-  border-left: 2px solid rgba(146, 254, 157, 0.3);
+  font-size: 12px;
+  border-left: 2px solid rgba(146, 254, 157, 0.4);
+  border-radius: 0 6px 6px 0;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(146,254,157,0.3) transparent;
+  margin-bottom: 14px;
 }
 
 .activity-item {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .activity-item:last-child {
   border-bottom: none;
+  margin-bottom: 0;
 }
 
 .activity-date {
-  font-size: 11px;
-  opacity: 0.5;
+  font-size: 10px;
+  opacity: 0.45;
   display: block;
+  margin-bottom: 2px;
 }
 
 .activity-action {
@@ -1000,45 +1044,93 @@ textarea {
   font-weight: bold;
 }
 
-.activity-chart-container img {
-  filter: invert(1) hue-rotate(180deg) brightness(1.1);
+/* ── Repo cards ── */
+.repos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .repo-card {
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 12px 15px;
   border-radius: 8px;
-  margin-bottom: 15px;
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .repo-card:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 201, 255, 0.07);
+  border-color: rgba(0, 201, 255, 0.3);
   transform: translateY(-2px);
 }
 
 .repo-card h4 {
-  margin: 0 0 5px 0;
+  margin: 0 0 4px 0;
+  font-size: 14px;
   color: #92fe9d;
 }
 
 .repo-card p {
-  font-size: 13px;
-  margin-bottom: 10px;
+  font-size: 12px;
+  margin-bottom: 8px;
+  opacity: 0.75;
+  line-height: 1.4;
 }
 
 .repo-meta {
   display: flex;
-  gap: 15px;
-  font-size: 12px;
-  opacity: 0.6;
+  gap: 12px;
+  font-size: 11px;
+  opacity: 0.55;
 }
 
 .repo-meta span {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+/* ── Trophy container (if used) ── */
+.trophy-container,
+.activity-chart-container {
+  background: #0d1117;
+  padding: 10px;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 14px;
+}
+
+.trophy-container img,
+.activity-chart-container img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.activity-chart-container img {
+  filter: invert(1) hue-rotate(180deg) brightness(1.1);
+}
+
+/* ── View profile button ── */
+#github-profile-link.btn-outline-light {
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  border-radius: 6px;
+  padding: 6px 18px;
+  font-size: 13px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+#github-profile-link.btn-outline-light:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: #00c9ff;
+  color: #00c9ff;
 }
 
 @media (max-width: 767px) {
