@@ -185,10 +185,13 @@ html {
 }
 
 #horizontalPhoneScreen {
-  height: 100%;
+  height: 100vh;
   width: 100%;
   overflow: hidden;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
 }
 
 .leftHalf {
@@ -256,9 +259,10 @@ html {
 .screenContentBody {
   background-color: rgb(31, 17, 49);
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  /* changed from min-height to enforce grid allocation */
   display: grid;
-  grid-template-rows: repeat(12, 1fr);
+  grid-template-rows: 60px auto repeat(10, 1fr);
   grid-template-columns: repeat(12, 1fr);
 }
 
@@ -411,7 +415,6 @@ html {
 
 .exitButton {
   grid-area: 2/11/3/12;
-
 }
 
 .exitAnim {
@@ -881,10 +884,10 @@ textarea {
 
 /* ── Body wrapper ── */
 .github-body {
-  background: linear-gradient(135deg, rgba(13,17,23,0.95) 0%, rgba(22,27,34,0.9) 100%);
+  background: linear-gradient(135deg, rgba(13, 17, 23, 0.95) 0%, rgba(22, 27, 34, 0.9) 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 10px;
-  padding: 18px !important;
+  padding: 14px !important;
 }
 
 /* ── Profile Header ── */
@@ -892,11 +895,11 @@ textarea {
   display: flex;
   align-items: center;
   gap: 18px;
-  background: rgba(255,255,255,0.04);
+  background: rgba(255, 255, 255, 0.04);
   border-radius: 10px;
   padding: 14px 18px;
   margin-bottom: 16px;
-  border: 1px solid rgba(255,255,255,0.07);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 #github-avatar {
@@ -928,7 +931,7 @@ textarea {
   background: rgba(0, 201, 255, 0.06);
   padding: 12px 10px;
   border-radius: 10px;
-  border: 1px solid rgba(0,201,255,0.18);
+  border: 1px solid rgba(0, 201, 255, 0.18);
   margin-bottom: 16px;
 }
 
@@ -1017,7 +1020,7 @@ textarea {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   scrollbar-width: thin;
-  scrollbar-color: rgba(146,254,157,0.3) transparent;
+  scrollbar-color: rgba(146, 254, 157, 0.3) transparent;
   margin-bottom: 14px;
 }
 
@@ -1119,7 +1122,7 @@ textarea {
 
 /* ── View profile button ── */
 #github-profile-link.btn-outline-light {
-  border: 1px solid rgba(255,255,255,0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
   border-radius: 6px;
   padding: 6px 18px;
@@ -1128,7 +1131,7 @@ textarea {
 }
 
 #github-profile-link.btn-outline-light:hover {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   border-color: #00c9ff;
   color: #00c9ff;
 }

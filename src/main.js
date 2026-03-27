@@ -1,4 +1,4 @@
-if(window.innerWidth <= 450){
+if (window.innerWidth <= 450) {
   window.location.href = "https://momanamjad.github.io/portfolio-website-mobile-site/";
 } else {
   // window.location.href = "http://localhost:5173/Portfolio/";
@@ -17,10 +17,10 @@ import { mx_fractal_noise_float, nodeProxy } from "three/src/nodes/TSL.js";
 import { CSS3DRenderer, FontLoader, TextGeometry } from "three/examples/jsm/Addons.js";
 import * as RAPIER from '@dimforge/rapier3d-compat';
 import { mx_bilerp_0 } from "three/src/nodes/materialx/lib/mx_noise.js";
-import {  CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
+import { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
 let world;
-async function initRapier(){
+async function initRapier() {
   await RAPIER.init() // This line is only needed if using the compat version
   const gravity = new RAPIER.Vector3(0.0, 0, 0.0)
   world = new RAPIER.World(gravity)
@@ -38,8 +38,8 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({
   canvas,
 });
-renderer.setSize( window.innerWidth, window.innerHeight );
-renderer.setPixelRatio( window.devicePixelRatio );
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0x000000);
 camera.position.z = 10;
 
@@ -62,30 +62,30 @@ bloomComposer.addPass(renderScene);
 bloomComposer.addPass(bloomPass);
 
 //stars
-function addStar(){
+function addStar() {
   let x = THREE.MathUtils.randFloat(-300, 300);
   let y = THREE.MathUtils.randFloat(-200, 200);
   let z = THREE.MathUtils.randFloat(-600, -100);
   const starGeometry = new THREE.SphereGeometry(0.26, 25, 25);
-  const starMaterial = new THREE.MeshStandardMaterial( { color: 0xffffff } );
-  const star = new THREE.Mesh( starGeometry, starMaterial );
-  star.position.set(x,y,z);
+  const starMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const star = new THREE.Mesh(starGeometry, starMaterial);
+  star.position.set(x, y, z);
   scene.add(star);
 }
 
 Array(450).fill().forEach(addStar);
 
 //sun
-const sunTexture = new THREE.TextureLoader().load('./sun.png' ); 
+const sunTexture = new THREE.TextureLoader().load('./sun.png');
 const sun3dTexture = new THREE.TextureLoader().load('./sunTexture.jpg');
 const sunGeometry = new THREE.SphereGeometry(20, 25, 25);
-const sunMaterial = new THREE.MeshBasicMaterial( { 
+const sunMaterial = new THREE.MeshBasicMaterial({
   color: 0xFFFF00, map: sunTexture,
   // normalMap: sun3dTexture,
-} );
-const sun = new THREE.Mesh( sunGeometry, sunMaterial );
+});
+const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 
-sun.position.set(100,40,-110);
+sun.position.set(100, 40, -110);
 
 scene.add(sun);
 
@@ -95,12 +95,12 @@ scene.add(sun);
 const moonTexture = new THREE.TextureLoader().load('./moon.jpg');
 const moon3dTexture = new THREE.TextureLoader().load('./moonSurface.jpg');
 const moonGeometry = new THREE.SphereGeometry(3, 300, 300);
-const moonMaterial = new THREE.MeshStandardMaterial( { 
+const moonMaterial = new THREE.MeshStandardMaterial({
   color: 0x202020,
   map: moonTexture,
   normalMap: moon3dTexture,
-} );
-const moon = new THREE.Mesh( moonGeometry, moonMaterial );
+});
+const moon = new THREE.Mesh(moonGeometry, moonMaterial);
 var vh = window.innerHeight;
 var iw = window.innerWidth;
 var aspect = iw / vh;
@@ -122,15 +122,30 @@ var smartphoneZrotation;
 //phone 
 const loader = new GLTFLoader();
 var smartphone;
+const profileTexture = new THREE.TextureLoader().load('./me.jpeg');
+profileTexture.colorSpace = THREE.SRGBColorSpace;
+
 loader.load('models/newSmartphone.glb', (gltf) => {
   smartphone = gltf.scene;
-  // smartphone.rotation.y -= -0.17;
-  // smartphone.rotation.z -= aspect >= 1.95? 0.155: 0.198;
-  // smartphone.rotation.x -= -0.04;
   smartphone.position.set(100, 100, -400);
   smartphoneZrotation = smartphone.rotation.z;
+
+  // Create a plane with the profile picture and attach it to the phone screen
+  const screenPlane = new THREE.PlaneGeometry(0.58, 1.25);
+  const screenMaterial = new THREE.MeshBasicMaterial({
+    map: profileTexture,
+    toneMapped: false,
+    side: THREE.DoubleSide
+  });
+  const screenMesh = new THREE.Mesh(screenPlane, screenMaterial);
+  // Position the plane on the phone's screen area (front face)
+  screenMesh.position.set(0, 0.02, 0.06);
+  smartphone.add(screenMesh);
+  window.debugScreenMesh = screenMesh;
+  window.debugSmartphone = smartphone;
+  
   scene.add(smartphone);
-}, undefined, (err)=>{
+}, undefined, (err) => {
   console.log(err);
 });
 // gltf.scene.position.set(0, 0, 0);
@@ -183,12 +198,12 @@ fontLoader.load('./fonts/font2.json', function (font) {
     bevelSize: .0003,
     bevelOffset: 0,
     bevelSegments: 3,
-    depth:0.002,
+    depth: 0.002,
   });
 
-  const textMaterial = new THREE.MeshStandardMaterial({ color: 0xFDBB2D});
+  const textMaterial = new THREE.MeshStandardMaterial({ color: 0xFDBB2D });
   const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-  textMesh.position.set(0.44,0.35, -2);
+  textMesh.position.set(0.44, 0.35, -2);
   scene.add(textMesh);
   const box = new THREE.Box3().setFromObject(textMesh);
   const size = new THREE.Vector3();
@@ -197,22 +212,22 @@ fontLoader.load('./fonts/font2.json', function (font) {
   box.getCenter(center);
 
   const textBody = world.createRigidBody(
-    RAPIER.RigidBodyDesc.dynamic().setTranslation(center.x , center.y - 0.2, center.z ).setAdditionalMass(1000000).enabledTranslations(true, true, false)
+    RAPIER.RigidBodyDesc.dynamic().setTranslation(center.x, center.y - 0.2, center.z).setAdditionalMass(1000000).enabledTranslations(true, true, false)
   );
-  const textShape = RAPIER.ColliderDesc.cuboid(size.x / 2 - 0.17, size.y / 2 - 0.07, size.z / 2).setTranslation(0.58,0,0).setRestitution(1);
+  const textShape = RAPIER.ColliderDesc.cuboid(size.x / 2 - 0.17, size.y / 2 - 0.07, size.z / 2).setTranslation(0.58, 0, 0).setRestitution(1);
   world.createCollider(textShape, textBody);
-  
+
   dynamicBodies.push([textMesh, textBody]);
 });
 
 
 const torusTexture = new THREE.TextureLoader().load('./grad.jpg');
 var pivot = new THREE.Object3D();
-const torusgeometry = new THREE.TorusGeometry( 0.3, 0.1, 12, 48 ); 
-const torusmaterial = new THREE.MeshStandardMaterial( { color: 0xcccccc, map:torusTexture } ); 
-const torus = new THREE.Mesh( torusgeometry, torusmaterial );
+const torusgeometry = new THREE.TorusGeometry(0.3, 0.1, 12, 48);
+const torusmaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, map: torusTexture });
+const torus = new THREE.Mesh(torusgeometry, torusmaterial);
 pivot.add(torus);
-torus.position.set(2,1.5,0);
+torus.position.set(2, 1.5, 0);
 scene.add(pivot);
 
 var rocket;
@@ -242,10 +257,10 @@ loader.load('models/laptop2.glb', (gltf) => {
 
 
 const css3dRenderer = new CSS3DRenderer();
-css3dRenderer.setSize( window.innerWidth, window.innerHeight );
-document.getElementById("extra").appendChild( css3dRenderer.domElement );
+css3dRenderer.setSize(window.innerWidth, window.innerHeight);
+document.getElementById("extra").appendChild(css3dRenderer.domElement);
 
-const div = document.createElement( 'div' );
+const div = document.createElement('div');
 div.style.width = '1128px';
 div.style.height = '645px';
 div.style.backgroundColor = '#aaaaaa';
@@ -253,18 +268,18 @@ div.style.transform = `scale(0.2)`;
 div.id = "saviorOfScrolls";
 div.style.pointerEvents = 'auto';
 
-const iframe = document.createElement( 'iframe' );
+const iframe = document.createElement('iframe');
 iframe.style.width = '1128px';
 iframe.style.height = '645px';
 iframe.style.border = '0px';
 iframe.src = 'https://momanamjad.github.io/portfolioSideMission/';
 iframe.style.pointerEvents = 'auto';
-div.appendChild( iframe );
+div.appendChild(iframe);
 
 
-const screen = new CSS3DObject( div );
+const screen = new CSS3DObject(div);
 scene.add(screen);
-screen.position.set(0,0, -100);
+screen.position.set(0, 0, -100);
 screen.visible = false;
 
 
@@ -276,7 +291,7 @@ var timerStarted = false;
 var laptopInitiated = false;
 
 document.querySelectorAll(".dot").forEach((el) => {
-  el.addEventListener("click" , (e) => {
+  el.addEventListener("click", (e) => {
     lastSection = currentSection;
     document.getElementById(lastSection).classList.remove("selected");
     currentSection = el.id;
@@ -289,12 +304,12 @@ document.querySelectorAll(".dot").forEach((el) => {
     console.log(lastSection, currentSection);
 
 
-    if(currentSection != 2){
+    if (currentSection != 2) {
       screen.visible = false;
     }
-    else if(currentSection == 2){
-      if(laptopInitiated){
-        if(lastSection == 0){
+    else if (currentSection == 2) {
+      if (laptopInitiated) {
+        if (lastSection == 0) {
           setTimeout(() => {
             screen.visible = true;
           }, 800);
@@ -315,32 +330,32 @@ document.querySelectorAll(".dot").forEach((el) => {
 
 document.getElementById(currentSection).classList.add("selected");
 
-  document.querySelectorAll(".body").forEach((el) => {
-    el.addEventListener("wheel", (e) => {
+document.querySelectorAll(".body").forEach((el) => {
+  el.addEventListener("wheel", (e) => {
     e.stopPropagation();
     // console.log("body scroll");
-    })
   })
+})
 
-  window.addEventListener('wheel', (e) => {
-    
-    // console.log(e);
-    e.preventDefault();
-    if(!smartphoneMode && timerStarted == false){
-      timerStarted = true;
-      lastSection = currentSection;
-      if (e.deltaY > 0 && currentSection < totalSections - 1) {
-        currentSection++;
-      } else if (e.deltaY < 0 && currentSection > 0) {
-          currentSection--;
-      }
-      console.log(lastSection, currentSection);
-      
-    if(currentSection == 1){
+window.addEventListener('wheel', (e) => {
+
+  // console.log(e);
+  e.preventDefault();
+  if (!smartphoneMode && timerStarted == false) {
+    timerStarted = true;
+    lastSection = currentSection;
+    if (e.deltaY > 0 && currentSection < totalSections - 1) {
+      currentSection++;
+    } else if (e.deltaY < 0 && currentSection > 0) {
+      currentSection--;
+    }
+    console.log(lastSection, currentSection);
+
+    if (currentSection == 1) {
       screen.visible = false;
     }
-    else if(currentSection == 2){
-      if(laptopInitiated){
+    else if (currentSection == 2) {
+      if (laptopInitiated) {
         setTimeout(() => {
           screen.visible = true;
         }, 500);
@@ -354,30 +369,30 @@ document.getElementById(currentSection).classList.add("selected");
     // console.log(currentSection);
     document.getElementById(lastSection).classList.remove("selected");
     document.getElementById(currentSection).classList.add("selected");
-      window.scrollTo({
-        top: currentSection * window.innerHeight,
-        behavior: 'smooth'
-      });
-      
+    window.scrollTo({
+      top: currentSection * window.innerHeight,
+      behavior: 'smooth'
+    });
 
-      setTimeout(()=> {
-        timerStarted = false;
-      }, 700);
-    }
 
-      
-  }, { passive: false });
+    setTimeout(() => {
+      timerStarted = false;
+    }, 700);
+  }
+
+
+}, { passive: false });
 
 
 //lights
-const pointLight = new THREE.PointLight(0xfff0bb, 10 , 100);
+const pointLight = new THREE.PointLight(0xfff0bb, 10, 100);
 pointLight.position.copy(moon.position);
 pointLight.position.x += 3;
 pointLight.position.y += 4;
 pointLight.position.z += -1.6;
 scene.add(pointLight);
 
-const pointLightLaptop = new THREE.PointLight(0xffffff, 10 , 100);
+const pointLightLaptop = new THREE.PointLight(0xffffff, 10, 100);
 pointLightLaptop.position.z = 2;
 scene.add(pointLightLaptop);
 
@@ -385,16 +400,16 @@ scene.add(pointLightLaptop);
 
 
 const ambientLight = new THREE.AmbientLight(0xffffff);
-scene.add( ambientLight );
+scene.add(ambientLight);
 
 const ambientLight2 = new THREE.AmbientLight(0x010101);
-ambientLight2.layers.set(1); 
-scene.add( ambientLight2 );
+ambientLight2.layers.set(1);
+scene.add(ambientLight2);
 
 
 //sunlight
 const sunlight = new THREE.DirectionalLight(0xfff0bb, 1);
-sunlight.position.set(100,100,100);
+sunlight.position.set(100, 100, 100);
 sunlight.position.copy(sun.position);
 scene.add(sunlight);
 
@@ -423,7 +438,7 @@ window.addEventListener(
     renderer.setSize(window.innerWidth, window.innerHeight);
     bloomComposer.setSize(window.innerWidth, window.innerHeight);
     css3dRenderer.setSize(window.innerWidth, window.innerHeight);
-    if(window.innerWidth <= 450){
+    if (window.innerWidth <= 450) {
       window.location.href = "https://momanamjad.github.io/portfolio-website-mobile-site/";
     }
   },
@@ -443,9 +458,9 @@ let wait = true;
 
 function animate() {
 
-  requestAnimationFrame( animate );
-  if(window.innerHeight != vh && wait){
-    
+  requestAnimationFrame(animate);
+  if (window.innerHeight != vh && wait) {
+
     location.reload();
     wait = false;
     setTimeout(() => {
@@ -462,18 +477,18 @@ function animate() {
   // console.log(camera.fov);
   sun.rotation.x += 0.0001;
   sun.rotation.y += 0.0002;
-  
-  if(world)
+
+  if (world)
     world.step();
-  
+
   for (const [mesh, body] of dynamicBodies) {
     const pos = body.translation();
     const rot = body.rotation();
     mesh.position.set(pos.x, pos.y, pos.z);
-  mesh.quaternion.set(rot.x, rot.y, rot.z, rot.w);
+    mesh.quaternion.set(rot.x, rot.y, rot.z, rot.w);
   }
 
-  if(amongus){
+  if (amongus) {
     rayCaster.setFromCamera(mouse, camera);
     const targetPoint = new THREE.Vector3();
     rayCaster.ray.intersectPlane(plane, targetPoint);
@@ -483,37 +498,37 @@ function animate() {
     var x = amongus.position.x;
     var y = amongus.position.y;
     var z = amongus.position.z;
-    amongusBody.setNextKinematicTranslation({x,y,z});
+    amongusBody.setNextKinematicTranslation({ x, y, z });
     // amongus.rotation.x += 0.001;
     // amongus.rotation.y += 0.001;
     amongus.rotation.z += Math.sin(60) * 0.006;
-    
+
     amongus.rotation.x += (mouse.x - amongus.rotation.x) * 0.1;
     amongus.rotation.y += (mouse.y - amongus.rotation.y) * 0.1;
     // amongus.rotation.z += 0.003;
 
   }
-  if(smartphone){
+  if (smartphone) {
     pivot.position.copy(smartphone.position);
-    
+
     pivot.rotation.y += 0.003;
     torus.rotation.x += 0.006;
     torus.rotation.y += 0.005;
     torus.rotation.z += 0.005;
 
     const targetPos = new THREE.Vector3(
-        moon.position.x + -0.1,
-        moon.position.y + 2.701,
-        moon.position.z - 1.3
-      );
+      moon.position.x + -0.1,
+      moon.position.y + 2.701,
+      moon.position.z - 1.3
+    );
 
 
-      smartphone.position.lerp(targetPos, 1 - Math.exp(-lerpSpeed * deltaTime));
+    smartphone.position.lerp(targetPos, 1 - Math.exp(-lerpSpeed * deltaTime));
 
-    if(currentSection == 1 && once == true){
-         //used for animation
-      
-      if((-t < (vh + 4)) && (-t > (vh - 1))){
+    if (currentSection == 1 && once == true) {
+      //used for animation
+
+      if ((-t < (vh + 4)) && (-t > (vh - 1))) {
         const dir = new THREE.Vector3();
         camera.getWorldDirection(dir);
         const cameraPosition = camera.position;
@@ -524,14 +539,14 @@ function animate() {
         once = false;
       }
       // smartphone.lookAt(camera.position);
-    } 
+    }
     // console.log(t, vh);
     // console.log(moonPos);
 
     moon.position.lerp(moonPos, 1 - Math.exp(-10 * deltaTime));
-      
-    if(smartphone && currentSection  == 1){
-      if(phoneFullscreen == true){
+
+    if (smartphone && currentSection == 1) {
+      if (phoneFullscreen == true) {
         smartphone.rotation.z = smartphone.rotation.z + ((-(Math.PI / 2)) - smartphone.rotation.z) * 0.04;     //magic happening here 
 
         //smartphone moving
@@ -544,44 +559,44 @@ function animate() {
         phonePos.z += 1;
         smartphone.position.lerp(phonePos, 1 - Math.exp(-6 * deltaTime));
 
-      } 
-      
-      else if(nophonefullscreen){
+      }
+
+      else if (nophonefullscreen) {
         smartphone.rotation.z = smartphone.rotation.z + (smartphoneZrotation - smartphone.rotation.z) * 0.04
         // smartphone.rotation.z = smartphoneZrotation;
 
         const targetPos = new THREE.Vector3(
-        moon.position.x + 0.3,
-        moon.position.y + 2.701,
-        moon.position.z - 1.3
+          moon.position.x + 0.3,
+          moon.position.y + 2.701,
+          moon.position.z - 1.3
         );
 
         smartphone.position.lerp(targetPos, 1 - Math.exp(-lerpSpeed * deltaTime));
       }
 
     }
-    
+
   }
 
-  if(currentSection == 2 && onceForLaptop ){
-    if((-t < (vh*2 + 2)) && (-t >= (vh*2)-0.7)){
-    const dir = new THREE.Vector3();
-    camera.getWorldDirection(dir);
-    const cameraPosition = camera.position;
-    
-    laptopPos.copy(cameraPosition).add(dir.multiplyScalar(0.18));
-    laptop.lookAt(cameraPosition);
-    laptop.rotation.x = 0;
-    laptop.rotation.y = 0;
-    laptop.rotation.z = 0;
-    
-    onceForLaptop = false;
+  if (currentSection == 2 && onceForLaptop) {
+    if ((-t < (vh * 2 + 2)) && (-t >= (vh * 2) - 0.7)) {
+      const dir = new THREE.Vector3();
+      camera.getWorldDirection(dir);
+      const cameraPosition = camera.position;
+
+      laptopPos.copy(cameraPosition).add(dir.multiplyScalar(0.18));
+      laptop.lookAt(cameraPosition);
+      laptop.rotation.x = 0;
+      laptop.rotation.y = 0;
+      laptop.rotation.z = 0;
+
+      onceForLaptop = false;
     }
-    pointLightLaptop.position.lerp(laptop.position , 1 - Math.exp(-6 * deltaTime));
+    pointLightLaptop.position.lerp(laptop.position, 1 - Math.exp(-6 * deltaTime));
     pointLightLaptop.position.z += 0.1;
     pointLightLaptop.position.y += 0.1;
   }
-  if(laptop){
+  if (laptop) {
     laptop.position.lerp(laptopPos, 1 - Math.exp(-7 * deltaTime));
     laptop.position.y = -0.09;
     screen.position.copy(laptop.position);
@@ -590,9 +605,9 @@ function animate() {
     screen.position.x += 0;
     screen.position.y += 50;
     screen.position.z -= 800;
-    
 
-    
+
+
   }
 
   bloomComposer.render();
@@ -608,8 +623,8 @@ let horizontalPhoneDOM = document.getElementById("horizontalPhoneScreen");
 let phoneFullscreen = false;
 let nophonefullscreen = false;
 
-function PhoneFullscreenModeSwitch(){
-  if((!phoneFullscreen && !nophonefullscreen) || (!phoneFullscreen && nophonefullscreen)){
+function PhoneFullscreenModeSwitch() {
+  if ((!phoneFullscreen && !nophonefullscreen) || (!phoneFullscreen && nophonefullscreen)) {
     smartphoneMode = true;
     phoneFullscreen = true;
     nophonefullscreen = false;
@@ -617,9 +632,9 @@ function PhoneFullscreenModeSwitch(){
     document.getElementById("horizontalPhoneScreen").classList.remove("hidden");
     document.getElementById("scrollTeller").classList.add("hidden");
     setTimeout(() => {
-        document.getElementById("moonContent").classList.add("displayHide");
-        document.getElementById("horizontalPhoneScreen").classList.remove("displayHide");
-        document.getElementById("scrollTeller").classList.add("displayHide");
+      document.getElementById("moonContent").classList.add("displayHide");
+      document.getElementById("horizontalPhoneScreen").classList.remove("displayHide");
+      document.getElementById("scrollTeller").classList.add("displayHide");
     }, 500);
 
     //loading screen
@@ -627,9 +642,9 @@ function PhoneFullscreenModeSwitch(){
       document.getElementById("loading").classList.add("hidden");
     }, 1800);
     setTimeout(() => {
-      document.getElementById("loading").style.display = "none" ;
+      document.getElementById("loading").style.display = "none";
       document.getElementById("screenContent").classList.remove("displayHide");
-      document.querySelector(".curtains").classList.remove ("displayHide");
+      document.querySelector(".curtains").classList.remove("displayHide");
     }, 2400);
     setTimeout(() => {
       document.querySelector(".rightHalf").classList.add("hoverRight");
@@ -639,7 +654,7 @@ function PhoneFullscreenModeSwitch(){
       document.querySelector(".curtains").style.display = "none";
       // document.querySelector(".leftHalf").classList.add("displayHide");
     }, 3600);
-//loading end here
+    //loading end here
 
   } else {
     smartphoneMode = false;
@@ -658,7 +673,7 @@ function PhoneFullscreenModeSwitch(){
 window.PhoneFullscreenModeSwitch = PhoneFullscreenModeSwitch;
 
 
-function getScreenPosition (object3D, camera) {
+function getScreenPosition(object3D, camera) {
   let vector = new THREE.Vector3();
   let canva = renderer.domElement;
   renderer.domElement.style.transform = `translateX(-50%) translateY(-50%)`;
@@ -678,12 +693,12 @@ let projectSection = document.getElementById("projectSection");
 let contactSection = document.getElementById("contactSection");
 
 let currentScene = homeSection;
-function changeScene(to){
+function changeScene(to) {
   // console.log(to);
   currentScene.classList.add("displayHide");
   currentScene = document.getElementById(to);
   currentScene.classList.remove("displayHide");
-  
+
 }
 
 window.changeScene = changeScene
@@ -696,10 +711,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (contactForm) {
     contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       const submitBtn = contactForm.querySelector('.contactSubmit');
       const originalBtnText = submitBtn.textContent;
-      
+
       // Loading state
       submitBtn.disabled = true;
       submitBtn.textContent = 'Sending...';
@@ -737,7 +752,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = originalBtnText;
-        
+
         // Hide status after 5 seconds
         setTimeout(() => {
           formStatus.style.display = 'none';
@@ -773,14 +788,14 @@ document.addEventListener('mousedown', (e) => {
 
 
 // else {
-    //   setTimeout(() => {
-    //     const hiddenPos = new THREE.Vector3(100, 100, -600);
-    //     smartphone.position.lerp(hiddenPos, 0.05);
-  
-    //     const hiddenPosMoon = new THREE.Vector3(250, 450, -1000);
-    //     moon.position.lerp(hiddenPosMoon, 0.05);
-    //   }, 300);
-    // }
+//   setTimeout(() => {
+//     const hiddenPos = new THREE.Vector3(100, 100, -600);
+//     smartphone.position.lerp(hiddenPos, 0.05);
+
+//     const hiddenPosMoon = new THREE.Vector3(250, 450, -1000);
+//     moon.position.lerp(hiddenPosMoon, 0.05);
+//   }, 300);
+// }
 
 
 
@@ -880,7 +895,7 @@ function updateGitHubUI(profile, repos, events) {
   if (followers) followers.textContent = profile.followers;
   if (following) following.textContent = profile.following;
   if (profileLink) profileLink.href = profile.html_url;
-  
+
   if (graph) {
     graph.src = `https://ghchart.rshah.org/409ba5/${profile.login}`;
   }
@@ -899,7 +914,7 @@ function updateGitHubUI(profile, repos, events) {
       let action = '';
       let target = event.repo.name.split('/')[1];
 
-      switch(event.type) {
+      switch (event.type) {
         case 'PushEvent': action = `Pushed commits to <span class="activity-action">${target}</span>`; break;
         case 'WatchEvent': action = `Starred <span class="activity-action">${target}</span>`; break;
         case 'CreateEvent': action = `Created <span class="activity-action">${target}</span>`; break;
@@ -908,7 +923,7 @@ function updateGitHubUI(profile, repos, events) {
       }
 
       const date = new Date(event.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-      
+
       const item = document.createElement('div');
       item.className = 'activity-item';
       item.innerHTML = `
