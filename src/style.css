@@ -415,6 +415,7 @@ html {
 
 .exitButton {
   grid-area: 2/11/3/12;
+  z-index: 10;
 }
 
 .exitAnim {
