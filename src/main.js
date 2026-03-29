@@ -122,28 +122,38 @@ var smartphoneZrotation;
 //phone 
 const loader = new GLTFLoader();
 var smartphone;
-const profileTexture = new THREE.TextureLoader().load('./me.jpeg');
+const profileTexture = new THREE.TextureLoader().load('./me.png');
 profileTexture.colorSpace = THREE.SRGBColorSpace;
+profileTexture.flipY = false; // Ensures correct orientation on GLTF models
+// Simulate "object-fit: cover" — scale the shorter dimension to fill without stretching
+// me.png is portrait, phone screen is also portrait, so we center and cover
+profileTexture.repeat.set(1, 1);
+profileTexture.offset.set(0, 0);
 
 loader.load('models/newSmartphone.glb', (gltf) => {
   smartphone = gltf.scene;
   smartphone.position.set(100, 100, -400);
   smartphoneZrotation = smartphone.rotation.z;
 
-  // Create a plane with the profile picture and attach it to the phone screen
-  const screenPlane = new THREE.PlaneGeometry(0.58, 1.25);
-  const screenMaterial = new THREE.MeshBasicMaterial({
-    map: profileTexture,
-    toneMapped: false,
-    side: THREE.DoubleSide
+  // Directly remap the phone's main screen mesh only (Plane007_1 = glass display)
+  smartphone.traverse(child => {
+    if (child.isMesh && child.name === "Plane007_1") {
+      child.material = child.material.clone(); // clone to avoid mutating shared material
+      child.material.map = profileTexture;
+      child.material.emissive = new THREE.Color(0x8888ff); // Cool blue-tinted glow
+      child.material.emissiveMap = profileTexture;
+      child.material.emissiveIntensity = 0.05; // Reduced to prevent washing out colors
+      child.material.needsUpdate = true;
+      child.frustumCulled = false;
+    }
   });
-  const screenMesh = new THREE.Mesh(screenPlane, screenMaterial);
-  // Position the plane on the phone's screen area (front face)
-  screenMesh.position.set(0, 0.02, 0.06);
-  smartphone.add(screenMesh);
-  window.debugScreenMesh = screenMesh;
+
+  // Add a screen backlight glow — soft blue light emanating from the front of the phone
+  const screenGlow = new THREE.PointLight(0x6688ff, 0.4, 3);
+  screenGlow.position.set(0, 0.65, 0.3); // Slightly in front of screen
+  smartphone.add(screenGlow);
+
   window.debugSmartphone = smartphone;
-  
   scene.add(smartphone);
 }, undefined, (err) => {
   console.log(err);
