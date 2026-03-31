@@ -11,21 +11,17 @@ const desktopGrid = document.querySelector(".desktop-grid");
 
 // --- App Data ---
 const apps = {
-    simonSays: {
-        title: "Simon Says",
-        url: "https://momanamjad.github.io/Simon-Says-PUBG-THEME-/"
+    github: {
+        title: "GitHub Clone",
+        url: "https://github-kappa-two.vercel.app/"
+    },
+    delivery: {
+        title: "Food Delivery",
+        url: "https://delivery-coral-ten.vercel.app/"
     },
     recursion: {
         title: "Portfolio",
         url: "../index.html"
-    },
-    calculator: {
-        title: "Calculator",
-        url: "https://momanamjad.github.io/Calculator/"
-    },
-    tictactoe: {
-        title: "Tic Tac Toe",
-        url: "https://momanamjad.github.io/tic-tac-toe-react/"
     }
 };
 

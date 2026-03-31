@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laptop Desktop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #0f0c29; 
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+        }
+
+        .desktop {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            gap: 30px;
+            align-content: flex-start;
+            flex-wrap: wrap;
+            background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop') center/cover no-repeat;
+            background-blend-mode: overlay;
+        }
+
+        .icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100px;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        .icon:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .icon img {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .icon:hover img {
+            transform: scale(1.1);
+        }
+
+        .icon span {
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* Project Labels */
+        .icon.github span { color: #00c9ff; }
+        .icon.delivery span { color: #ff9900; }
+
+        /* Taskbar */
+        .taskbar {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .taskbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .start-btn {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #00c9ff, #92fe9d);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 201, 255, 0.3);
+        }
+
+        .clock {
+            font-size: 14px;
+            font-family: 'Space Mono', monospace;
+            opacity: 0.8;
+        }
+
+        /* Browser Window */
+        .window {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 80px;
+            background: #1a1a1a;
+            border-radius: 15px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            z-index: 20;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .window.active {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .window-header {
+            height: 40px;
+            background: #2a2a2a;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .window-title {
+            font-size: 13px;
+            opacity: 0.7;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .close { background: #ff5f56; }
+        .min { background: #ffbd2e; }
+        .max { background: #27c93f; }
+
+        .window-body {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* Startup Screen */
+        .startup {
+            position: absolute;
+            inset: 0;
+            background: #000;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            transition: opacity 1s ease;
+        }
+
+        .logo {
+            font-size: 40px;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+            background: linear-gradient(90deg, #00c9ff, #92fe9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .loader {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loader-bar {
+            width: 0%;
+            height: 100%;
+            background: #00c9ff;
+            animation: load 2.5s ease forwards;
+        }
+
+        @keyframes load {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .hidden {
+            display: none !important;
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="startup" id="startup">
+        <div class="logo">AMJAD OS</div>
+        <div class="loader">
+            <div class="loader-bar"></div>
+        </div>
+        <div style="font-family: 'Space Mono'; font-size: 12px; opacity: 0.5;">Loading kernel...</div>
+    </div>
+
+    <div class="desktop">
+        <div class="icon github" onclick="openProject('GitHub Clone', 'https://github-kappa-two.vercel.app/')">
+            <img src="./assets/github.png" alt="GitHub">
+            <span>GitHub<br>Clone</span>
+        </div>
+
+        <div class="icon delivery" onclick="openProject('Food Delivery', 'https://delivery-coral-ten.vercel.app/')">
+            <img src="./assets/delivery.png" alt="Delivery">
+            <span>Delivery<br>App</span>
+        </div>
+    </div>
+
+    <div class="window" id="appWindow">
+        <div class="window-header">
+            <div class="window-title" id="windowTitle">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Live Demo</span>
+            </div>
+            <div class="window-controls">
+                <div class="control min"></div>
+                <div class="control max"></div>
+                <div class="control close" onclick="closeProject()"></div>
+            </div>
+        </div>
+        <div class="window-body">
+            <iframe id="projectFrame" src="" allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"></iframe>
+        </div>
+    </div>
+
+    <div class="taskbar">
+        <div class="taskbar-left">
+            <div class="start-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+            </div>
+            <div style="font-size: 12px; font-weight: 600; opacity: 0.9;">Finder</div>
+        </div>
+        <div class="clock" id="clock">12:00 PM</div>
+    </div>
+
+    <script>
+        // Clock update
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('clock').textContent = time;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Project Management
+        const appWindow = document.getElementById('appWindow');
+        const projectFrame = document.getElementById('projectFrame');
+        const windowTitle = document.getElementById('windowTitle').querySelector('span');
+
+        function openProject(name, url) {
+            windowTitle.textContent = name + " - Live Beta";
+            projectFrame.src = url;
+            appWindow.classList.add('active');
+        }
+
+        function closeProject() {
+            appWindow.classList.remove('active');
+            setTimeout(() => {
+                projectFrame.src = "";
+            }, 500);
+        }
+
+        // Startup sequence
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('startup').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('startup').classList.add('hidden');
+                }, 1000);
+            }, 2500);
+        });
+    </script>
+</body>
+</html>
