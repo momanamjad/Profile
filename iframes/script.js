@@ -1,69 +1,157 @@
-document.querySelector("body").addEventListener("wheel", (e) => {
-    e.preventDefault();
-}, {passive: false});
-
-document.addEventListener('mousedown', (e) => {
-  if (e.button === 1) { // 1 = middle mouse button
-    e.preventDefault();
-  }
-});
-
-const loadingScreen = document.querySelector(".Loader");
-const iframe = document.querySelector(".iframe");
+// --- DOM Elements ---
 const startButton = document.querySelector(".startButton");
-const windows = document.querySelector(".windows");
+const bootScreen = document.querySelector(".bootScreen");
+const loaderScreen = document.querySelector(".Loader");
+const desktopView = document.querySelector(".windows");
+const bootProgress = document.querySelector(".boot-progress");
+const bootStatus = document.querySelector(".boot-status");
+const powerButton = document.querySelector(".power-button");
+const desktopClock = document.getElementById("desktop-clock");
+const desktopGrid = document.querySelector(".desktop-grid");
 
-document.querySelector(".turnon").addEventListener("click", () => {
+// --- App Data ---
+const apps = {
+    simonSays: {
+        title: "Simon Says",
+        url: "https://momanamjad.github.io/Simon-Says-PUBG-THEME-/"
+    },
+    recursion: {
+        title: "Portfolio",
+        url: "../index.html"
+    },
+    calculator: {
+        title: "Calculator",
+        url: "https://momanamjad.github.io/Calculator/"
+    },
+    tictactoe: {
+        title: "Tic Tac Toe",
+        url: "https://momanamjad.github.io/tic-tac-toe-react/"
+    }
+};
+
+// --- Power On Sequence ---
+powerButton.addEventListener("click", () => {
     startButton.classList.add("displayHide");
-    loadingScreen.classList.remove("displayHide");
-    setTimeout(() => {
-        loadingScreen.classList.add("displayHide");
-        windows.classList.remove("displayHide");
-    }, 3000);
+    bootScreen.classList.remove("displayHide");
+    
+    startBootSequence();
 });
 
-var appBlue;
-var activeWindow = 0;
-document.querySelectorAll(".app img").forEach((img) => {
+function startBootSequence() {
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.random() * 5;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+            setTimeout(showDesktop, 500);
+        }
+        
+        bootProgress.style.width = `${progress}%`;
+        
+        // Update status text based on progress
+        if (progress > 80) bootStatus.innerText = "Starting Desktop...";
+        else if (progress > 50) bootStatus.innerText = "Loading User Profile...";
+        else if (progress > 20) bootStatus.innerText = "Loading Modules...";
+    }, 100);
+}
+
+function showDesktop() {
+    bootScreen.classList.add("displayHide");
+    desktopView.classList.remove("displayHide");
+    updateClock();
+    setInterval(updateClock, 1000);
+}
+
+// --- Clock Logic ---
+function updateClock() {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    desktopClock.innerText = `${hours}:${minutes} ${ampm}`;
+}
+
+// --- App Navigation ---
+let selectedApp = null;
+
+desktopGrid.addEventListener("click", (e) => {
+    const icon = e.target.closest(".app-icon");
+    
+    if (icon) {
+        if (selectedApp) selectedApp.classList.remove("selected");
+        selectedApp = icon;
+        selectedApp.classList.add("selected");
+    } else {
+        if (selectedApp) selectedApp.classList.remove("selected");
+        selectedApp = null;
+    }
+});
+
+// Double click to open
+desktopGrid.addEventListener("dblclick", (e) => {
+    const icon = e.target.closest(".app-icon");
+    if (icon) {
+        openApp(icon.dataset.app);
+    }
+});
+
+// Support single click for "Enter" feel if user prefers, 
+// but dblclick is more like a real OS.
+// Let's add a "touch/click" handler for the icon's image for easier opening in 3D
+document.querySelectorAll(".app-icon img").forEach(img => {
     img.addEventListener("click", (e) => {
         e.stopPropagation();
-        if(appBlue)
-            appBlue.style.background = "transparent";
-        appBlue = img;
-        img.style.background = "rgba(51, 153, 255, 0.3)";
-    });
-});
-
-document.querySelector(".apps").addEventListener("click", (e) =>{
-    if(appBlue)
-        appBlue.style.background = "transparent";
-})
-
-document.querySelectorAll(".app img").forEach((app) => {
-    app.addEventListener("dblclick", () => {
-        activeWindow = document.getElementById(app.id + "Window");
-        activeWindow.classList.remove("displayHide");
-        if(app.id == "recursion"){
-            const recursionIframe = document.createElement("iframe");
-            recursionIframe.id = "recursionIframe";
-            recursionIframe.src = "https://momanamjad.github.io/Portfolio/";
-            // console.log("#" + app.id + "Window" + " .appWindow");
-            document.querySelector("#" + app.id + "Window" + " .appWindow").appendChild(recursionIframe);
+        const icon = img.closest(".app-icon");
+        // If already selected, second click opens it (like mobile)
+        if (icon.classList.contains("selected")) {
+            openApp(icon.dataset.app);
+        } else {
+            if (selectedApp) selectedApp.classList.remove("selected");
+            selectedApp = icon;
+            selectedApp.classList.add("selected");
         }
     });
 });
 
-//<iframe id="recursion" src="http://localhost:5173/Portfolio/"></iframe>
-// document.querySelector(".appWindow").addEventListener( "wheel", (e) => {
-//     e.preventDefault();
-//     console.log("daw");
-// }, {passive: false});
+// --- Window Management ---
+function openApp(appKey) {
+    const app = apps[appKey];
+    if (!app) return;
 
-document.querySelectorAll(".crossButton").forEach((button) => {
-    button.addEventListener("click", () => {
-        activeWindow.classList.add("displayHide");
-        if(activeWindow.id == "recursionWindow"){
-            document.getElementById("recursionIframe").remove();
-        }
+    // Remove existing window if any
+    const existing = document.querySelector(".window-container");
+    if (existing) existing.remove();
+
+    const windowEl = document.createElement("div");
+    windowEl.className = "window-container";
+    windowEl.innerHTML = `
+        <div class="title-bar">
+            <div class="title">${app.title.toUpperCase()}</div>
+            <div class="controls">
+                <div class="control-btn minimize">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </div>
+                <div class="control-btn close">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </div>
+            </div>
+        </div>
+        <div class="window-content">
+            <iframe src="${app.url}"></iframe>
+        </div>
+    `;
+
+    document.body.appendChild(windowEl);
+
+    // Close functionality
+    windowEl.querySelector(".close").addEventListener("click", () => {
+        windowEl.style.transform = "translate(-50%, -45%) scale(0.9)";
+        windowEl.style.opacity = "0";
+        setTimeout(() => windowEl.remove(), 200);
     });
-});
+}
+
+// Disable right click inside the laptop screen
+document.addEventListener('contextmenu', event => event.preventDefault());

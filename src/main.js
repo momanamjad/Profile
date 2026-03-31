@@ -122,11 +122,81 @@ var smartphoneZrotation;
 //phone 
 const loader = new GLTFLoader();
 var smartphone;
-const profileTexture = new THREE.TextureLoader().load('./me.png');
-profileTexture.colorSpace = THREE.SRGBColorSpace;
-profileTexture.flipY = false; // Ensures correct orientation on GLTF models
-// Simulate "object-fit: cover" — scale the shorter dimension to fill without stretching
-// me.png is portrait, phone screen is also portrait, so we center and cover
+// Create a dynamic LinkedIn-themed texture for the phone screen
+function createLinkedInTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 1024;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#1e1b31';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // LinkedIn Header (Blue)
+  ctx.fillStyle = '#0077b5';
+  ctx.fillRect(0, 0, canvas.width, 150);
+
+  // Profile Info
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+
+  // Name
+  ctx.font = 'bold 48px Space Mono';
+  ctx.fillText('Moman Amjad', canvas.width / 2, 280);
+
+  // Headline with wrapping
+  ctx.font = '24px Space Mono';
+  ctx.fillStyle = '#00c9ff';
+  const headline = 'Founder & CEO at Fillinx Solutions';
+  
+  function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    for (let n = 0; n < words.length; n++) {
+      let testLine = line + words[n] + ' ';
+      let metrics = context.measureText(testLine);
+      let testWidth = metrics.width;
+      if (testWidth > maxWidth && n > 0) {
+        context.fillText(line, x, y);
+        line = words[n] + ' ';
+        y += lineHeight;
+      } else {
+        line = testLine;
+      }
+    }
+    context.fillText(line, x, y);
+  }
+
+  wrapText(ctx, headline, canvas.width / 2, 340, 400, 35);
+
+  // Divider
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+  ctx.beginPath();
+  ctx.moveTo(100, 450);
+  ctx.lineTo(412, 450);
+  ctx.stroke();
+
+  // "LinkedIn Profile" text
+  ctx.font = 'italic 20px Space Mono';
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.fillText('LinkedIn Profile', canvas.width / 2, 490);
+
+  // Details
+  ctx.textAlign = 'left';
+  ctx.font = '22px Space Mono';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText('> Faisalabad, Pakistan', 60, 580);
+  ctx.fillText('> 500+ Connections', 60, 630);
+  ctx.fillText('> Open to Work', 60, 680);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+const profileTexture = createLinkedInTexture();
+profileTexture.flipY = false;
 profileTexture.repeat.set(1, 1);
 profileTexture.offset.set(0, 0);
 
@@ -282,7 +352,7 @@ const iframe = document.createElement('iframe');
 iframe.style.width = '1128px';
 iframe.style.height = '645px';
 iframe.style.border = '0px';
-iframe.src = 'https://momanamjad.github.io/portfolioSideMission/';
+iframe.src = './iframes/index.html';
 iframe.style.pointerEvents = 'auto';
 div.appendChild(iframe);
 
@@ -638,12 +708,24 @@ function PhoneFullscreenModeSwitch() {
     smartphoneMode = true;
     phoneFullscreen = true;
     nophonefullscreen = false;
+    
+    // Smoothly hide content to focus on 3D transition
     document.getElementById("moonContent").classList.add("hidden");
-    document.getElementById("horizontalPhoneScreen").classList.remove("hidden");
     document.getElementById("scrollTeller").classList.add("hidden");
+
+    // DELAY the overlay appearance until the 3D phone is zooming in
+    setTimeout(() => {
+      document.getElementById("horizontalPhoneScreen").classList.remove("displayHide");
+      // Use opacity for smooth fade after 3D animation starts
+      setTimeout(() => {
+        document.getElementById("horizontalPhoneScreen").style.opacity = "1";
+        document.getElementById("horizontalPhoneScreen").style.pointerEvents = "auto";
+      }, 50);
+    }, 1200); // Increased delay to ensure 3D phone is nearly in place
+
+    // Close curtains / start loader
     setTimeout(() => {
       document.getElementById("moonContent").classList.add("displayHide");
-      document.getElementById("horizontalPhoneScreen").classList.remove("displayHide");
       document.getElementById("scrollTeller").classList.add("displayHide");
     }, 500);
 
@@ -672,12 +754,15 @@ function PhoneFullscreenModeSwitch() {
     nophonefullscreen = true;
     document.getElementById("scrollTeller").classList.remove("hidden");
     document.getElementById("moonContent").classList.remove("hidden");
-    // document.getElementById("horizontalPhoneScreen").classList.add("hidden");
-    document.getElementById("horizontalPhoneScreen").classList.add("displayHide");
+    // Fade out and disable pointer events
+    document.getElementById("horizontalPhoneScreen").style.opacity = "0";
+    document.getElementById("horizontalPhoneScreen").style.pointerEvents = "none";
+    
     setTimeout(() => {
+      document.getElementById("horizontalPhoneScreen").classList.add("displayHide");
       document.getElementById("scrollTeller").classList.remove("displayHide");
       document.getElementById("moonContent").classList.remove("displayHide");
-    }, 500);
+    }, 1200); // Match transition time in CSS
   }
 }
 window.PhoneFullscreenModeSwitch = PhoneFullscreenModeSwitch;

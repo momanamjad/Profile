@@ -192,6 +192,9 @@ html {
   top: 0;
   left: 0;
   z-index: 50;
+  transition: opacity 1.2s ease-in-out;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .leftHalf {
@@ -390,7 +393,7 @@ html {
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.02);
-  padding: 20px;
+  padding: 20px 40px 20px 20px; /* Added right padding for safety */
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }

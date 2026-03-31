@@ -14,16 +14,35 @@
     <link rel=stylesheet href="./styles.css">
 </head>
 <body id="laptopBody">
-    <!-- remove display hide from here -->
+    <!-- Start Screen -->
     <div class="content startButton"> 
-        <div class="flex-center h100">
-            <h1 class="turnon">
-                Power On
-            </h1>
+        <div class="flex-center h100 bg-black">
+            <div class="power-button-container">
+                <div class="power-button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                        <line x1="12" y1="2" x2="12" y2="12"></line>
+                    </svg>
+                </div>
+                <p class="power-text">Press to Start</p>
+            </div>
         </div>
     </div>
 
-    <div class=" content Loader displayHide">
+    <!-- Boot Sequence -->
+    <div class="content bootScreen displayHide">
+        <div class="flex-center h100 bg-black">
+            <div class="boot-logo-container">
+                <h1 class="boot-logo">MA</h1>
+                <div class="boot-progress-bar">
+                    <div class="boot-progress"></div>
+                </div>
+                <p class="boot-status">Initializing System...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content Loader displayHide">
         <div class='loader'>
             <div class="bg"></div>
             <div class='circle'></div>
@@ -34,25 +53,36 @@
         </div>
     </div>
 
-    <!-- add display hide here -->
+    <!-- Desktop View -->
     <div class="content windows displayHide">
+        <div class="desktop-wallpaper"></div>
         <div class="flex-left flex-col apps h100">
-            <div id="simonSayDiv" class="mb-0 gap flex-center flex-col app">
-                <img id="simonSays" src="./public/simonsays.png" alt="simon says" height="50">
-                <p>Simon Says</p>
+            <div class="desktop-grid">
+                <div id="simonSayDiv" class="app-icon" data-app="simonSays">
+                    <img src="./public/simonsays.png" alt="simon says">
+                    <p>Simon Says</p>
+                </div>
+                <div id="recursionDiv" class="app-icon" data-app="recursion">
+                    <img src="./public/recursion.png" alt="Portfolio">
+                    <p>Portfolio</p>
+                </div>
+                <div id="calculatorDiv" class="app-icon" data-app="calculator">
+                    <img src="./public/calculator.png" alt="calculator">
+                    <p>Calculator</p>
+                </div>
+                <div id="tictactoeDiv" class="app-icon" data-app="tictactoe">
+                    <img src="./public/tictactoe.png" alt="tictactoe">
+                    <p>Tic Tac Toe</p>
+                </div>
             </div>
-            <div id="recursionDiv" class="mt-0 mb-0 gap flex-center flex-col app">
-                <img id="recursion" src="./public/recursion.png" alt="simon say" height="50">
-                <p>Portfolio</p>
+        </div>
+        <div class="taskbar">
+            <div class="start-menu-button">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"></path>
+                </svg>
             </div>
-            <div id="calculatorDiv" class="mt-0 mb-0 gap flex-center flex-col app">
-                <img id="calculator" src="./public/calculator.png" alt="calculator" height="60">
-                <p>Calculator</p>
-            </div>
-            <div id="tictactoeDiv" class="mt-0 mb-0 gap flex-center flex-col app">
-                <img id="tictactoe" src="./public/tictactoe.png" alt="tictactoe" height="60">
-                <p>Tic Tac Toe</p>
-            </div>
+            <div class="clock" id="desktop-clock">12:00 PM</div>
         </div>
     </div>
 
