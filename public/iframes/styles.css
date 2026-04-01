@@ -113,6 +113,7 @@ body {
     letter-spacing: 10px;
     background: linear-gradient(135deg, #fff 0%, #00ADB5 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 40px;
     animation: logoFade 1.5s ease-out;
@@ -153,9 +154,49 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('./public/windowBackgound.jpg') center/cover;
+    background: url('./assets/windowBackgound.jpg') center/cover;
     filter: brightness(0.7) contrast(1.1);
     z-index: -1;
+}
+
+.desktop-hint {
+    position: absolute;
+    bottom: 80px; /* Positioned above the taskbar */
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--primary);
+    padding: 12px 24px;
+    border-radius: 40px;
+    color: var(--primary);
+    opacity: 0.9;
+    box-shadow: 0 0 20px rgba(0, 173, 181, 0.4);
+    transition: all 0.5s ease-out;
+    animation: hintBounce 2s infinite ease-in-out;
+}
+
+.desktop-hint p {
+    font-size: 13px;
+    font-weight: bold;
+    margin: 0;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0, 173, 181, 0.6);
+}
+
+.desktop-hint svg {
+    filter: drop-shadow(0 0 5px var(--primary));
+}
+
+@keyframes hintBounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-10px); }
 }
 
 .desktop-grid {
@@ -244,10 +285,38 @@ body {
 }
 
 .clock {
-    margin-left: auto;
     font-size: 13px;
     font-weight: bold;
     opacity: 0.9;
+}
+
+.taskbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.taskbar-profile {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.2s ease;
+}
+
+.taskbar-profile:hover {
+    border-color: var(--primary);
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 173, 181, 0.4);
+}
+
+.taskbar-profile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* --- Windows --- */
@@ -274,6 +343,16 @@ body {
     100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
+.window-container.minimized-out {
+    animation: windowMinimize 0.4s cubic-bezier(0.32, 0, 0.67, 0) forwards;
+    pointer-events: none;
+}
+
+@keyframes windowMinimize {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, 0%) scale(0.1); opacity: 0; }
+}
+
 .title-bar {
     height: 36px;
     background: rgba(255, 255, 255, 0.05);
@@ -284,9 +363,19 @@ body {
 }
 
 .title-bar .title {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: bold;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.title-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    border-radius: 2px;
 }
 
 .controls {
@@ -368,4 +457,80 @@ body {
 @keyframes rotate {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+/* --- Profile Window --- */
+.profile-window {
+    width: 320px !important;
+    height: auto !important;
+    min-height: 400px;
+    background: #1a1a2e !important;
+}
+
+.user-card {
+    padding: 30px;
+    text-align: center;
+    color: white;
+}
+
+.user-header img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    margin-bottom: 15px;
+    box-shadow: 0 0 15px rgba(0, 173, 181, 0.3);
+}
+
+.user-header h3 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--primary);
+}
+
+.user-header p {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-top: 5px;
+}
+
+.user-stats {
+    margin: 25px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stat {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 5px;
+}
+
+.stat span {
+    opacity: 0.6;
+}
+
+.stat strong {
+    color: var(--primary);
+}
+
+.view-resume-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--primary);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 10px;
+}
+
+.view-resume-btn:hover {
+    filter: brightness(1.2);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 173, 181, 0.4);
 }

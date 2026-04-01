@@ -501,9 +501,10 @@ textarea {
 
 .techIcons {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 7%;
+  gap: 20px;
 }
 
 .gap3 {

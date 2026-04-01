@@ -56,6 +56,14 @@
     <!-- Desktop View -->
     <div class="content windows displayHide">
         <div class="desktop-wallpaper"></div>
+        <div class="desktop-hint">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 18l-2 2-2-2"></path>
+                <path d="M15 6l-2-2-2 2"></path>
+                <circle cx="12" cy="12" r="4"></circle>
+            </svg>
+            <p>Double-click icons to explore</p>
+        </div>
         <div class="flex-left flex-col apps h100">
             <div class="desktop-grid">
                 <div id="githubDiv" class="app-icon" data-app="github">
@@ -74,16 +82,25 @@
                     <img src="./assets/employ.png" alt="Employee Tasks">
                     <p>Employee Tasks</p>
                 </div>
+                <div id="theaterDiv" class="app-icon" data-app="theater">
+                    <img src="./assets/theater.png" alt="Theater Web">
+                    <p>Theater Web</p>
+                </div>
 
             </div>
         </div>
         <div class="taskbar">
-            <div class="start-menu-button">
+            <div class="start-menu-button" title="Start">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"></path>
                 </svg>
             </div>
-            <div class="clock" id="desktop-clock">12:00 PM</div>
+            <div class="taskbar-right">
+                <div class="taskbar-profile" title="Moman Amjad">
+                    <img src="./assets/profile.png" alt="Profile">
+                </div>
+                <div class="clock" id="desktop-clock">12:00 PM</div>
+            </div>
         </div>
     </div>
 
