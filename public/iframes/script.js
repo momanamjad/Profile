@@ -22,6 +22,10 @@ const apps = {
     recursion: {
         title: "Portfolio",
         url: "../index.html"
+    },
+    employ: {
+        title: "Employee Tasks",
+        url: "https://employ-sigma.vercel.app/"
     }
 };
 
