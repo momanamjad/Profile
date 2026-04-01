@@ -17,7 +17,7 @@ const apps = {
     },
     delivery: {
         title: "Food Delivery",
-        url: "https://delivery-coral-ten.vercel.app/"
+        url: "https://delivery-omega.vercel.app/"
     },
     recursion: {
         title: "Portfolio",

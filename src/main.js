@@ -941,7 +941,7 @@ async function fetchGitHubData(username) {
     const [profileRes, reposRes, eventsRes] = await Promise.all([
       fetch(`https://api.github.com/users/${username}`),
       fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`),
-      fetch(`https://api.github.com/users/${username}/events/public?per_page=10`)
+      fetch(`https://api.github.com/users/${username}/events/public?per_page=100`)
     ]);
 
     if (profileRes.status === 403 || reposRes.status === 403) {
@@ -981,6 +981,11 @@ function updateGitHubUI(profile, repos, events) {
   const graph = document.getElementById('github-graph');
   const statsCard = document.getElementById('github-stats-card');
   const languagesCard = document.getElementById('github-languages-card');
+  const graphNew = document.getElementById('github-graph-new');
+  const reviewsCount = document.getElementById('github-reviews');
+  const commitsCount = document.getElementById('github-commits-count');
+  const issuesCount = document.getElementById('github-issues-count');
+  const prsCount = document.getElementById('github-prs-count');
   const timeline = document.getElementById('github-recent-activity');
 
   if (avatar) avatar.src = profile.avatar_url;
@@ -991,16 +996,36 @@ function updateGitHubUI(profile, repos, events) {
   if (following) following.textContent = profile.following;
   if (profileLink) profileLink.href = profile.html_url;
 
-  if (graph) {
-    graph.src = `https://ghchart.rshah.org/409ba5/${profile.login}`;
+  if (graphNew) {
+    graphNew.src = `https://ghchart.rshah.org/409ba5/${profile.login}`;
+  }
+
+  // Calculate Activity Stats from events
+  if (events) {
+    let commits = 0;
+    let issues = 0;
+    let prs = 0;
+    let reviews = 0;
+
+    events.forEach(event => {
+      if (event.type === 'PushEvent') commits += event.payload.commits ? event.payload.commits.length : 1;
+      if (event.type === 'IssuesEvent') issues++;
+      if (event.type === 'PullRequestEvent') prs++;
+      if (event.type === 'PullRequestReviewCommentEvent') reviews++;
+    });
+
+    if (commitsCount) commitsCount.textContent = commits;
+    if (issuesCount) issuesCount.textContent = issues;
+    if (prsCount) prsCount.textContent = prs;
+    if (reviewsCount) reviewsCount.textContent = reviews;
   }
 
   if (statsCard) {
-    statsCard.src = `https://github-readme-stats.vercel.app/api?username=${profile.login}&show_icons=true&theme=github_dark&hide_border=true&title_color=00c9ff&text_color=ffffff&icon_color=92fe9d`;
+    statsCard.src = `https://github-readme-stats.vercel.app/api?username=${profile.login}&show_icons=true&theme=github_dark&hide_border=true&title_color=00c9ff&text_color=ffffff&icon_color=92fe9d&t=${Date.now()}`;
   }
 
   if (languagesCard) {
-    languagesCard.src = `https://github-readme-stats.vercel.app/api/top-langs/?username=${profile.login}&layout=compact&theme=github_dark&hide_border=true&title_color=00c9ff&text_color=ffffff`;
+    languagesCard.src = `https://github-readme-stats.vercel.app/api/top-langs/?username=${profile.login}&layout=compact&theme=github_dark&hide_border=true&title_color=00c9ff&text_color=ffffff&t=${Date.now()}`;
   }
 
   if (timeline && events) {
