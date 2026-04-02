@@ -23,7 +23,7 @@ const apps = {
     },
     recursion: {
         title: "Portfolio",
-        url: "/index.html"
+        url: "../index.html"
     },
     employ: {
         title: "Employee Tasks",
