@@ -1,4 +1,4 @@
-if (window.innerWidth <= 450) {
+if (window.innerWidth <= 450 && window.self === window.top) {
   window.location.href = "https://momanamjad.github.io/portfolio-website-mobile-site/";
 } else {
   // window.location.href = "http://localhost:5173/Portfolio/";
@@ -9,9 +9,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import Geometries from "three/src/renderers/common/Geometries.js";
 import { cameraFar, modelPosition, threshold } from "three/tsl";
 import { DirectionalLight, Vector2 } from "three/webgpu";
-import { EffectComposer } from "/node_modules/three/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "/node_modules/three/examples/jsm/postprocessing/RenderPass.js";
-import { UnrealBloomPass } from "/node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { mx_fractal_noise_float, nodeProxy } from "three/src/nodes/TSL.js";
 import { CSS3DRenderer, FontLoader, TextGeometry } from "three/examples/jsm/Addons.js";
@@ -76,8 +76,8 @@ function addStar() {
 Array(450).fill().forEach(addStar);
 
 //sun
-const sunTexture = new THREE.TextureLoader().load('./assets/images/sun.png');
-const sun3dTexture = new THREE.TextureLoader().load('./assets/images/sunTexture.jpg');
+const sunTexture = new THREE.TextureLoader().load('/assets/images/sun.png');
+const sun3dTexture = new THREE.TextureLoader().load('/assets/images/sunTexture.jpg');
 const sunGeometry = new THREE.SphereGeometry(20, 25, 25);
 const sunMaterial = new THREE.MeshBasicMaterial({
   color: 0xFFFF00, map: sunTexture,
@@ -92,8 +92,8 @@ scene.add(sun);
 
 //moon
 
-const moonTexture = new THREE.TextureLoader().load('./assets/images/moon.jpg');
-const moon3dTexture = new THREE.TextureLoader().load('./assets/images/moonSurface.jpg');
+const moonTexture = new THREE.TextureLoader().load('/assets/images/moon.jpg');
+const moon3dTexture = new THREE.TextureLoader().load('/assets/images/moonSurface.jpg');
 const moonGeometry = new THREE.SphereGeometry(3, 300, 300);
 const moonMaterial = new THREE.MeshStandardMaterial({
   color: 0x202020,
@@ -200,7 +200,7 @@ profileTexture.flipY = false;
 profileTexture.repeat.set(1, 1);
 profileTexture.offset.set(0, 0);
 
-loader.load('assets/models/newSmartphone.glb', (gltf) => {
+loader.load('/assets/models/newSmartphone.glb', (gltf) => {
   smartphone = gltf.scene;
   smartphone.position.set(100, 100, -400);
   smartphoneZrotation = smartphone.rotation.z;
@@ -232,7 +232,7 @@ loader.load('assets/models/newSmartphone.glb', (gltf) => {
 
 //cursor
 var amongus, amongusCollider, amongusBody;
-loader.load('assets/models/amongus.glb', (gltf) => {
+loader.load('/assets/models/amongus.glb', (gltf) => {
   amongus = gltf.scene;
   amongus.position.set(0, 0, -2);
   scene.add(amongus);
@@ -267,7 +267,7 @@ var string = `+------------------------------+
 |          Scroll Down           |
 +------------------------------+`
 const fontLoader = new FontLoader();
-fontLoader.load('./assets/fonts/font2.json', function (font) {
+fontLoader.load('/assets/fonts/font2.json', function (font) {
   const textGeometry = new TextGeometry(string, {
     font: font,
     size: 0.1,
@@ -301,7 +301,7 @@ fontLoader.load('./assets/fonts/font2.json', function (font) {
 });
 
 
-const torusTexture = new THREE.TextureLoader().load('./assets/images/grad.jpg');
+const torusTexture = new THREE.TextureLoader().load('/assets/images/grad.jpg');
 var pivot = new THREE.Object3D();
 const torusgeometry = new THREE.TorusGeometry(0.3, 0.1, 12, 48);
 const torusmaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, map: torusTexture });
@@ -311,7 +311,7 @@ torus.position.set(2, 1.5, 0);
 scene.add(pivot);
 
 var rocket;
-loader.load('assets/models/rocket.glb', (gltf) => {
+loader.load('/assets/models/rocket.glb', (gltf) => {
   rocket = gltf.scene;
   rocket.traverse((child) => {
     if (child.isMesh) {
@@ -328,7 +328,7 @@ loader.load('assets/models/rocket.glb', (gltf) => {
 });
 
 var laptop;
-loader.load('assets/models/laptop2.glb', (gltf) => {
+loader.load('/assets/models/laptop2.glb', (gltf) => {
   laptop = gltf.scene;
   laptop.position.set(0, 300, -800)
   scene.add(laptop);
@@ -352,7 +352,7 @@ const iframe = document.createElement('iframe');
 iframe.style.width = '1128px';
 iframe.style.height = '645px';
 iframe.style.border = '0px';
-iframe.src = './iframes/index.html';
+iframe.src = '/iframes/index.html';
 iframe.style.pointerEvents = 'auto';
 div.appendChild(iframe);
 
@@ -684,7 +684,7 @@ function animate() {
     screen.rotation.x = -0;
     screen.position.x += 0;
     screen.position.y += 50;
-    screen.position.z -= 800;
+    screen.position.z -= 0.1; // Minimal offset to prevent Z-fighting with the laptop screen
 
 
 
