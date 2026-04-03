@@ -1,8 +1,8 @@
-if (window.innerWidth <= 450) {
-  window.location.href = "https://momanamjad.github.io/portfolio-website-mobile-site/";
-} else {
-  // window.location.href = "http://localhost:5173/Portfolio/";
-}
+// if (window.innerWidth <= 450) {
+//   window.location.href = "https://momanamjad.github.io/portfolio-website-mobile-site/";
+// } else {
+//   // window.location.href = "http://localhost:5173/Portfolio/";
+// }
 
 import * as THREE from "three";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
