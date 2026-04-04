@@ -1,3 +1,27 @@
+/* ===== PERFORMANCE HINTS ===== */
+/* Promote animated elements to their own GPU layer */
+.hidden,
+#horizontalPhoneScreen,
+.hoverRight,
+.hoverLeft,
+.curtains {
+  will-change: opacity, transform;
+}
+
+/* Loading overlay title */
+.loading-title {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: 4px;
+  background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-family: 'Space Mono', monospace;
+}
+/* ============================= */
+
 html {
   overflow-x: hidden;
   scroll-behavior: smooth;
@@ -57,6 +81,7 @@ canvas {
   position: fixed;
   top: 0;
   left: 0;
+  will-change: transform;
 }
 
 body {
