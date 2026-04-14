@@ -17,6 +17,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 2000,
     // Minify CSS
     cssMinify: true,
+    target: 'esnext'
   },
   // Ensure .glb files are handled as assets
   assetsInclude: ['**/*.glb', '**/*.gltf'],
