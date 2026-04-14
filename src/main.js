@@ -44,7 +44,7 @@ async function initRapier() {
 }
 const dynamicBodies = []
 
-await initRapier();
+initRapier();
 
 const canvas = document.getElementById("bg");
 
@@ -374,8 +374,7 @@ const iframe = document.createElement('iframe');
 iframe.style.width = '1128px';
 iframe.style.height = '645px';
 iframe.style.border = '0px';
-// Defer loading iframe until laptop section is visited
-iframe.dataset.src = BASE + 'iframes/index.html';
+iframe.src = BASE + 'iframes/index.html';
 iframe.style.pointerEvents = 'auto';
 div.appendChild(iframe);
 
@@ -411,7 +410,6 @@ document.querySelectorAll(".dot").forEach((el) => {
       screen.visible = false;
     }
     else if (currentSection == 2) {
-      if (!iframe.src) iframe.src = iframe.dataset.src;
       if (laptopInitiated) {
         if (lastSection == 0) {
           setTimeout(() => {
@@ -459,7 +457,6 @@ window.addEventListener('wheel', (e) => {
       screen.visible = false;
     }
     else if (currentSection == 2) {
-      if (!iframe.src) iframe.src = iframe.dataset.src;
       if (laptopInitiated) {
         setTimeout(() => {
           screen.visible = true;
@@ -1074,7 +1071,7 @@ function updateGitHubUI(profile, repos, events) {
       const repoCard = document.createElement('div');
       repoCard.className = 'repo-card';
       repoCard.innerHTML = `
-        <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit;">
+        <a href="${repo.html_url}" target="_blank" style="text-decoration: none; color: inherit;">
           <h4 style="margin: 0 0 5px 0; color: #92fe9d;">${repo.name}</h4>
           <p style="font-size: 13px; margin-bottom: 10px;">${repo.description || 'No description available'}</p>
           <div class="repo-meta" style="display: flex; gap: 15px; font-size: 12px; opacity: 0.6;">
