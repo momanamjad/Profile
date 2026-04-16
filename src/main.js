@@ -374,9 +374,32 @@ const iframe = document.createElement('iframe');
 iframe.style.width = '1128px';
 iframe.style.height = '645px';
 iframe.style.border = '0px';
-iframe.src = BASE + 'iframes/index.html';
+const iframeSrc = BASE + 'iframes/index.html';
+loadingManager.itemStart(iframeSrc);
+iframe.onload = () => {
+  loadingManager.itemEnd(iframeSrc);
+};
+iframe.onerror = () => {
+  loadingManager.itemError(iframeSrc);
+  loadingManager.itemEnd(iframeSrc);
+};
+iframe.src = iframeSrc;
 iframe.style.pointerEvents = 'auto';
 div.appendChild(iframe);
+
+// Process DOM iframes
+document.querySelectorAll('iframe[data-src]').forEach(domIframe => {
+  const src = domIframe.getAttribute('data-src');
+  loadingManager.itemStart(src);
+  domIframe.onload = () => {
+    loadingManager.itemEnd(src);
+  };
+  domIframe.onerror = () => {
+    loadingManager.itemError(src);
+    loadingManager.itemEnd(src);
+  };
+  domIframe.src = src;
+});
 
 
 const screen = new CSS3DObject(div);
