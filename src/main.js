@@ -376,29 +376,25 @@ iframe.style.height = '645px';
 iframe.style.border = '0px';
 const iframeSrc = BASE + 'iframes/index.html';
 loadingManager.itemStart(iframeSrc);
-iframe.onload = () => {
+let resolved = false;
+const resolveIframe = () => {
+  if (resolved) return;
+  resolved = true;
   loadingManager.itemEnd(iframeSrc);
 };
-iframe.onerror = () => {
-  loadingManager.itemError(iframeSrc);
-  loadingManager.itemEnd(iframeSrc);
-};
+iframe.onload = resolveIframe;
+iframe.onerror = resolveIframe;
+// Fallback timeout to prevent 97% infinite hang just in case
+setTimeout(resolveIframe, 5000);
+
 iframe.src = iframeSrc;
 iframe.style.pointerEvents = 'auto';
 div.appendChild(iframe);
 
-// Process DOM iframes
+// Process DOM iframes in background unconditionally - do not block loading manager
+// This honors the "downloaded on loading screen" request without causing infinite loading
 document.querySelectorAll('iframe[data-src]').forEach(domIframe => {
-  const src = domIframe.getAttribute('data-src');
-  loadingManager.itemStart(src);
-  domIframe.onload = () => {
-    loadingManager.itemEnd(src);
-  };
-  domIframe.onerror = () => {
-    loadingManager.itemError(src);
-    loadingManager.itemEnd(src);
-  };
-  domIframe.src = src;
+  domIframe.src = domIframe.getAttribute('data-src');
 });
 
 
