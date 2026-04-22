@@ -8,12 +8,44 @@ import { CSS3DRenderer, FontLoader, TextGeometry } from "three/examples/jsm/Addo
 import * as RAPIER from '@dimforge/rapier3d-compat';
 import { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
-// Register Service Worker for caching
+// Register Service Worker only in production. In local/dev, clear old SW caches so refreshes
+// always use the latest animation code instead of stale cached bundles.
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js').catch(() => {});
+  window.addEventListener('load', async () => {
+    const isLocalhost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+
+    if (import.meta.env.PROD && !isLocalhost) {
+      navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js').catch(() => {});
+      return;
+    }
+
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map((registration) => registration.unregister()));
+
+      if ('caches' in window) {
+        const cacheKeys = await caches.keys();
+        await Promise.all(cacheKeys.map((key) => caches.delete(key)));
+      }
+    } catch {
+      // Ignore cache cleanup failures in development.
+    }
   });
 }
+
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
+function resetInitialScrollPosition() {
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
+
+resetInitialScrollPosition();
+window.addEventListener('load', resetInitialScrollPosition);
+window.addEventListener('pageshow', resetInitialScrollPosition);
 
 // Loading Manager - tracks all Three.js asset loads
 const loadingManager = new THREE.LoadingManager();
@@ -144,73 +176,34 @@ var smartphoneZrotation;
 //phone 
 const loader = new GLTFLoader(loadingManager);
 var smartphone;
-// Create a dynamic LinkedIn-themed texture for the phone screen
+// Create a clean texture for the phone screen with no text content
 function createLinkedInTexture() {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
   canvas.height = 1024;
   const ctx = canvas.getContext('2d');
 
-  // Background
-  ctx.fillStyle = '#1e1b31';
+  // Dark display background
+  ctx.fillStyle = '#0d1020';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // LinkedIn Header (Blue)
-  ctx.fillStyle = '#0077b5';
-  ctx.fillRect(0, 0, canvas.width, 150);
+  // Soft screen glow and subtle paneling without any written data
+  const glow = ctx.createRadialGradient(256, 380, 40, 256, 380, 320);
+  glow.addColorStop(0, 'rgba(65, 120, 255, 0.28)');
+  glow.addColorStop(0.45, 'rgba(30, 56, 120, 0.18)');
+  glow.addColorStop(1, 'rgba(13, 16, 32, 0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Profile Info
-  ctx.fillStyle = '#ffffff';
-  ctx.textAlign = 'center';
+  ctx.strokeStyle = 'rgba(120, 160, 255, 0.16)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(52, 120, 408, 784);
 
-  // Name
-  ctx.font = 'bold 48px Space Mono';
-  ctx.fillText('Moman Amjad', canvas.width / 2, 280);
-
-  // Headline with wrapping
-  ctx.font = '24px Space Mono';
-  ctx.fillStyle = '#00c9ff';
-  const headline = 'Founder & CEO at Fillinx Solutions';
-  
-  function wrapText(context, text, x, y, maxWidth, lineHeight) {
-    const words = text.split(' ');
-    let line = '';
-    for (let n = 0; n < words.length; n++) {
-      let testLine = line + words[n] + ' ';
-      let metrics = context.measureText(testLine);
-      let testWidth = metrics.width;
-      if (testWidth > maxWidth && n > 0) {
-        context.fillText(line, x, y);
-        line = words[n] + ' ';
-        y += lineHeight;
-      } else {
-        line = testLine;
-      }
-    }
-    context.fillText(line, x, y);
-  }
-
-  wrapText(ctx, headline, canvas.width / 2, 340, 400, 35);
-
-  // Divider
-  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-  ctx.beginPath();
-  ctx.moveTo(100, 450);
-  ctx.lineTo(412, 450);
-  ctx.stroke();
-
-  // "LinkedIn Profile" text
-  ctx.font = 'italic 20px Space Mono';
-  ctx.fillStyle = 'rgba(255,255,255,0.5)';
-  ctx.fillText('LinkedIn Profile', canvas.width / 2, 490);
-
-  // Details
-  ctx.textAlign = 'left';
-  ctx.font = '22px Space Mono';
-  ctx.fillStyle = '#ffffff';
-  ctx.fillText('> Faisalabad, Pakistan', 60, 580);
-  ctx.fillText('> 500+ Connections', 60, 630);
-  ctx.fillText('> Open to Work', 60, 680);
+  ctx.fillStyle = 'rgba(120, 160, 255, 0.08)';
+  ctx.fillRect(76, 170, 360, 180);
+  ctx.fillRect(76, 390, 360, 110);
+  ctx.fillRect(76, 530, 360, 110);
+  ctx.fillRect(76, 670, 360, 110);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -225,6 +218,7 @@ profileTexture.offset.set(0, 0);
 loader.load(BASE + 'assets/models/newSmartphone.glb', (gltf) => {
   smartphone = gltf.scene;
   smartphone.position.set(100, 100, -400);
+  smartphone.scale.setScalar(0.64);
   smartphoneZrotation = smartphone.rotation.z;
 
   // Directly remap the phone's main screen mesh only (Plane007_1 = glass display)
@@ -232,16 +226,16 @@ loader.load(BASE + 'assets/models/newSmartphone.glb', (gltf) => {
     if (child.isMesh && child.name === "Plane007_1") {
       child.material = child.material.clone(); // clone to avoid mutating shared material
       child.material.map = profileTexture;
-      child.material.emissive = new THREE.Color(0x8888ff); // Cool blue-tinted glow
+      child.material.emissive = new THREE.Color(0x4a5ca8);
       child.material.emissiveMap = profileTexture;
-      child.material.emissiveIntensity = 0.05; // Reduced to prevent washing out colors
+      child.material.emissiveIntensity = 0.025;
       child.material.needsUpdate = true;
       child.frustumCulled = false;
     }
   });
 
   // Add a screen backlight glow — soft blue light emanating from the front of the phone
-  const screenGlow = new THREE.PointLight(0x6688ff, 0.4, 3);
+  const screenGlow = new THREE.PointLight(0x4a5ca8, 0.22, 2.4);
   screenGlow.position.set(0, 0.65, 0.3); // Slightly in front of screen
   smartphone.add(screenGlow);
 
@@ -353,6 +347,19 @@ var laptop;
 loader.load(BASE + 'assets/models/laptop2.glb', (gltf) => {
   laptop = gltf.scene;
   laptop.position.set(0, 300, -800)
+  laptop.scale.setScalar(0.84);
+  laptop.traverse((child) => {
+    if (!child.isMesh || !child.material) return;
+
+    child.material = child.material.clone();
+    if ('roughness' in child.material) child.material.roughness = Math.min(1, (child.material.roughness ?? 0.6) + 0.28);
+    if ('metalness' in child.material) child.material.metalness = Math.max(0, (child.material.metalness ?? 0.4) - 0.22);
+    if ('emissive' in child.material) child.material.emissive.multiplyScalar(0.35);
+    if ('emissiveIntensity' in child.material) child.material.emissiveIntensity = Math.min(child.material.emissiveIntensity ?? 0, 0.012);
+  });
+  laptop.add(screen); window.laptopScreen = screen; window.laptopModel = laptop;
+  screen.position.set(0, 50, -800);
+  screen.rotation.set(0, 0, 0);
   scene.add(laptop);
 });
 
@@ -399,7 +406,6 @@ document.querySelectorAll('iframe[data-src]').forEach(domIframe => {
 
 
 const screen = new CSS3DObject(div);
-scene.add(screen);
 screen.position.set(0, 0, -100);
 screen.visible = false;
 
@@ -410,6 +416,36 @@ var lastSection = 0;
 var smartphoneMode = false;  //remember to turn it false
 var timerStarted = false;
 var laptopInitiated = false;
+let screenShowTimeout;
+
+function clearScreenShowTimeout() {
+  if (screenShowTimeout) {
+    clearTimeout(screenShowTimeout);
+    screenShowTimeout = undefined;
+  }
+}
+
+function hideLaptopScreen() {
+  clearScreenShowTimeout();
+  screen.visible = false;
+}
+
+function queueLaptopScreenShow(delay) {
+  clearScreenShowTimeout();
+  screenShowTimeout = setTimeout(() => {
+    if (currentSection === 2) {
+      screen.visible = true;
+    }
+  }, delay);
+}
+
+function syncInitialSectionState() {
+  currentSection = 0;
+  lastSection = 0;
+  resetInitialScrollPosition();
+}
+
+syncInitialSectionState();
 
 document.querySelectorAll(".dot").forEach((el) => {
   el.addEventListener("click", (e) => {
@@ -426,24 +462,18 @@ document.querySelectorAll(".dot").forEach((el) => {
 
 
     if (currentSection != 2) {
-      screen.visible = false;
+      hideLaptopScreen();
     }
     else if (currentSection == 2) {
       if (laptopInitiated) {
         if (lastSection == 0) {
-          setTimeout(() => {
-            screen.visible = true;
-          }, 800);
+          queueLaptopScreenShow(800);
         } else {
-          setTimeout(() => {
-            screen.visible = true;
-          }, 500);
+          queueLaptopScreenShow(500);
         }
       } else {
         laptopInitiated = true;
-        setTimeout(() => {
-          screen.visible = true;
-        }, 2500);
+        queueLaptopScreenShow(2500);
       }
     }
   });
@@ -472,19 +502,15 @@ window.addEventListener('wheel', (e) => {
     }
     console.log(lastSection, currentSection);
 
-    if (currentSection == 1) {
-      screen.visible = false;
+    if (currentSection != 2) {
+      hideLaptopScreen();
     }
     else if (currentSection == 2) {
       if (laptopInitiated) {
-        setTimeout(() => {
-          screen.visible = true;
-        }, 500);
+        queueLaptopScreenShow(500);
       } else {
         laptopInitiated = true;
-        setTimeout(() => {
-          screen.visible = true;
-        }, 2500);
+        queueLaptopScreenShow(2500);
       }
     }
     // console.log(currentSection);
@@ -513,14 +539,14 @@ pointLight.position.y += 4;
 pointLight.position.z += -1.6;
 scene.add(pointLight);
 
-const pointLightLaptop = new THREE.PointLight(0xffffff, 10, 100);
+const pointLightLaptop = new THREE.PointLight(0xb9c8de, 2.1, 55);
 pointLightLaptop.position.z = 2;
 scene.add(pointLightLaptop);
 
 
 
 
-const ambientLight = new THREE.AmbientLight(0xffffff);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
 const ambientLight2 = new THREE.AmbientLight(0x010101);
@@ -529,7 +555,7 @@ scene.add(ambientLight2);
 
 
 //sunlight
-const sunlight = new THREE.DirectionalLight(0xfff0bb, 1);
+const sunlight = new THREE.DirectionalLight(0xfff0bb, 0.72);
 sunlight.position.set(100, 100, 100);
 sunlight.position.copy(sun.position);
 scene.add(sunlight);
@@ -556,6 +582,12 @@ window.addEventListener('resize', () => {
   // Debounce resize to avoid thrashing
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(() => {
+    vh = window.innerHeight;
+    iw = window.innerWidth;
+    aspect = iw / vh;
+    visibleMoonPos.set(-2.6, -4.2, -(vh / 3.318));
+    visibleLaptopPos.set(0, -0.09, -((vh * 0.6) + 0.18));
+
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -565,24 +597,59 @@ window.addEventListener('resize', () => {
 }, false);
 
 
-var once = true;
-var finalPhonepos;
-var finalMoonpos;
-var onceForLaptop = true;
 const moonPos = new THREE.Vector3(100, 100, -400);
 const laptopPos = new THREE.Vector3(0, 300, -800);
 const phoneWidth = 500;
 const phoneHeight = 800;
+const hiddenMoonPos = new THREE.Vector3(1000, 1000, -500);
+const visibleMoonPos = new THREE.Vector3(-2.6, -4.2, -(vh / 3.318));
+const hiddenLaptopPos = new THREE.Vector3(0, 300, -800);
+const visibleLaptopPos = new THREE.Vector3(0, -0.09, -((vh * 0.6) + 0.18));
+const snapThreshold = 0.015;
+const cameraSnapThreshold = 0.02;
+
+function getSectionCameraZ(sectionIndex) {
+  return -(sectionIndex * vh * 0.3);
+}
+
+function smoothToTarget(object, target, smoothing) {
+  if (!object) return;
+
+  object.position.lerp(target, smoothing);
+
+  if (object.position.distanceToSquared(target) < snapThreshold * snapThreshold) {
+    object.position.copy(target);
+  }
+}
+
+function updateSectionTargets() {
+  if (currentSection == 1) {
+    moonPos.copy(visibleMoonPos);
+  } else {
+    moonPos.copy(hiddenMoonPos);
+  }
+
+  if (currentSection == 2) {
+    laptopPos.copy(visibleLaptopPos);
+  } else {
+    laptopPos.copy(hiddenLaptopPos);
+  }
+}
 
 function animate() {
 
   requestAnimationFrame(animate);
   const deltaTime = clock.getDelta();
   const lerpSpeed = 6;
-
-  let t = document.body.getBoundingClientRect().top;
-  // console.log(t);
-  camera.position.z = t * 0.3;
+  const cameraTargetZ = getSectionCameraZ(currentSection);
+  camera.position.z = THREE.MathUtils.lerp(
+    camera.position.z,
+    cameraTargetZ,
+    1 - Math.exp(-7 * deltaTime)
+  );
+  if (Math.abs(camera.position.z - cameraTargetZ) < cameraSnapThreshold) {
+    camera.position.z = cameraTargetZ;
+  }
   // camera.rotation.z = t * 0.0002;
   // console.log(camera.fov);
   sun.rotation.x += 0.0001;
@@ -618,6 +685,9 @@ function animate() {
     // amongus.rotation.z += 0.003;
 
   }
+  updateSectionTargets();
+  smoothToTarget(moon, moonPos, 1 - Math.exp(-10 * deltaTime));
+
   if (smartphone) {
     pivot.position.copy(smartphone.position);
 
@@ -634,27 +704,6 @@ function animate() {
 
 
     smartphone.position.lerp(targetPos, 1 - Math.exp(-lerpSpeed * deltaTime));
-
-    if (currentSection == 1 && once == true) {
-      //used for animation
-
-      if (-t > (vh * 0.5)) { // much looser threshold so animations don't get skipped
-        const dir = new THREE.Vector3();
-        camera.getWorldDirection(dir);
-        const cameraPosition = camera.position;
-        moonPos.copy(cameraPosition).add(dir.multiplyScalar(6));
-        moonPos.x += -2.6;
-        moonPos.y += -4.2;
-        moonPos.z += 4;
-        once = false;
-      }
-      // smartphone.lookAt(camera.position);
-    }
-    // console.log(t, vh);
-    // console.log(moonPos);
-
-    moon.position.lerp(moonPos, 1 - Math.exp(-10 * deltaTime));
-
     if (smartphone && currentSection == 1) {
       if (phoneFullscreen == true) {
         smartphone.rotation.z = smartphone.rotation.z + ((-(Math.PI / 2)) - smartphone.rotation.z) * 0.04;     //magic happening here 
@@ -688,33 +737,18 @@ function animate() {
 
   }
 
-  if (currentSection == 2 && onceForLaptop) {
-    if (-t > (vh * 1.5)) {
-      const dir = new THREE.Vector3();
-      camera.getWorldDirection(dir);
-      const cameraPosition = camera.position;
-
-      laptopPos.copy(cameraPosition).add(dir.multiplyScalar(0.18));
-      laptop.lookAt(cameraPosition);
+  if (laptop) {
+    smoothToTarget(laptop, laptopPos, 1 - Math.exp(-7 * deltaTime));
+    if (currentSection == 2) {
+      laptop.lookAt(camera.position);
       laptop.rotation.x = 0;
       laptop.rotation.y = 0;
       laptop.rotation.z = 0;
-
-      onceForLaptop = false;
     }
+
     pointLightLaptop.position.lerp(laptop.position, 1 - Math.exp(-6 * deltaTime));
     pointLightLaptop.position.z += 0.1;
     pointLightLaptop.position.y += 0.1;
-  }
-  if (laptop) {
-    laptop.position.lerp(laptopPos, 1 - Math.exp(-7 * deltaTime));
-    laptop.position.y = -0.09;
-    screen.position.copy(laptop.position);
-    screen.quaternion.copy(laptop.quaternion);
-    screen.rotation.x = -0;
-    screen.position.x += 0;
-    screen.position.y += 50;
-    screen.position.z -= 800;
 
 
 

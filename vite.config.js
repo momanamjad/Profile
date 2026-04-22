@@ -13,8 +13,8 @@ export default defineConfig({
         },
       },
     },
-    // Enable gzip-friendly output
-    chunkSizeWarningLimit: 2000,
+    // Increase limit for large but necessary physics library (888KB gzipped is reasonable)
+    chunkSizeWarningLimit: 3000,
     // Minify CSS
     cssMinify: true,
   },
