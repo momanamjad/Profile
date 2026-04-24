@@ -344,10 +344,16 @@ loader.load(BASE + 'assets/models/rocket.glb', (gltf) => {
 });
 
 var laptop;
+const LAPTOP_MODEL_SCALE = 72;
+const LAPTOP_SCREEN_WIDTH = 1280;
+const LAPTOP_SCREEN_HEIGHT = 800;
+const LAPTOP_SCREEN_SCALE = 0.00029;
+const LAPTOP_SCREEN_OFFSET = new THREE.Vector3(0, 0.0995, -0.0309);
+
 loader.load(BASE + 'assets/models/laptop2.glb', (gltf) => {
   laptop = gltf.scene;
   laptop.position.set(0, 300, -800)
-  laptop.scale.setScalar(0.84);
+  laptop.scale.setScalar(LAPTOP_MODEL_SCALE);
   laptop.traverse((child) => {
     if (!child.isMesh || !child.material) return;
 
@@ -358,7 +364,7 @@ loader.load(BASE + 'assets/models/laptop2.glb', (gltf) => {
     if ('emissiveIntensity' in child.material) child.material.emissiveIntensity = Math.min(child.material.emissiveIntensity ?? 0, 0.012);
   });
   laptop.add(screen); window.laptopScreen = screen; window.laptopModel = laptop;
-  screen.position.set(0, 50, -800);
+  screen.position.copy(LAPTOP_SCREEN_OFFSET);
   screen.rotation.set(0, 0, 0);
   scene.add(laptop);
 });
@@ -370,16 +376,18 @@ css3dRenderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById("extra").appendChild(css3dRenderer.domElement);
 
 const div = document.createElement('div');
-div.style.width = '1128px';
-div.style.height = '645px';
-div.style.backgroundColor = '#aaaaaa';
-div.style.transform = `scale(0.2)`;
+div.style.width = `${LAPTOP_SCREEN_WIDTH}px`;
+div.style.height = `${LAPTOP_SCREEN_HEIGHT}px`;
+div.style.backgroundColor = '#1f1131';
 div.id = "saviorOfScrolls";
 div.style.pointerEvents = 'auto';
+div.style.overflow = 'hidden';
+div.style.borderRadius = '20px';
+div.style.boxShadow = '0 22px 60px rgba(0, 0, 0, 0.45)';
 
 const iframe = document.createElement('iframe');
-iframe.style.width = '1128px';
-iframe.style.height = '645px';
+iframe.style.width = `${LAPTOP_SCREEN_WIDTH}px`;
+iframe.style.height = `${LAPTOP_SCREEN_HEIGHT}px`;
 iframe.style.border = '0px';
 const iframeSrc = BASE + 'iframes/index.html';
 loadingManager.itemStart(iframeSrc);
@@ -395,7 +403,7 @@ iframe.onerror = resolveIframe;
 setTimeout(resolveIframe, 5000);
 
 iframe.src = iframeSrc;
-iframe.style.pointerEvents = 'auto';
+iframe.style.pointerEvents = 'none';
 div.appendChild(iframe);
 
 // Process DOM iframes in background unconditionally - do not block loading manager
@@ -406,8 +414,120 @@ document.querySelectorAll('iframe[data-src]').forEach(domIframe => {
 
 
 const screen = new CSS3DObject(div);
-screen.position.set(0, 0, -100);
+screen.scale.setScalar(LAPTOP_SCREEN_SCALE);
 screen.visible = false;
+
+function getIframePointFromViewport(frameElement, clientX, clientY) {
+  const rect = frameElement.getBoundingClientRect();
+  if (
+    rect.width <= 0 ||
+    rect.height <= 0 ||
+    clientX < rect.left ||
+    clientX > rect.right ||
+    clientY < rect.top ||
+    clientY > rect.bottom
+  ) {
+    return null;
+  }
+
+  const frameWindow = frameElement.contentWindow;
+  if (!frameWindow) return null;
+
+  return {
+    x: ((clientX - rect.left) / rect.width) * frameWindow.innerWidth,
+    y: ((clientY - rect.top) / rect.height) * frameWindow.innerHeight
+  };
+}
+
+function resolveNestedFrameTarget(frameWindow, pointX, pointY) {
+  let activeWindow = frameWindow;
+  let x = pointX;
+  let y = pointY;
+
+  for (let depth = 0; depth < 4; depth++) {
+    let activeDocument;
+    try {
+      activeDocument = activeWindow.document;
+    } catch {
+      return null;
+    }
+    const target = activeDocument.elementFromPoint(x, y);
+
+    if (!target) return null;
+
+    if (target.tagName === 'IFRAME') {
+      try {
+        const nextWindow = target.contentWindow;
+        if (!nextWindow) {
+          return { target, ownerWindow: activeWindow, x, y };
+        }
+        nextWindow.document;
+
+        const nestedPoint = getIframePointFromViewport(target, x, y);
+        if (!nestedPoint) {
+          return { target, ownerWindow: activeWindow, x, y };
+        }
+
+        activeWindow = nextWindow;
+        x = nestedPoint.x;
+        y = nestedPoint.y;
+        continue;
+      } catch {
+        return { target, ownerWindow: activeWindow, x, y };
+      }
+    }
+
+    return { target, ownerWindow: activeWindow, x, y };
+  }
+
+  return null;
+}
+
+function forwardLaptopMouseEvent(sourceEvent, type) {
+  if (!screen.visible || currentSection !== 2 || smartphoneMode) return false;
+
+  const viewportPoint = getIframePointFromViewport(iframe, sourceEvent.clientX, sourceEvent.clientY);
+  if (!viewportPoint) return false;
+
+  const frameWindow = iframe.contentWindow;
+  if (!frameWindow) return false;
+
+  const resolvedTarget = resolveNestedFrameTarget(frameWindow, viewportPoint.x, viewportPoint.y);
+  if (!resolvedTarget) return false;
+
+  const { target, ownerWindow, x, y } = resolvedTarget;
+
+  if ((type === 'mousedown' || type === 'click') && typeof target.focus === 'function') {
+    target.focus({ preventScroll: true });
+  }
+
+  const forwardedEvent = new ownerWindow.MouseEvent(type, {
+    bubbles: true,
+    cancelable: true,
+    composed: true,
+    clientX: x,
+    clientY: y,
+    button: sourceEvent.button ?? 0,
+    buttons: sourceEvent.buttons ?? 0,
+    ctrlKey: sourceEvent.ctrlKey,
+    shiftKey: sourceEvent.shiftKey,
+    altKey: sourceEvent.altKey,
+    metaKey: sourceEvent.metaKey,
+    detail: sourceEvent.detail ?? (type === 'dblclick' ? 2 : 1)
+  });
+
+  target.dispatchEvent(forwardedEvent);
+  return true;
+}
+
+['mousedown', 'mouseup', 'click', 'dblclick'].forEach((eventType) => {
+  css3dRenderer.domElement.addEventListener(eventType, (event) => {
+    if (forwardLaptopMouseEvent(event, eventType)) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }, true);
+});
 
 
 let currentSection = 0;
@@ -417,25 +537,45 @@ var smartphoneMode = false;  //remember to turn it false
 var timerStarted = false;
 var laptopInitiated = false;
 let screenShowTimeout;
+let screenHideTimeout;
 
-function clearScreenShowTimeout() {
+function clearLaptopScreenTimers() {
   if (screenShowTimeout) {
     clearTimeout(screenShowTimeout);
     screenShowTimeout = undefined;
   }
+  if (screenHideTimeout) {
+    clearTimeout(screenHideTimeout);
+    screenHideTimeout = undefined;
+  }
 }
 
 function hideLaptopScreen() {
-  clearScreenShowTimeout();
-  screen.visible = false;
+  clearLaptopScreenTimers();
+  // Animate screen off
+  const div = screen.element;
+  div.classList.remove('screen-on');
+  screenHideTimeout = setTimeout(() => {
+    if (currentSection !== 2) {
+      screen.visible = false;
+    }
+    screenHideTimeout = undefined;
+  }, 700); // match CSS transition
 }
 
 function queueLaptopScreenShow(delay) {
-  clearScreenShowTimeout();
+  clearLaptopScreenTimers();
   screenShowTimeout = setTimeout(() => {
     if (currentSection === 2) {
       screen.visible = true;
+      // Animate screen on
+      const div = screen.element;
+      div.classList.remove('screen-on');
+      setTimeout(() => {
+        div.classList.add('screen-on');
+      }, 10); // allow visible to take effect first
     }
+    screenShowTimeout = undefined;
   }, delay);
 }
 
@@ -586,7 +726,7 @@ window.addEventListener('resize', () => {
     iw = window.innerWidth;
     aspect = iw / vh;
     visibleMoonPos.set(-2.6, -4.2, -(vh / 3.318));
-    visibleLaptopPos.set(0, -0.09, -((vh * 0.6) + 0.18));
+    visibleLaptopPos.set(0, -7, -((vh * 0.6) + 24));
 
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
@@ -604,7 +744,7 @@ const phoneHeight = 800;
 const hiddenMoonPos = new THREE.Vector3(1000, 1000, -500);
 const visibleMoonPos = new THREE.Vector3(-2.6, -4.2, -(vh / 3.318));
 const hiddenLaptopPos = new THREE.Vector3(0, 300, -800);
-const visibleLaptopPos = new THREE.Vector3(0, -0.09, -((vh * 0.6) + 0.18));
+const visibleLaptopPos = new THREE.Vector3(0, -7, -((vh * 0.6) + 24));
 const snapThreshold = 0.015;
 const cameraSnapThreshold = 0.02;
 
@@ -762,53 +902,96 @@ camera.layers.enable(1);
 animate();
 
 let horizontalPhoneDOM = document.getElementById("horizontalPhoneScreen");
+const moonContent = document.getElementById("moonContent");
+const scrollTeller = document.getElementById("scrollTeller");
+const loadingScreen = document.getElementById("loading");
+const screenContent = document.getElementById("screenContent");
+const curtains = document.querySelector(".curtains");
+const leftCurtain = document.querySelector(".leftHalf");
+const rightCurtain = document.querySelector(".rightHalf");
 
 
 let phoneFullscreen = false;
 let nophonefullscreen = false;
+const phoneTransitionTimeouts = [];
+
+function clearPhoneTransitionTimeouts() {
+  while (phoneTransitionTimeouts.length) {
+    clearTimeout(phoneTransitionTimeouts.pop());
+  }
+}
+
+function schedulePhoneTransition(callback, delay) {
+  const timeoutId = setTimeout(() => {
+    const timeoutIndex = phoneTransitionTimeouts.indexOf(timeoutId);
+    if (timeoutIndex >= 0) {
+      phoneTransitionTimeouts.splice(timeoutIndex, 1);
+    }
+    callback();
+  }, delay);
+
+  phoneTransitionTimeouts.push(timeoutId);
+  return timeoutId;
+}
+
+function resetPhoneOverlayState() {
+  loadingScreen.classList.remove("hidden");
+  loadingScreen.style.display = "";
+  screenContent.classList.add("displayHide");
+  curtains.classList.add("displayHide");
+  curtains.style.display = "";
+  leftCurtain.classList.remove("hoverLeft");
+  rightCurtain.classList.remove("hoverRight");
+  horizontalPhoneDOM.classList.add("displayHide");
+  horizontalPhoneDOM.style.opacity = "0";
+  horizontalPhoneDOM.style.pointerEvents = "none";
+}
+
+resetPhoneOverlayState();
 
 function PhoneFullscreenModeSwitch() {
   if ((!phoneFullscreen && !nophonefullscreen) || (!phoneFullscreen && nophonefullscreen)) {
     smartphoneMode = true;
     phoneFullscreen = true;
     nophonefullscreen = false;
+    clearPhoneTransitionTimeouts();
+    resetPhoneOverlayState();
     
     // Smoothly hide content to focus on 3D transition
-    document.getElementById("moonContent").classList.add("hidden");
-    document.getElementById("scrollTeller").classList.add("hidden");
+    moonContent.classList.add("hidden");
+    scrollTeller.classList.add("hidden");
 
     // DELAY the overlay appearance until the 3D phone is zooming in
-    setTimeout(() => {
-      document.getElementById("horizontalPhoneScreen").classList.remove("displayHide");
+    schedulePhoneTransition(() => {
+      horizontalPhoneDOM.classList.remove("displayHide");
       // Use opacity for smooth fade after 3D animation starts
-      setTimeout(() => {
-        document.getElementById("horizontalPhoneScreen").style.opacity = "1";
-        document.getElementById("horizontalPhoneScreen").style.pointerEvents = "auto";
+      schedulePhoneTransition(() => {
+        horizontalPhoneDOM.style.opacity = "1";
+        horizontalPhoneDOM.style.pointerEvents = "auto";
       }, 50);
     }, 1200); // Increased delay to ensure 3D phone is nearly in place
 
     // Close curtains / start loader
-    setTimeout(() => {
-      document.getElementById("moonContent").classList.add("displayHide");
-      document.getElementById("scrollTeller").classList.add("displayHide");
+    schedulePhoneTransition(() => {
+      moonContent.classList.add("displayHide");
+      scrollTeller.classList.add("displayHide");
     }, 500);
 
     //loading screen
-    setTimeout(() => {
-      document.getElementById("loading").classList.add("hidden");
+    schedulePhoneTransition(() => {
+      loadingScreen.classList.add("hidden");
     }, 1800);
-    setTimeout(() => {
-      document.getElementById("loading").style.display = "none";
-      document.getElementById("screenContent").classList.remove("displayHide");
-      document.querySelector(".curtains").classList.remove("displayHide");
+    schedulePhoneTransition(() => {
+      loadingScreen.style.display = "none";
+      screenContent.classList.remove("displayHide");
+      curtains.classList.remove("displayHide");
     }, 2400);
-    setTimeout(() => {
-      document.querySelector(".rightHalf").classList.add("hoverRight");
-      document.querySelector(".leftHalf").classList.add("hoverLeft");
+    schedulePhoneTransition(() => {
+      rightCurtain.classList.add("hoverRight");
+      leftCurtain.classList.add("hoverLeft");
     }, 2600);
-    setTimeout(() => {
-      document.querySelector(".curtains").style.display = "none";
-      // document.querySelector(".leftHalf").classList.add("displayHide");
+    schedulePhoneTransition(() => {
+      curtains.style.display = "none";
     }, 3600);
     //loading end here
 
@@ -816,16 +999,17 @@ function PhoneFullscreenModeSwitch() {
     smartphoneMode = false;
     phoneFullscreen = false;
     nophonefullscreen = true;
-    document.getElementById("scrollTeller").classList.remove("hidden");
-    document.getElementById("moonContent").classList.remove("hidden");
+    clearPhoneTransitionTimeouts();
+    scrollTeller.classList.remove("hidden");
+    moonContent.classList.remove("hidden");
     // Fade out and disable pointer events
-    document.getElementById("horizontalPhoneScreen").style.opacity = "0";
-    document.getElementById("horizontalPhoneScreen").style.pointerEvents = "none";
+    horizontalPhoneDOM.style.opacity = "0";
+    horizontalPhoneDOM.style.pointerEvents = "none";
     
-    setTimeout(() => {
-      document.getElementById("horizontalPhoneScreen").classList.add("displayHide");
-      document.getElementById("scrollTeller").classList.remove("displayHide");
-      document.getElementById("moonContent").classList.remove("displayHide");
+    schedulePhoneTransition(() => {
+      resetPhoneOverlayState();
+      scrollTeller.classList.remove("displayHide");
+      moonContent.classList.remove("displayHide");
     }, 1200); // Match transition time in CSS
   }
 }
