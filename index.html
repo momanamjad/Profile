@@ -20,28 +20,21 @@
 </head>
 
 <body>
-  <!-- Global Loading Overlay - shown until Three.js assets finish loading -->
-  <div id="loading-overlay" style="
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: #0c0c0c;
-    z-index: 99999;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    transition: opacity 0.6s ease;
-    font-family: 'Space Mono', Courier, monospace;
-    color: white;
-  ">
-    <h2 class="loading-title">MOMAN AMJAD</h2>
-    <div style="width: 260px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
-      <div id="loading-bar-fill" style="height: 100%; width: 0%; background: linear-gradient(90deg, #00C9FF, #92FE9D); border-radius: 4px; transition: width 0.3s ease;"></div>
+  <!-- Global Loading Overlay - Rose Three Animation -->
+  <div id="loading-overlay">
+    <div class="rose-frame">
+      <svg id="rose-svg" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <g id="rose-group">
+          <path id="rose-path" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" opacity="0.1"></path>
+        </g>
+      </svg>
     </div>
-    <span id="loading-percent" style="font-size: 12px; opacity: 0.5; letter-spacing: 2px;">0%</span>
+    <div class="loading-meta">
+      <h2 class="loading-title">MOMAN AMJAD</h2>
+      <span id="loading-percent">0%</span>
+    </div>
   </div>
+
 
   <canvas id="bg"></canvas>
 
