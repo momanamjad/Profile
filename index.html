@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Interactive 3D portfolio of Moman Amjad - Frontend Developer based in Faisalabad, Pakistan.">
+  <meta name="description"
+    content="Interactive 3D portfolio of Moman Amjad - Frontend Developer based in Faisalabad, Pakistan.">
   <title>Moman Amjad - Portfolio</title>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#00c9ff">
@@ -12,11 +13,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Combined font request with display=swap to prevent FOIT -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"></noscript>
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    onload="this.onload=null;this.rel='stylesheet'"><noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap">
+  </noscript>
   <link rel="stylesheet" href="./src/styles/style.css">
   <!-- Bootstrap deferred to avoid render-blocking -->
-  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"></noscript>
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" as="style"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
+  </noscript>
 </head>
 
 <body>
@@ -25,7 +34,8 @@
     <div class="rose-frame">
       <svg id="rose-svg" viewBox="0 0 100 100" fill="none" aria-hidden="true">
         <g id="rose-group">
-          <path id="rose-path" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" opacity="0.1"></path>
+          <path id="rose-path" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" opacity="0.1">
+          </path>
         </g>
       </svg>
     </div>
@@ -94,7 +104,8 @@
                     d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z" />
                 </svg>
               </a>
-              <a href="https://www.instagram.com/momanamjad0?igsh=MW90aWVxZHY1cGRyMQ==" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.instagram.com/momanamjad0?igsh=MW90aWVxZHY1cGRyMQ==" target="_blank"
+                rel="noopener noreferrer">
                 <svg class="clickAnimations" xmlns="http://www.w3.org/2000/svg" width="40" fill="currentColor"
                   class="bi bi-instagram" viewBox="0 0 16 16">
                   <path
@@ -259,8 +270,16 @@
 
 
           <!-- about -->
-          <div id="aboutSection" class="fullHeight displayHide">
+          <div id="aboutSection" class="fullHeight displayHide full-layout">
             <div class="screenContentBody">
+              <div class="top-nav space-mono-regular">
+                <p class="link" onclick="changeScene('homeSection')">Home</p>
+                <p class="link active" onclick="changeScene('aboutSection')">About</p>
+                <p class="link" onclick="changeScene('experienceSection')">Experience</p>
+                <p class="link" onclick="changeScene('projectSection')">Projects</p>
+                <p class="link" onclick="changeScene('githubSection')">GitHub</p>
+                <p class="link" onclick="changeScene('contactSection')">Contact Me</p>
+              </div>
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
                   <h3 class="marginzero">EXIT</h3>
@@ -369,8 +388,16 @@
 
           <!-- experiance -->
 
-          <div id="experienceSection" class="fullHeight displayHide">
+          <div id="experienceSection" class="fullHeight displayHide full-layout">
             <div class="screenContentBody">
+              <div class="top-nav space-mono-regular">
+                <p class="link" onclick="changeScene('homeSection')">Home</p>
+                <p class="link" onclick="changeScene('aboutSection')">About</p>
+                <p class="link active" onclick="changeScene('experienceSection')">Experience</p>
+                <p class="link" onclick="changeScene('projectSection')">Projects</p>
+                <p class="link" onclick="changeScene('githubSection')">GitHub</p>
+                <p class="link" onclick="changeScene('contactSection')">Contact Me</p>
+              </div>
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
                   <h3 class="marginzero">EXIT</h3>
@@ -402,7 +429,7 @@
 
               <div class="body text-justify">
                 <p>
-                  I am an intern atFillinx Solutions Pvt. Limited, where I work for the development of high-end
+                  I am an intern at Fillinx Solutions Pvt. Limited, where I work for the development of high-end
                   software solutions. My journey in web development began with a strong focus on frontend technologies
                   like HTML, CSS, and JavaScript, eventually mastering modern frameworks like React.js and GSAP for
                   interactive experiences.
@@ -436,6 +463,52 @@
                 <p class="mt-4">
                   I am continuously learning, building projects, and improving my development skills.
                 </p>
+
+                <h3 class="mb-3 mt-5">Open Source Contribution:</h3>
+                <div class="os-grid">
+                  <div class="os-card">
+                    <div class="os-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                          d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4">
+                        </path>
+                        <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                      </svg>
+                    </div>
+                    <div class="os-info">
+                      <h4>GitHub Contribution</h4>
+                      <p>Active contributor to various web utility libraries and frontend frameworks.</p>
+                    </div>
+                  </div>
+                  <div class="os-card">
+                    <div class="os-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                      </svg>
+                    </div>
+                    <div class="os-info">
+                      <h4>Documentation</h4>
+                      <p>Improving developer experience by contributing to open-source project documentation.</p>
+                    </div>
+                  </div>
+                  <div class="os-card">
+                    <div class="os-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                      </svg>
+                    </div>
+                    <div class="os-info">
+                      <h4>Bug Fixes</h4>
+                      <p>Identifying and resolving critical bugs in community-driven JavaScript modules.</p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <!-- <div class="body nonscrollabelbody text-justify" style="overflow: auto">
@@ -459,8 +532,16 @@
 
           <!-- projects -->
 
-          <div id="projectSection" class="fullHeight displayHide">
+          <div id="projectSection" class="fullHeight displayHide full-layout">
             <div class="screenContentBody">
+              <div class="top-nav space-mono-regular">
+                <p class="link" onclick="changeScene('homeSection')">Home</p>
+                <p class="link" onclick="changeScene('aboutSection')">About</p>
+                <p class="link" onclick="changeScene('experienceSection')">Experience</p>
+                <p class="link active" onclick="changeScene('projectSection')">Projects</p>
+                <p class="link" onclick="changeScene('githubSection')">GitHub</p>
+                <p class="link" onclick="changeScene('contactSection')">Contact Me</p>
+              </div>
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
                   <h3 class="marginzero">EXIT</h3>
@@ -519,8 +600,8 @@
                 <div class="video">
                   <iframe width="100%" height="250"
                     style="float:right; max-width: 444px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);"
-                    data-src="https://www.youtube.com/embed/ullstC7j7MU?si=JLTraYypWRtY3yAr" title="YouTube video player"
-                    frameborder="0"
+                    data-src="https://www.youtube.com/embed/ullstC7j7MU?si=JLTraYypWRtY3yAr"
+                    title="YouTube video player" frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="ms-4"></iframe>
                 </div>
@@ -534,8 +615,10 @@
                 </ul>
                 <p class="header">Links - </p>
                 <ul>
-                  <li><a href="https://github.com/momanamjad/Github" target="_blank" rel="noopener noreferrer">Github Link</a></li>
-                  <li><a href="https://github-kappa-two.vercel.app/" target="_blank" rel="noopener noreferrer">Use it Here</a></li>
+                  <li><a href="https://github.com/momanamjad/Github" target="_blank" rel="noopener noreferrer">Github
+                      Link</a></li>
+                  <li><a href="https://github-kappa-two.vercel.app/" target="_blank" rel="noopener noreferrer">Use it
+                      Here</a></li>
                 </ul>
 
                 <hr>
@@ -550,8 +633,8 @@
                 <div class="video">
                   <iframe width="100%" height="250"
                     style="float:right; max-width: 444px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);"
-                    data-src="https://www.youtube.com/embed/wuXJmyv82w8?si=Sy4pvb4_dihJbGhD" title="YouTube video player"
-                    frameborder="0"
+                    data-src="https://www.youtube.com/embed/wuXJmyv82w8?si=Sy4pvb4_dihJbGhD"
+                    title="YouTube video player" frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="ms-4"></iframe>
                 </div>
@@ -564,8 +647,10 @@
                 </ul>
                 <p class="header">Links - </p>
                 <ul>
-                  <li><a href="https://github.com/momanamjad/theater-web-in-react" target="_blank" rel="noopener noreferrer">Github Link</a></li>
-                  <li><a href="https://theater-web-in-react-orco.vercel.app/" target="_blank" rel="noopener noreferrer">Use it Here</a></li>
+                  <li><a href="https://github.com/momanamjad/theater-web-in-react" target="_blank"
+                      rel="noopener noreferrer">Github Link</a></li>
+                  <li><a href="https://theater-web-in-react-orco.vercel.app/" target="_blank"
+                      rel="noopener noreferrer">Use it Here</a></li>
                 </ul>
 
                 <hr>
@@ -580,8 +665,8 @@
                 <div class="video">
                   <iframe width="100%" height="250"
                     style="float:right; max-width: 444px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);"
-                    data-src="https://www.youtube.com/embed/2UfJ4ShX53w?si=MBTopY-YhwFUx8Jd" title="YouTube video player"
-                    frameborder="0"
+                    data-src="https://www.youtube.com/embed/2UfJ4ShX53w?si=MBTopY-YhwFUx8Jd"
+                    title="YouTube video player" frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="ms-4"></iframe>
                 </div>
@@ -590,9 +675,11 @@
                 </ul>
                 <p class="header">Links - </p>
                 <ul>
-                  <li><a href="https://github.com/momanamjad/k_72-Clone-in-react-GSAP" target="_blank" rel="noopener noreferrer">Github Link</a>
+                  <li><a href="https://github.com/momanamjad/k_72-Clone-in-react-GSAP" target="_blank"
+                      rel="noopener noreferrer">Github Link</a>
                   </li>
-                  <li><a href="https://k-72-clone-in-react-gsap.vercel.app/" target="_blank" rel="noopener noreferrer">Visit it here</a></li>
+                  <li><a href="https://k-72-clone-in-react-gsap.vercel.app/" target="_blank"
+                      rel="noopener noreferrer">Visit it here</a></li>
                 </ul>
                 <hr>
                 <br>
@@ -616,8 +703,10 @@
                 </ul>
                 <p class="header">Links - </p>
                 <ul>
-                  <li><a href="https://github.com/momanamjad/employ" target="_blank" rel="noopener noreferrer">Github Link</a></li>
-                  <li><a href="https://employ-sigma.vercel.app/" target="_blank" rel="noopener noreferrer">Live Demo</a></li>
+                  <li><a href="https://github.com/momanamjad/employ" target="_blank" rel="noopener noreferrer">Github
+                      Link</a></li>
+                  <li><a href="https://employ-sigma.vercel.app/" target="_blank" rel="noopener noreferrer">Live Demo</a>
+                  </li>
                 </ul>
                 <h2>Food Delivery web</h2>
                 <p>
@@ -628,8 +717,8 @@
                 <ul>
                   <iframe width="100%" height="250"
                     style="float:right; max-width: 444px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);"
-                    data-src="https://www.youtube.com/embed/Zd9qLXUtKnA?si=T3AKVQDkGrCKQLL1" title="YouTube video player"
-                    frameborder="0"
+                    data-src="https://www.youtube.com/embed/Zd9qLXUtKnA?si=T3AKVQDkGrCKQLL1"
+                    title="YouTube video player" frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="ms-4"></iframe>
                   <li>Frontend: Frontend: React, HTML5, CSS3, tailwind</li>
@@ -640,8 +729,10 @@
                 </ul>
                 <p class="header">Links - </p>
                 <ul>
-                  <li><a href="https://github.com/momanamjad/Delivery" target="_blank" rel="noopener noreferrer">Github Link</a></li>
-                  <li><a href="https://delivery-omega.vercel.app/" target="_blank" rel="noopener noreferrer">Website</a></li>
+                  <li><a href="https://github.com/momanamjad/Delivery" target="_blank" rel="noopener noreferrer">Github
+                      Link</a></li>
+                  <li><a href="https://delivery-omega.vercel.app/" target="_blank" rel="noopener noreferrer">Website</a>
+                  </li>
                 </ul>
                 <hr>
                 <br>
@@ -664,8 +755,10 @@
                 </ul>
                 <p class="header">Links - </p>
                 <ul>
-                  <li><a href="https://github.com/momanamjad/profile" target="_blank" rel="noopener noreferrer">Github Link</a></li>
-                  <li><a href="https://profile-ruby-phi.vercel.app/" target="_blank" rel="noopener noreferrer">Visit Here</a></li>
+                  <li><a href="https://github.com/momanamjad/profile" target="_blank" rel="noopener noreferrer">Github
+                      Link</a></li>
+                  <li><a href="https://profile-ruby-phi.vercel.app/" target="_blank" rel="noopener noreferrer">Visit
+                      Here</a></li>
                 </ul>
                 <hr>
                 <br>
@@ -677,8 +770,16 @@
 
           <!-- contact -->
 
-          <div id="contactSection" class="fullHeight displayHide">
+          <div id="contactSection" class="fullHeight displayHide full-layout">
             <div class="screenContentBody">
+              <div class="top-nav space-mono-regular">
+                <p class="link" onclick="changeScene('homeSection')">Home</p>
+                <p class="link" onclick="changeScene('aboutSection')">About</p>
+                <p class="link" onclick="changeScene('experienceSection')">Experience</p>
+                <p class="link" onclick="changeScene('projectSection')">Projects</p>
+                <p class="link" onclick="changeScene('githubSection')">GitHub</p>
+                <p class="link active" onclick="changeScene('contactSection')">Contact Me</p>
+              </div>
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
                   <h3 class="marginzero">EXIT</h3>
@@ -706,7 +807,8 @@
               <div class="bodyHeader">
                 <h1 class="bold big">Contact</h1>
                 <div class="flex-left gap mt-4">
-                  <a class="socials" href="https://www.linkedin.com/in/moman-amjad/" target="_blank" rel="noopener noreferrer">
+                  <a class="socials" href="https://www.linkedin.com/in/moman-amjad/" target="_blank"
+                    rel="noopener noreferrer">
                     <svg xmlns="http://www.w3.org/2000/svg" height="30" fill="white" class="bi bi-linkedin"
                       viewBox="0 0 16 16">
                       <path
@@ -769,8 +871,16 @@
           </div>
 
           <!-- GitHub Section -->
-          <div id="githubSection" class="fullHeight displayHide">
+          <div id="githubSection" class="fullHeight displayHide full-layout">
             <div class="screenContentBody">
+              <div class="top-nav space-mono-regular">
+                <p class="link" onclick="changeScene('homeSection')">Home</p>
+                <p class="link" onclick="changeScene('aboutSection')">About</p>
+                <p class="link" onclick="changeScene('experienceSection')">Experience</p>
+                <p class="link" onclick="changeScene('projectSection')">Projects</p>
+                <p class="link active" onclick="changeScene('githubSection')">GitHub</p>
+                <p class="link" onclick="changeScene('contactSection')">Contact Me</p>
+              </div>
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
                   <h3 class="marginzero">EXIT</h3>
@@ -890,7 +1000,8 @@
                     <!-- Repos will be injected here -->
                   </div>
                   <div class="text-center mt-4">
-                    <a id="github-profile-link" href="" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">View Full
+                    <a id="github-profile-link" href="" target="_blank" rel="noopener noreferrer"
+                      class="btn btn-outline-light">View Full
                       Profile</a>
                   </div>
                 </div>
@@ -934,12 +1045,15 @@
   <div id="mobile-warning-overlay">
     <div class="overlay-content">
       <div class="desktop-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-laptop" viewBox="0 0 16 16">
-          <path d="M13.5 3a.5.5 0 0 1 .5.5V11H2V3.5a.5.5 0 0 1 .5-.5h11zm-11-1A1.5 1.5 0 0 0 1 3.5V12h14V3.5A1.5 1.5 0 0 0 13.5 2h-11zM0 12.5h16a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 12.5z"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-laptop"
+          viewBox="0 0 16 16">
+          <path
+            d="M13.5 3a.5.5 0 0 1 .5.5V11H2V3.5a.5.5 0 0 1 .5-.5h11zm-11-1A1.5 1.5 0 0 0 1 3.5V12h14V3.5A1.5 1.5 0 0 0 13.5 2h-11zM0 12.5h16a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 12.5z" />
         </svg>
       </div>
       <h1 class="anton-regular">Please View on Desktop</h1>
-      <p class="space-mono-regular">This portfolio is an interactive 3D experience designed for larger screens. For the best experience, please visit on a laptop or desktop computer.</p>
+      <p class="space-mono-regular">This portfolio is an interactive 3D experience designed for larger screens. For the
+        best experience, please visit on a laptop or desktop computer.</p>
     </div>
   </div>
 
