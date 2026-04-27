@@ -1285,7 +1285,7 @@ async function fetchGitHubData(username) {
   try {
     const [profileRes, reposRes, eventsRes] = await Promise.all([
       fetch(`https://api.github.com/users/${username}`),
-      fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`),
+      fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`),
       fetch(`https://api.github.com/users/${username}/events/public?per_page=100`)
     ]);
 
@@ -1320,7 +1320,8 @@ function updateGitHubUI(profile, repos, events) {
   const bio = document.getElementById('github-bio');
   const reposCount = document.getElementById('github-repos-count');
   const followers = document.getElementById('github-followers');
-  const following = document.getElementById('github-following');
+  const totalStars = document.getElementById('github-total-stars');
+  const totalForks = document.getElementById('github-total-forks');
   const profileLink = document.getElementById('github-profile-link');
   const reposList = document.getElementById('github-repos-list');
   const graph = document.getElementById('github-graph');
@@ -1338,7 +1339,14 @@ function updateGitHubUI(profile, repos, events) {
   if (bio) bio.textContent = profile.bio || 'No bio available';
   if (reposCount) reposCount.textContent = profile.public_repos;
   if (followers) followers.textContent = profile.followers;
-  if (following) following.textContent = profile.following;
+  
+  if (repos) {
+    const starsSum = repos.reduce((acc, repo) => acc + repo.stargazers_count, 0);
+    const forksSum = repos.reduce((acc, repo) => acc + repo.forks_count, 0);
+    if (totalStars) totalStars.textContent = starsSum;
+    if (totalForks) totalForks.textContent = forksSum;
+  }
+
   if (profileLink) profileLink.href = profile.html_url;
 
   if (graphNew) {
@@ -1411,7 +1419,7 @@ function updateGitHubUI(profile, repos, events) {
           <div class="repo-meta" style="display: flex; gap: 15px; font-size: 12px; opacity: 0.6;">
             <span>⭐ ${repo.stargazers_count}</span>
             <span>🍴 ${repo.forks_count}</span>
-            <span>${repo.language || 'JS'}</span>
+            <span>${repo.language || 'Code'}</span>
           </div>
         </a>
       `;
