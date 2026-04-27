@@ -1080,6 +1080,7 @@ function PhoneFullscreenModeSwitch() {
     schedulePhoneTransition(() => {
       loadingScreen.style.display = "none";
       screenContent.classList.remove("displayHide");
+      homeSection.classList.remove("displayHide");
       curtains.classList.remove("displayHide");
     }, 2400);
     schedulePhoneTransition(() => {
@@ -1419,16 +1420,12 @@ function updateGitHubUI(profile, repos, events) {
   }
 }
 
-// Lazy GitHub fetch: only load when the section is first visited
-let githubFetched = false;
+// Initial load for GitHub data when reaching home section
+fetchGitHubData('momanamjad');
 
-// Handle scene changes to refresh data if needed
+// Handle scene changes
 const originalChangeScene = window.changeScene;
 window.changeScene = (to) => {
-  if (to === 'githubSection' && !githubFetched) {
-    githubFetched = true;
-    fetchGitHubData('momanamjad');
-  }
   if (typeof originalChangeScene === 'function') {
     originalChangeScene(to);
   } else {

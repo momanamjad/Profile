@@ -237,32 +237,47 @@
 
         <!-- home -->
         <div id="screenContent" class="displayHide"> <!--add displayHide here-->
-          <div id="homeSection" class="fullHeight">
-            <div class="mt-4" id="exit">
-              <svg style="cursor:pointer" onclick="PhoneFullscreenModeSwitch()" fill="#ffffff" viewBox="0 0 16 16"
-                height="35" xmlns="http://www.w3.org/2000/svg">
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                <g id="SVGRepo_iconCarrier">
-                  <path
-                    d="M12.207 9H5V7h7.136L11.05 5.914 12.464 4.5 16 8.036l-3.536 3.535-1.414-1.414L12.207 9zM10 4H8V2H2v12h6v-2h2v4H0V0h10v4z"
-                    fill-rule="evenodd"></path>
-                </g>
-              </svg>
-            </div>
-            <div class="flex flex-col fullHeight">
-              <div class="screenHeading flex-col flex">
-                <h1 class="space-mono-bold">Moman Amjad</h1>
-                <h2 class="">Software Developer</h2>
+          <div id="homeSection" class="fullHeight displayHide">
+            <div class="screenContentBody">
+              <div class="exitButton">
+                <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
+                  <h3 class="marginzero">EXIT</h3>
+                  <svg fill="#ffffff" viewBox="0 0 16 16" height="30" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M12.207 9H5V7h7.136L11.05 5.914 12.464 4.5 16 8.036l-3.536 3.535-1.414-1.414L12.207 9zM10 4H8V2H2v12h6v-2h2v4H0V0h10v4z"
+                      fill-rule="evenodd" />
+                  </svg>
+                </div>
               </div>
-              <div id="links">
-                <div class="flex gap2 space-between pt-4 space-mono-regular">
-                  <p id="home" onclick="changeScene('homeSection')">Home</p>
-                  <p id="about" onclick="changeScene('aboutSection')">About</p>
-                  <p id="experience" onclick="changeScene('experienceSection')">Experience</p>
-                  <p id="project" onclick="changeScene('projectSection')">Projects</p>
-                  <p id="github" onclick="changeScene('githubSection')">GitHub</p>
-                  <p id="contact" onclick="changeScene('contactSection')">Contact Me</p>
+              <div class="title flex-col flex-left">
+                <h1 class="bold"> MOMAN <br> AMJAD</h1>
+                <h3 class="">Showcase 2026</h3>
+              </div>
+
+              <div class="sidebar space-mono-regular flex-col normalText flex-start">
+                <p class="link" onclick="changeScene('homeSection')">==> Home</p>
+                <p class="link" onclick="changeScene('aboutSection')">About</p>
+                <p class="link" onclick="changeScene('experienceSection')">Experience</p>
+                <p class="link" onclick="changeScene('projectSection')">Projects</p>
+                <p class="link" onclick="changeScene('githubSection')">GitHub</p>
+                <p class="link" onclick="changeScene('contactSection')">Contact Me</p>
+              </div>
+
+              <div class="bodyHeader">
+                <h1 class="bold big">Welcome</h1>
+              </div>
+
+              <div class="body">
+                <div class="flex flex-col" style="align-items: flex-start; gap: 20px;">
+                  <h2 class="space-mono-bold" style="font-size: 32px; margin: 0;">Software Developer</h2>
+                  <p class="normalText">
+                    Welcome to my interactive portfolio. Use the sidebar to navigate through my projects, 
+                    experience, and GitHub contributions.
+                  </p>
+                  <div class="flex gap mt-4">
+                    <button class="contactSubmit" style="padding: 12px 24px; font-size: 18px; cursor: pointer;" onclick="changeScene('projectSection')">View My Work</button>
+                    <button class="contactSubmit" style="padding: 12px 24px; font-size: 18px; cursor: pointer; background: transparent; border: 1px solid white;" onclick="changeScene('aboutSection')">About Me</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -270,16 +285,8 @@
 
 
           <!-- about -->
-          <div id="aboutSection" class="fullHeight displayHide full-layout">
+          <div id="aboutSection" class="fullHeight displayHide">
             <div class="screenContentBody">
-              <div class="top-nav space-mono-regular">
-                <p class="link" onclick="changeScene('homeSection')">Home</p>
-                <p class="link active" onclick="changeScene('aboutSection')">About</p>
-                <p class="link" onclick="changeScene('experienceSection')">Experience</p>
-                <p class="link" onclick="changeScene('projectSection')">Projects</p>
-                <p class="link" onclick="changeScene('githubSection')">GitHub</p>
-                <p class="link" onclick="changeScene('contactSection')">Contact Me</p>
-              </div>
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
                   <h3 class="marginzero">EXIT</h3>
@@ -308,7 +315,7 @@
                 <h1 class="bold big">Welcome</h1>
               </div>
 
-              <div class="body text-justify">
+              <div class="body">
                 <p>
                   I'm a Computer Science undergraduate at University of Agriculture Faisalabad (2024 - 2028) . Also
                   Intern at FILINX SOLUTIONS PVT LTD
@@ -388,16 +395,8 @@
 
           <!-- experiance -->
 
-          <div id="experienceSection" class="fullHeight displayHide full-layout">
+          <div id="experienceSection" class="fullHeight displayHide">
             <div class="screenContentBody">
-              <div class="top-nav space-mono-regular">
-                <p class="link" onclick="changeScene('homeSection')">Home</p>
-                <p class="link" onclick="changeScene('aboutSection')">About</p>
-                <p class="link active" onclick="changeScene('experienceSection')">Experience</p>
-                <p class="link" onclick="changeScene('projectSection')">Projects</p>
-                <p class="link" onclick="changeScene('githubSection')">GitHub</p>
-                <p class="link" onclick="changeScene('contactSection')">Contact Me</p>
-              </div>
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
                   <h3 class="marginzero">EXIT</h3>
@@ -427,7 +426,7 @@
                 <h3 class="">My Learning Journey</h3>
               </div>
 
-              <div class="body text-justify">
+              <div class="body">
                 <p>
                   I am an intern at Fillinx Solutions Pvt. Limited, where I work for the development of high-end
                   software solutions. My journey in web development began with a strong focus on frontend technologies
@@ -532,16 +531,8 @@
 
           <!-- projects -->
 
-          <div id="projectSection" class="fullHeight displayHide full-layout">
+          <div id="projectSection" class="fullHeight displayHide">
             <div class="screenContentBody">
-              <div class="top-nav space-mono-regular">
-                <p class="link" onclick="changeScene('homeSection')">Home</p>
-                <p class="link" onclick="changeScene('aboutSection')">About</p>
-                <p class="link" onclick="changeScene('experienceSection')">Experience</p>
-                <p class="link active" onclick="changeScene('projectSection')">Projects</p>
-                <p class="link" onclick="changeScene('githubSection')">GitHub</p>
-                <p class="link" onclick="changeScene('contactSection')">Contact Me</p>
-              </div>
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
                   <h3 class="marginzero">EXIT</h3>
@@ -571,7 +562,7 @@
                 <h3 class="">I have Built</h3>
               </div>
 
-              <div class="body text-justify">
+              <div class="body">
                 <div class="resumeDownload">
                   <hr>
                   <div class="flex gap" style="align-items:center">
@@ -770,16 +761,8 @@
 
           <!-- contact -->
 
-          <div id="contactSection" class="fullHeight displayHide full-layout">
+          <div id="contactSection" class="fullHeight displayHide">
             <div class="screenContentBody">
-              <div class="top-nav space-mono-regular">
-                <p class="link" onclick="changeScene('homeSection')">Home</p>
-                <p class="link" onclick="changeScene('aboutSection')">About</p>
-                <p class="link" onclick="changeScene('experienceSection')">Experience</p>
-                <p class="link" onclick="changeScene('projectSection')">Projects</p>
-                <p class="link" onclick="changeScene('githubSection')">GitHub</p>
-                <p class="link active" onclick="changeScene('contactSection')">Contact Me</p>
-              </div>
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
                   <h3 class="marginzero">EXIT</h3>
@@ -833,7 +816,7 @@
                 </div>
               </div>
 
-              <div class="body text-justify">
+              <div class="body">
                 <p>
                   I'm currently not working, and open to new opportunities. If you have
                   something in mind, feel free to get in touch — I'd be happy to connect.
@@ -871,16 +854,8 @@
           </div>
 
           <!-- GitHub Section -->
-          <div id="githubSection" class="fullHeight displayHide full-layout">
+          <div id="githubSection" class="fullHeight displayHide">
             <div class="screenContentBody">
-              <div class="top-nav space-mono-regular">
-                <p class="link" onclick="changeScene('homeSection')">Home</p>
-                <p class="link" onclick="changeScene('aboutSection')">About</p>
-                <p class="link" onclick="changeScene('experienceSection')">Experience</p>
-                <p class="link" onclick="changeScene('projectSection')">Projects</p>
-                <p class="link active" onclick="changeScene('githubSection')">GitHub</p>
-                <p class="link" onclick="changeScene('contactSection')">Contact Me</p>
-              </div>
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
                   <h3 class="marginzero">EXIT</h3>
@@ -910,7 +885,7 @@
                 <h3 class="">Real-time Profile Data</h3>
               </div>
 
-              <div class="body text-justify github-body">
+              <div class="body github-body">
                 <div id="github-content" class="displayHide" style="transition: opacity 0.5s ease;">
                   <div class="github-profile-header flex gap mb-4">
                     <img id="github-avatar" src="" alt="Avatar" height="100" style="border-radius: 50%;">

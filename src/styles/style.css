@@ -1,5 +1,3 @@
-no
-
 /* Laptop screen animation */
 #saviorOfScrolls {
   opacity: 0;
@@ -390,8 +388,9 @@ html {
   height: 100%;
   min-height: 0;
   display: grid;
-  grid-template-rows: 60px auto repeat(10, minmax(0, 1fr));
+  grid-template-rows: 60px auto repeat(10, 1fr);
   grid-template-columns: repeat(12, 1fr);
+  align-items: stretch;
 }
 
 .screenHeading {
@@ -467,6 +466,7 @@ html {
 
 .title {
   grid-area: 2/2/4/5;
+  z-index: 5;
 }
 
 .gap2 {
@@ -479,6 +479,7 @@ html {
 
 .sidebar {
   grid-area: 6/2/9/4;
+  z-index: 5;
 }
 
 .link {
@@ -504,6 +505,7 @@ html {
 
 .bodyHeader {
   grid-area: 2/5/3/12;
+  z-index: 5;
 }
 
 .nonscrollabelbody {
@@ -512,6 +514,7 @@ html {
 
 .body {
   grid-area: 3/5/13/13;
+  height: 100%;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -523,90 +526,6 @@ html {
   /* Added right padding for safety */
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-}
-
-/* Full Layout Adjustments - Vertical Navigation View */
-.full-layout .sidebar,
-.full-layout .title {
-  display: none !important;
-}
-
-.full-layout .bodyHeader {
-  grid-area: 1/3/13/6;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding-top: 60px;
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.full-layout .bodyHeader h1 {
-  font-size: 55px;
-  background: none;
-  -webkit-text-fill-color: #ffffff;
-  color: #ffffff;
-  margin-bottom: 15px;
-  line-height: 1.1;
-}
-
-.full-layout .bodyHeader h3 {
-  font-size: 16px;
-  opacity: 0.5;
-  color: #00c9ff;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-
-.full-layout .body {
-  grid-area: 1/6/13/13;
-  padding: 60px 60px 60px 60px;
-}
-
-/* Vertical Navigation Sidebar */
-.top-nav {
-  grid-area: 1/1/13/3;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 15px;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 60px 30px;
-  background: rgba(255, 255, 255, 0.01);
-  z-index: 20;
-}
-
-.top-nav .link {
-  font-size: 13px;
-  opacity: 0.4;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin: 0;
-  padding: 8px 0;
-  position: relative;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  width: 100%;
-}
-
-.top-nav .link:hover,
-.top-nav .link.active {
-  opacity: 1;
-  color: #00c9ff;
-  padding-left: 10px;
-}
-
-.top-nav .link.active::after {
-  content: '';
-  position: absolute;
-  left: -30px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 20px;
-  background: #00c9ff;
-  /* Solid color */
-  border-radius: 0 4px 4px 0;
 }
 
 /* Open Source Contribution Styling */
