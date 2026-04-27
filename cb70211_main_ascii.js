@@ -1,172 +1,25 @@
+if (window.innerWidth <= 450) {
+  window.location.href = "https://momanamjad.github.io/portfolio-website-mobile-site/";
+} else {
+  // window.location.href = "http://localhost:5173/Portfolio/";
+}
+
 import * as THREE from "three";
-import { Vector2 } from "three";
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import Geometries from "three/src/renderers/common/Geometries.js";
+import { cameraFar, modelPosition, threshold } from "three/tsl";
+import { DirectionalLight, Vector2 } from "three/webgpu";
+import { EffectComposer } from "/node_modules/three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "/node_modules/three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "/node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { mx_fractal_noise_float, nodeProxy } from "three/src/nodes/TSL.js";
 import { CSS3DRenderer, FontLoader, TextGeometry } from "three/examples/jsm/Addons.js";
 import * as RAPIER from '@dimforge/rapier3d-compat';
+import { mx_bilerp_0 } from "three/src/nodes/materialx/lib/mx_noise.js";
 import { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
-// Register Service Worker only in production. In local/dev, clear old SW caches so refreshes
-// always use the latest animation code instead of stale cached bundles.
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    const isLocalhost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-
-    if (import.meta.env.PROD && !isLocalhost) {
-      navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js').catch(() => {});
-      return;
-    }
-
-    try {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(registrations.map((registration) => registration.unregister()));
-
-      if ('caches' in window) {
-        const cacheKeys = await caches.keys();
-        await Promise.all(cacheKeys.map((key) => caches.delete(key)));
-      }
-    } catch {
-      // Ignore cache cleanup failures in development.
-    }
-  });
-}
-
-if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual';
-}
-
-function resetInitialScrollPosition() {
-  window.scrollTo(0, 0);
-  document.documentElement.scrollTop = 0;
-  document.body.scrollTop = 0;
-}
-
-resetInitialScrollPosition();
-window.addEventListener('load', resetInitialScrollPosition);
-window.addEventListener('pageshow', resetInitialScrollPosition);
-
-// Loading Manager - tracks all Three.js asset loads
-const loadingManager = new THREE.LoadingManager();
-const loadingOverlay = document.getElementById('loading-overlay');
-const loadingPercent = document.getElementById('loading-percent');
-let currentLoadingPct = 0;
-
-// --- Rose Three Loader Logic ---
-const ROSE_SVG_NS = 'http://www.w3.org/2000/svg';
-const roseConfig = {
-  particleCount: 76,
-  trailSpan: 0.31,
-  durationMs: 5300,
-  rotationDurationMs: 28000,
-  pulseDurationMs: 4400,
-  strokeWidth: 4.6,
-  roseA: 9.2,
-  roseABoost: 0.6,
-  roseBreathBase: 0.72,
-  roseBreathBoost: 0.28,
-  roseScale: 3.25,
-  point(progress, detailScale, config) {
-    const t = progress * Math.PI * 2;
-    const a = config.roseA + detailScale * config.roseABoost;
-    const r = a * (config.roseBreathBase + detailScale * config.roseBreathBoost) * Math.cos(3 * t);
-    return {
-      x: 50 + Math.cos(t) * r * config.roseScale,
-      y: 50 + Math.sin(t) * r * config.roseScale,
-    };
-  },
-};
-
-const roseGroup = document.querySelector('#rose-group');
-const rosePath = document.querySelector('#rose-path');
-if (rosePath) rosePath.setAttribute('stroke-width', String(roseConfig.strokeWidth));
-
-const roseParticles = Array.from({ length: roseConfig.particleCount }, () => {
-  const circle = document.createElementNS(ROSE_SVG_NS, 'circle');
-  circle.setAttribute('fill', '#ffffff'); // Clean mono color
-  if (roseGroup) roseGroup.appendChild(circle);
-  return circle;
-});
-
-
-function getRoseDetailScale(time) {
-  const pulseProgress = (time % roseConfig.pulseDurationMs) / roseConfig.pulseDurationMs;
-  const pulseAngle = pulseProgress * Math.PI * 2;
-  return 0.52 + ((Math.sin(pulseAngle + 0.55) + 1) / 2) * 0.48;
-}
-
-function getRoseRotation(time) {
-  return -((time % roseConfig.rotationDurationMs) / roseConfig.rotationDurationMs) * 360;
-}
-
-function buildRosePath(detailScale, steps = 480) {
-  return Array.from({ length: steps + 1 }, (_, index) => {
-    const point = roseConfig.point(index / steps, detailScale, roseConfig);
-    return `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`;
-  }).join(' ');
-}
-
-function getRoseParticle(index, progress, detailScale) {
-  const tailOffset = index / (roseConfig.particleCount - 1);
-  const p = ((progress - tailOffset * roseConfig.trailSpan) % 1 + 1) % 1;
-  const point = roseConfig.point(p, detailScale, roseConfig);
-  const fade = Math.pow(1 - tailOffset, 0.56);
-  return {
-    x: point.x,
-    y: point.y,
-    radius: 0.9 + fade * 2.7,
-    opacity: 0.04 + fade * 0.96,
-  };
-}
-
-let roseAnimationId;
-const roseStartedAt = performance.now();
-
-function renderRose(now) {
-  const time = now - roseStartedAt;
-  const progress = (time % roseConfig.durationMs) / roseConfig.durationMs;
-  const detailScale = getRoseDetailScale(time);
-
-  if (roseGroup) roseGroup.setAttribute('transform', `rotate(${getRoseRotation(time)} 50 50)`);
-  roseParticles.forEach((node, index) => {
-    const particle = getRoseParticle(index, progress, detailScale);
-    node.setAttribute('cx', particle.x.toFixed(2));
-    node.setAttribute('cy', particle.y.toFixed(2));
-    node.setAttribute('r', particle.radius.toFixed(2));
-    node.setAttribute('opacity', particle.opacity.toFixed(3));
-  });
-
-  // Constant steps for smooth animation from the start
-  if (rosePath) {
-    const steps = 480;
-    rosePath.setAttribute('d', buildRosePath(detailScale, steps));
-  }
-
-  roseAnimationId = requestAnimationFrame(renderRose);
-}
-
-roseAnimationId = requestAnimationFrame(renderRose);
-
-loadingManager.onProgress = (_url, loaded, total) => {
-  currentLoadingPct = (loaded / total) * 100;
-  const pct = Math.floor(currentLoadingPct);
-  if (loadingPercent) loadingPercent.textContent = pct + '%';
-};
-
-loadingManager.onLoad = () => {
-  if (loadingOverlay) {
-    loadingOverlay.style.opacity = '0';
-    setTimeout(() => {
-      loadingOverlay.style.display = 'none'; 
-      // Keep animation running for a smooth transition or potential re-use
-    }, 600);
-  }
-};
-
 let world;
-// Vite base URL - ensures paths work both in dev (/Portfolio/) and Vercel (/)
-const BASE = import.meta.env.BASE_URL;
 async function initRapier() {
   await RAPIER.init() // This line is only needed if using the compat version
   const gravity = new RAPIER.Vector3(0.0, 0, 0.0)
@@ -184,12 +37,9 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({
   canvas,
-  antialias: true,
-  powerPreference: 'high-performance',
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
-// Cap pixel ratio at 2 to prevent GPU overload on HiDPI screens
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0x000000);
 camera.position.z = 10;
 
@@ -211,27 +61,23 @@ bloomComposer.setSize(window.innerWidth, window.innerHeight);
 bloomComposer.addPass(renderScene);
 bloomComposer.addPass(bloomPass);
 
-//stars - use instanced mesh for much better GPU performance
-const starCount = 450;
-const starGeometry = new THREE.SphereGeometry(0.26, 6, 6); // Low poly since they're tiny
-const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff }); // BasicMaterial = no lighting calc
-const starMesh = new THREE.InstancedMesh(starGeometry, starMaterial, starCount);
-const dummy = new THREE.Object3D();
-for (let i = 0; i < starCount; i++) {
-  dummy.position.set(
-    THREE.MathUtils.randFloat(-300, 300),
-    THREE.MathUtils.randFloat(-200, 200),
-    THREE.MathUtils.randFloat(-600, -100)
-  );
-  dummy.updateMatrix();
-  starMesh.setMatrixAt(i, dummy.matrix);
+//stars
+function addStar() {
+  let x = THREE.MathUtils.randFloat(-300, 300);
+  let y = THREE.MathUtils.randFloat(-200, 200);
+  let z = THREE.MathUtils.randFloat(-600, -100);
+  const starGeometry = new THREE.SphereGeometry(0.26, 25, 25);
+  const starMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const star = new THREE.Mesh(starGeometry, starMaterial);
+  star.position.set(x, y, z);
+  scene.add(star);
 }
-scene.add(starMesh);
+
+Array(450).fill().forEach(addStar);
 
 //sun
-const textureLoader = new THREE.TextureLoader(loadingManager);
-const sunTexture = textureLoader.load(BASE + 'assets/images/sun.png');
-const sun3dTexture = textureLoader.load(BASE + 'assets/images/sunTexture.jpg');
+const sunTexture = new THREE.TextureLoader().load('./assets/images/sun.png');
+const sun3dTexture = new THREE.TextureLoader().load('./assets/images/sunTexture.jpg');
 const sunGeometry = new THREE.SphereGeometry(20, 25, 25);
 const sunMaterial = new THREE.MeshBasicMaterial({
   color: 0xFFFF00, map: sunTexture,
@@ -246,9 +92,9 @@ scene.add(sun);
 
 //moon
 
-const moonTexture = textureLoader.load(BASE + 'assets/images/moon.jpg');
-const moon3dTexture = textureLoader.load(BASE + 'assets/images/moonSurface.jpg');
-const moonGeometry = new THREE.SphereGeometry(3, 64, 64); // 64 segments is plenty for this size
+const moonTexture = new THREE.TextureLoader().load('./assets/images/moon.jpg');
+const moon3dTexture = new THREE.TextureLoader().load('./assets/images/moonSurface.jpg');
+const moonGeometry = new THREE.SphereGeometry(3, 300, 300);
 const moonMaterial = new THREE.MeshStandardMaterial({
   color: 0x202020,
   map: moonTexture,
@@ -261,6 +107,8 @@ var aspect = iw / vh;
 
 
 
+// console.log(aspect);
+console.log("vh - " + vh, "iw - " + iw);
 // moon.position.set(-1.8, -3.6, -vh/3.318);
 moon.position.set(1000, 1000, -500);
 moon.rotation.x = 0.775;
@@ -272,36 +120,75 @@ scene.add(moon);
 //   smartphone.position.z -= 1.5;
 var smartphoneZrotation;
 //phone 
-const loader = new GLTFLoader(loadingManager);
+const loader = new GLTFLoader();
 var smartphone;
-// Create a clean texture for the phone screen with no text content
+// Create a dynamic LinkedIn-themed texture for the phone screen
 function createLinkedInTexture() {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
   canvas.height = 1024;
   const ctx = canvas.getContext('2d');
 
-  // Dark display background
-  ctx.fillStyle = '#0d1020';
+  // Background
+  ctx.fillStyle = '#1e1b31';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Soft screen glow and subtle paneling without any written data
-  const glow = ctx.createRadialGradient(256, 380, 40, 256, 380, 320);
-  glow.addColorStop(0, 'rgba(65, 120, 255, 0.28)');
-  glow.addColorStop(0.45, 'rgba(30, 56, 120, 0.18)');
-  glow.addColorStop(1, 'rgba(13, 16, 32, 0)');
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // LinkedIn Header (Blue)
+  ctx.fillStyle = '#0077b5';
+  ctx.fillRect(0, 0, canvas.width, 150);
 
-  ctx.strokeStyle = 'rgba(120, 160, 255, 0.16)';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(52, 120, 408, 784);
+  // Profile Info
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
 
-  ctx.fillStyle = 'rgba(120, 160, 255, 0.08)';
-  ctx.fillRect(76, 170, 360, 180);
-  ctx.fillRect(76, 390, 360, 110);
-  ctx.fillRect(76, 530, 360, 110);
-  ctx.fillRect(76, 670, 360, 110);
+  // Name
+  ctx.font = 'bold 48px Space Mono';
+  ctx.fillText('Moman Amjad', canvas.width / 2, 280);
+
+  // Headline with wrapping
+  ctx.font = '24px Space Mono';
+  ctx.fillStyle = '#00c9ff';
+  const headline = 'Founder & CEO at Fillinx Solutions';
+  
+  function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    for (let n = 0; n < words.length; n++) {
+      let testLine = line + words[n] + ' ';
+      let metrics = context.measureText(testLine);
+      let testWidth = metrics.width;
+      if (testWidth > maxWidth && n > 0) {
+        context.fillText(line, x, y);
+        line = words[n] + ' ';
+        y += lineHeight;
+      } else {
+        line = testLine;
+      }
+    }
+    context.fillText(line, x, y);
+  }
+
+  wrapText(ctx, headline, canvas.width / 2, 340, 400, 35);
+
+  // Divider
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+  ctx.beginPath();
+  ctx.moveTo(100, 450);
+  ctx.lineTo(412, 450);
+  ctx.stroke();
+
+  // "LinkedIn Profile" text
+  ctx.font = 'italic 20px Space Mono';
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.fillText('LinkedIn Profile', canvas.width / 2, 490);
+
+  // Details
+  ctx.textAlign = 'left';
+  ctx.font = '22px Space Mono';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText('> Faisalabad, Pakistan', 60, 580);
+  ctx.fillText('> 500+ Connections', 60, 630);
+  ctx.fillText('> Open to Work', 60, 680);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -313,10 +200,9 @@ profileTexture.flipY = false;
 profileTexture.repeat.set(1, 1);
 profileTexture.offset.set(0, 0);
 
-loader.load(BASE + 'assets/models/newSmartphone.glb', (gltf) => {
+loader.load('assets/models/newSmartphone.glb', (gltf) => {
   smartphone = gltf.scene;
   smartphone.position.set(100, 100, -400);
-  smartphone.scale.setScalar(0.64);
   smartphoneZrotation = smartphone.rotation.z;
 
   // Directly remap the phone's main screen mesh only (Plane007_1 = glass display)
@@ -324,16 +210,16 @@ loader.load(BASE + 'assets/models/newSmartphone.glb', (gltf) => {
     if (child.isMesh && child.name === "Plane007_1") {
       child.material = child.material.clone(); // clone to avoid mutating shared material
       child.material.map = profileTexture;
-      child.material.emissive = new THREE.Color(0x4a5ca8);
+      child.material.emissive = new THREE.Color(0x8888ff); // Cool blue-tinted glow
       child.material.emissiveMap = profileTexture;
-      child.material.emissiveIntensity = 0.025;
+      child.material.emissiveIntensity = 0.05; // Reduced to prevent washing out colors
       child.material.needsUpdate = true;
       child.frustumCulled = false;
     }
   });
 
-  // Add a screen backlight glow ΓÇö soft blue light emanating from the front of the phone
-  const screenGlow = new THREE.PointLight(0x4a5ca8, 0.22, 2.4);
+  // Add a screen backlight glow ??? soft blue light emanating from the front of the phone
+  const screenGlow = new THREE.PointLight(0x6688ff, 0.4, 3);
   screenGlow.position.set(0, 0.65, 0.3); // Slightly in front of screen
   smartphone.add(screenGlow);
 
@@ -346,7 +232,7 @@ loader.load(BASE + 'assets/models/newSmartphone.glb', (gltf) => {
 
 //cursor
 var amongus, amongusCollider, amongusBody;
-loader.load(BASE + 'assets/models/amongus.glb', (gltf) => {
+loader.load('assets/models/amongus.glb', (gltf) => {
   amongus = gltf.scene;
   amongus.position.set(0, 0, -2);
   scene.add(amongus);
@@ -356,7 +242,7 @@ loader.load(BASE + 'assets/models/amongus.glb', (gltf) => {
       .setTranslation(amongus.position.x, amongus.position.y, amongus.position.z)
   );
 
-  // ≡ƒºá Create a box collider ΓÇö adjust size to match your model
+  // ???? Create a box collider ??? adjust size to match your model
   amongusCollider = world.createCollider(
     RAPIER.ColliderDesc.cuboid(0.1, 0.1, 0.1).setRestitution(1),
     amongusBody
@@ -380,8 +266,8 @@ var string = `+------------------------------+
 |    WELCOME STRANGER     |
 |          Scroll Down           |
 +------------------------------+`
-const fontLoader = new FontLoader(loadingManager);
-fontLoader.load(BASE + 'assets/fonts/font2.json', function (font) {
+const fontLoader = new FontLoader();
+fontLoader.load('./assets/fonts/font2.json', function (font) {
   const textGeometry = new TextGeometry(string, {
     font: font,
     size: 0.1,
@@ -415,7 +301,7 @@ fontLoader.load(BASE + 'assets/fonts/font2.json', function (font) {
 });
 
 
-const torusTexture = textureLoader.load(BASE + 'assets/images/grad.jpg');
+const torusTexture = new THREE.TextureLoader().load('./assets/images/grad.jpg');
 var pivot = new THREE.Object3D();
 const torusgeometry = new THREE.TorusGeometry(0.3, 0.1, 12, 48);
 const torusmaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, map: torusTexture });
@@ -425,7 +311,7 @@ torus.position.set(2, 1.5, 0);
 scene.add(pivot);
 
 var rocket;
-loader.load(BASE + 'assets/models/rocket.glb', (gltf) => {
+loader.load('assets/models/rocket.glb', (gltf) => {
   rocket = gltf.scene;
   rocket.traverse((child) => {
     if (child.isMesh) {
@@ -442,11 +328,12 @@ loader.load(BASE + 'assets/models/rocket.glb', (gltf) => {
 });
 
 var laptop;
-loader.load(BASE + 'assets/models/laptop2.glb', (gltf) => {
+loader.load('assets/models/laptop2.glb', (gltf) => {
   laptop = gltf.scene;
   laptop.position.set(0, 300, -800)
   scene.add(laptop);
 });
+
 
 
 const css3dRenderer = new CSS3DRenderer();
@@ -465,7 +352,7 @@ const iframe = document.createElement('iframe');
 iframe.style.width = '1128px';
 iframe.style.height = '645px';
 iframe.style.border = '0px';
-iframe.src = BASE + 'iframes/index.html';
+iframe.src = './iframes/index.html';
 iframe.style.pointerEvents = 'auto';
 div.appendChild(iframe);
 
@@ -476,178 +363,12 @@ screen.position.set(0, 0, -100);
 screen.visible = false;
 
 
-
-
-function getIframePointFromViewport(frameElement, clientX, clientY) {
-  const rect = frameElement.getBoundingClientRect();
-  if (
-    rect.width <= 0 ||
-    rect.height <= 0 ||
-    clientX < rect.left ||
-    clientX > rect.right ||
-    clientY < rect.top ||
-    clientY > rect.bottom
-  ) {
-    return null;
-  }
-
-  const frameWindow = frameElement.contentWindow;
-  if (!frameWindow) return null;
-
-  return {
-    x: ((clientX - rect.left) / rect.width) * frameWindow.innerWidth,
-    y: ((clientY - rect.top) / rect.height) * frameWindow.innerHeight
-  };
-}
-
-function resolveNestedFrameTarget(frameWindow, pointX, pointY) {
-  let activeWindow = frameWindow;
-  let x = pointX;
-  let y = pointY;
-
-  for (let depth = 0; depth < 4; depth++) {
-    let activeDocument;
-    try {
-      activeDocument = activeWindow.document;
-    } catch {
-      return null;
-    }
-    const target = activeDocument.elementFromPoint(x, y);
-
-    if (!target) return null;
-
-    if (target.tagName === 'IFRAME') {
-      try {
-        const nextWindow = target.contentWindow;
-        if (!nextWindow) {
-          return { target, ownerWindow: activeWindow, x, y };
-        }
-        nextWindow.document;
-
-        const nestedPoint = getIframePointFromViewport(target, x, y);
-        if (!nestedPoint) {
-          return { target, ownerWindow: activeWindow, x, y };
-        }
-
-        activeWindow = nextWindow;
-        x = nestedPoint.x;
-        y = nestedPoint.y;
-        continue;
-      } catch {
-        return { target, ownerWindow: activeWindow, x, y };
-      }
-    }
-
-    return { target, ownerWindow: activeWindow, x, y };
-  }
-
-  return null;
-}
-
-function forwardLaptopMouseEvent(sourceEvent, type) {
-  if (!screen.visible || currentSection !== 2 || smartphoneMode) return false;
-
-  const viewportPoint = getIframePointFromViewport(iframe, sourceEvent.clientX, sourceEvent.clientY);
-  if (!viewportPoint) return false;
-
-  const frameWindow = iframe.contentWindow;
-  if (!frameWindow) return false;
-
-  const resolvedTarget = resolveNestedFrameTarget(frameWindow, viewportPoint.x, viewportPoint.y);
-  if (!resolvedTarget) return false;
-
-  const { target, ownerWindow, x, y } = resolvedTarget;
-
-  if ((type === 'mousedown' || type === 'click') && typeof target.focus === 'function') {
-    target.focus({ preventScroll: true });
-  }
-
-  const forwardedEvent = new ownerWindow.MouseEvent(type, {
-    bubbles: true,
-    cancelable: true,
-    composed: true,
-    clientX: x,
-    clientY: y,
-    button: sourceEvent.button ?? 0,
-    buttons: sourceEvent.buttons ?? 0,
-    ctrlKey: sourceEvent.ctrlKey,
-    shiftKey: sourceEvent.shiftKey,
-    altKey: sourceEvent.altKey,
-    metaKey: sourceEvent.metaKey,
-    detail: sourceEvent.detail ?? (type === 'dblclick' ? 2 : 1)
-  });
-
-  target.dispatchEvent(forwardedEvent);
-  return true;
-}
-
-['mousedown', 'mouseup', 'click', 'dblclick'].forEach((eventType) => {
-  css3dRenderer.domElement.addEventListener(eventType, (event) => {
-    if (forwardLaptopMouseEvent(event, eventType)) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-  }, true);
-});
-
-
 let currentSection = 0;
 const totalSections = 3;
 var lastSection = 0;
 var smartphoneMode = false;  //remember to turn it false
 var timerStarted = false;
 var laptopInitiated = false;
-var onceForLaptop = true;
-let screenShowTimeout;
-let screenHideTimeout;
-
-function clearLaptopScreenTimers() {
-  if (screenShowTimeout) {
-    clearTimeout(screenShowTimeout);
-    screenShowTimeout = undefined;
-  }
-  if (screenHideTimeout) {
-    clearTimeout(screenHideTimeout);
-    screenHideTimeout = undefined;
-  }
-}
-
-function hideLaptopScreen() {
-  clearLaptopScreenTimers();
-  // Animate screen off
-  const div = screen.element;
-  div.classList.remove('screen-on');
-  screenHideTimeout = setTimeout(() => {
-    if (currentSection !== 2) {
-      screen.visible = false;
-    }
-    screenHideTimeout = undefined;
-  }, 700); // match CSS transition
-}
-
-function queueLaptopScreenShow(delay) {
-  clearLaptopScreenTimers();
-  screenShowTimeout = setTimeout(() => {
-    if (currentSection === 2) {
-      screen.visible = true;
-      // Animate screen on
-      const div = screen.element;
-      div.classList.remove('screen-on');
-      setTimeout(() => {
-        div.classList.add('screen-on');
-      }, 10); // allow visible to take effect first
-    }
-    screenShowTimeout = undefined;
-  }, delay);
-}
-
-function syncInitialSectionState() {
-  currentSection = 0;
-  lastSection = 0;
-  resetInitialScrollPosition();
-}
-
-syncInitialSectionState();
 
 document.querySelectorAll(".dot").forEach((el) => {
   el.addEventListener("click", (e) => {
@@ -664,18 +385,24 @@ document.querySelectorAll(".dot").forEach((el) => {
 
 
     if (currentSection != 2) {
-      hideLaptopScreen();
+      screen.visible = false;
     }
     else if (currentSection == 2) {
       if (laptopInitiated) {
         if (lastSection == 0) {
-          queueLaptopScreenShow(800);
+          setTimeout(() => {
+            screen.visible = true;
+          }, 800);
         } else {
-          queueLaptopScreenShow(500);
+          setTimeout(() => {
+            screen.visible = true;
+          }, 500);
         }
       } else {
         laptopInitiated = true;
-        queueLaptopScreenShow(2500);
+        setTimeout(() => {
+          screen.visible = true;
+        }, 2500);
       }
     }
   });
@@ -704,15 +431,19 @@ window.addEventListener('wheel', (e) => {
     }
     console.log(lastSection, currentSection);
 
-    if (currentSection != 2) {
-      hideLaptopScreen();
+    if (currentSection == 1) {
+      screen.visible = false;
     }
     else if (currentSection == 2) {
       if (laptopInitiated) {
-        queueLaptopScreenShow(500);
+        setTimeout(() => {
+          screen.visible = true;
+        }, 500);
       } else {
         laptopInitiated = true;
-        queueLaptopScreenShow(2500);
+        setTimeout(() => {
+          screen.visible = true;
+        }, 2500);
       }
     }
     // console.log(currentSection);
@@ -726,7 +457,7 @@ window.addEventListener('wheel', (e) => {
 
     setTimeout(() => {
       timerStarted = false;
-    }, 1400); // Increased debounce to handle trackpad momentum scrolling
+    }, 700);
   }
 
 
@@ -748,7 +479,7 @@ scene.add(pointLightLaptop);
 
 
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+const ambientLight = new THREE.AmbientLight(0xffffff);
 scene.add(ambientLight);
 
 const ambientLight2 = new THREE.AmbientLight(0x010101);
@@ -757,7 +488,7 @@ scene.add(ambientLight2);
 
 
 //sunlight
-const sunlight = new THREE.DirectionalLight(0xfff0bb, 0.72);
+const sunlight = new THREE.DirectionalLight(0xfff0bb, 1);
 sunlight.position.set(100, 100, 100);
 sunlight.position.copy(sun.position);
 scene.add(sunlight);
@@ -779,74 +510,49 @@ const gridHelper = new THREE.GridHelper(200, 300);
 // const controls = new OrbitControls( camera, renderer.domElement );
 
 
-let resizeTimeout;
-window.addEventListener('resize', () => {
-  // Debounce resize to avoid thrashing
-  clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(() => {
-    vh = window.innerHeight;
-    iw = window.innerWidth;
-    aspect = iw / vh;
-    visibleMoonPos.set(-2.6, -4.2, -(vh / 3.318));
-    visibleLaptopPos.set(0, -7, -((vh * 0.6) + 24));
-
+window.addEventListener(
+  "resize",
+  () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
     bloomComposer.setSize(window.innerWidth, window.innerHeight);
     css3dRenderer.setSize(window.innerWidth, window.innerHeight);
-  }, 150);
-}, false);
+    if (window.innerWidth <= 450) {
+      window.location.href = "https://momanamjad.github.io/portfolio-website-mobile-site/";
+    }
+  },
+  false
+);
 
 
+var once = true;
+var finalPhonepos;
+var finalMoonpos;
+var onceForLaptop = true;
 const moonPos = new THREE.Vector3(100, 100, -400);
 const laptopPos = new THREE.Vector3(0, 300, -800);
 const phoneWidth = 500;
 const phoneHeight = 800;
-const hiddenMoonPos = new THREE.Vector3(1000, 1000, -500);
-const visibleMoonPos = new THREE.Vector3(-2.6, -4.2, -(vh / 3.318));
-const hiddenLaptopPos = new THREE.Vector3(0, 300, -800);
-const visibleLaptopPos = new THREE.Vector3(0, -7, -((vh * 0.6) + 24));
-const snapThreshold = 0.015;
-const cameraSnapThreshold = 0.02;
-
-function getSectionCameraZ(sectionIndex) {
-  return -(sectionIndex * vh * 0.3);
-}
-
-function smoothToTarget(object, target, smoothing) {
-  if (!object) return;
-
-  object.position.lerp(target, smoothing);
-
-  if (object.position.distanceToSquared(target) < snapThreshold * snapThreshold) {
-    object.position.copy(target);
-  }
-}
-
-function updateSectionTargets() {
-  if (currentSection == 1) {
-    moonPos.copy(visibleMoonPos);
-  } else {
-    moonPos.copy(hiddenMoonPos);
-  }
-}
+let wait = true;
 
 function animate() {
-  let t = document.body.getBoundingClientRect().top;
 
   requestAnimationFrame(animate);
+  if (window.innerHeight != vh && wait) {
+
+    location.reload();
+    wait = false;
+    setTimeout(() => {
+      wait = true;
+    }, 1000);
+  }
   const deltaTime = clock.getDelta();
   const lerpSpeed = 6;
-  const cameraTargetZ = getSectionCameraZ(currentSection);
-  camera.position.z = THREE.MathUtils.lerp(
-    camera.position.z,
-    cameraTargetZ,
-    1 - Math.exp(-7 * deltaTime)
-  );
-  if (Math.abs(camera.position.z - cameraTargetZ) < cameraSnapThreshold) {
-    camera.position.z = cameraTargetZ;
-  }
+
+  let t = document.body.getBoundingClientRect().top;
+  // console.log(t);
+  camera.position.z = t * 0.3;
   // camera.rotation.z = t * 0.0002;
   // console.log(camera.fov);
   sun.rotation.x += 0.0001;
@@ -882,9 +588,6 @@ function animate() {
     // amongus.rotation.z += 0.003;
 
   }
-  updateSectionTargets();
-  smoothToTarget(moon, moonPos, 1 - Math.exp(-10 * deltaTime));
-
   if (smartphone) {
     pivot.position.copy(smartphone.position);
 
@@ -901,6 +604,27 @@ function animate() {
 
 
     smartphone.position.lerp(targetPos, 1 - Math.exp(-lerpSpeed * deltaTime));
+
+    if (currentSection == 1 && once == true) {
+      //used for animation
+
+      if ((-t < (vh + 4)) && (-t > (vh - 1))) {
+        const dir = new THREE.Vector3();
+        camera.getWorldDirection(dir);
+        const cameraPosition = camera.position;
+        moonPos.copy(cameraPosition).add(dir.multiplyScalar(6));
+        moonPos.x += -2.6;
+        moonPos.y += -4.2;
+        moonPos.z += 4;
+        once = false;
+      }
+      // smartphone.lookAt(camera.position);
+    }
+    // console.log(t, vh);
+    // console.log(moonPos);
+
+    moon.position.lerp(moonPos, 1 - Math.exp(-10 * deltaTime));
+
     if (smartphone && currentSection == 1) {
       if (phoneFullscreen == true) {
         smartphone.rotation.z = smartphone.rotation.z + ((-(Math.PI / 2)) - smartphone.rotation.z) * 0.04;     //magic happening here 
@@ -935,16 +659,13 @@ function animate() {
   }
 
   if (currentSection == 2 && onceForLaptop) {
-    if ((-t < (vh * 2 + 50)) && (-t >= (vh * 2) - 50)) { // Wider trigger for reliability
+    if ((-t < (vh * 2 + 2)) && (-t >= (vh * 2) - 0.7)) {
       const dir = new THREE.Vector3();
       camera.getWorldDirection(dir);
-      
-      // Use the final target camera Z for section 2 to prevent drifting
-      const targetZ = getSectionCameraZ(2);
-      const targetCameraPosition = new THREE.Vector3(0, 0, targetZ);
+      const cameraPosition = camera.position;
 
-      laptopPos.copy(targetCameraPosition).add(dir.multiplyScalar(0.18));
-      laptop.lookAt(targetCameraPosition);
+      laptopPos.copy(cameraPosition).add(dir.multiplyScalar(0.18));
+      laptop.lookAt(cameraPosition);
       laptop.rotation.x = 0;
       laptop.rotation.y = 0;
       laptop.rotation.z = 0;
@@ -977,97 +698,53 @@ camera.layers.enable(1);
 animate();
 
 let horizontalPhoneDOM = document.getElementById("horizontalPhoneScreen");
-const moonContent = document.getElementById("moonContent");
-const scrollTeller = document.getElementById("scrollTeller");
-const loadingScreen = document.getElementById("loading");
-const screenContent = document.getElementById("screenContent");
-const curtains = document.querySelector(".curtains");
-const leftCurtain = document.querySelector(".leftHalf");
-const rightCurtain = document.querySelector(".rightHalf");
 
 
 let phoneFullscreen = false;
 let nophonefullscreen = false;
-const phoneTransitionTimeouts = [];
-
-function clearPhoneTransitionTimeouts() {
-  while (phoneTransitionTimeouts.length) {
-    clearTimeout(phoneTransitionTimeouts.pop());
-  }
-}
-
-function schedulePhoneTransition(callback, delay) {
-  const timeoutId = setTimeout(() => {
-    const timeoutIndex = phoneTransitionTimeouts.indexOf(timeoutId);
-    if (timeoutIndex >= 0) {
-      phoneTransitionTimeouts.splice(timeoutIndex, 1);
-    }
-    callback();
-  }, delay);
-
-  phoneTransitionTimeouts.push(timeoutId);
-  return timeoutId;
-}
-
-function resetPhoneOverlayState() {
-  loadingScreen.classList.remove("hidden");
-  loadingScreen.style.display = "";
-  screenContent.classList.add("displayHide");
-  curtains.classList.add("displayHide");
-  curtains.style.display = "";
-  leftCurtain.classList.remove("hoverLeft");
-  rightCurtain.classList.remove("hoverRight");
-  horizontalPhoneDOM.classList.add("displayHide");
-  horizontalPhoneDOM.style.opacity = "0";
-  horizontalPhoneDOM.style.pointerEvents = "none";
-}
-
-resetPhoneOverlayState();
 
 function PhoneFullscreenModeSwitch() {
   if ((!phoneFullscreen && !nophonefullscreen) || (!phoneFullscreen && nophonefullscreen)) {
     smartphoneMode = true;
     phoneFullscreen = true;
     nophonefullscreen = false;
-    clearPhoneTransitionTimeouts();
-    resetPhoneOverlayState();
     
     // Smoothly hide content to focus on 3D transition
-    moonContent.classList.add("hidden");
-    scrollTeller.classList.add("hidden");
+    document.getElementById("moonContent").classList.add("hidden");
+    document.getElementById("scrollTeller").classList.add("hidden");
 
     // DELAY the overlay appearance until the 3D phone is zooming in
-    schedulePhoneTransition(() => {
-      horizontalPhoneDOM.classList.remove("displayHide");
+    setTimeout(() => {
+      document.getElementById("horizontalPhoneScreen").classList.remove("displayHide");
       // Use opacity for smooth fade after 3D animation starts
-      schedulePhoneTransition(() => {
-        horizontalPhoneDOM.style.opacity = "1";
-        horizontalPhoneDOM.style.pointerEvents = "auto";
+      setTimeout(() => {
+        document.getElementById("horizontalPhoneScreen").style.opacity = "1";
+        document.getElementById("horizontalPhoneScreen").style.pointerEvents = "auto";
       }, 50);
     }, 1200); // Increased delay to ensure 3D phone is nearly in place
 
     // Close curtains / start loader
-    schedulePhoneTransition(() => {
-      moonContent.classList.add("displayHide");
-      scrollTeller.classList.add("displayHide");
+    setTimeout(() => {
+      document.getElementById("moonContent").classList.add("displayHide");
+      document.getElementById("scrollTeller").classList.add("displayHide");
     }, 500);
 
     //loading screen
-    schedulePhoneTransition(() => {
-      loadingScreen.classList.add("hidden");
+    setTimeout(() => {
+      document.getElementById("loading").classList.add("hidden");
     }, 1800);
-    schedulePhoneTransition(() => {
-      loadingScreen.style.display = "none";
-      screenContent.classList.remove("displayHide");
-      homeSection.classList.remove("displayHide");
-      curtains.classList.remove("displayHide");
+    setTimeout(() => {
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("screenContent").classList.remove("displayHide");
+      document.querySelector(".curtains").classList.remove("displayHide");
     }, 2400);
-    schedulePhoneTransition(() => {
-      rightCurtain.classList.add("hoverRight");
-      leftCurtain.classList.add("hoverLeft");
+    setTimeout(() => {
+      document.querySelector(".rightHalf").classList.add("hoverRight");
+      document.querySelector(".leftHalf").classList.add("hoverLeft");
     }, 2600);
-    schedulePhoneTransition(() => {
-      curtains.style.display = "none";
+    setTimeout(() => {
+      document.querySelector(".curtains").style.display = "none";
+      // document.querySelector(".leftHalf").classList.add("displayHide");
     }, 3600);
     //loading end here
 
@@ -1075,17 +752,16 @@ function PhoneFullscreenModeSwitch() {
     smartphoneMode = false;
     phoneFullscreen = false;
     nophonefullscreen = true;
-    clearPhoneTransitionTimeouts();
-    scrollTeller.classList.remove("hidden");
-    moonContent.classList.remove("hidden");
+    document.getElementById("scrollTeller").classList.remove("hidden");
+    document.getElementById("moonContent").classList.remove("hidden");
     // Fade out and disable pointer events
-    horizontalPhoneDOM.style.opacity = "0";
-    horizontalPhoneDOM.style.pointerEvents = "none";
+    document.getElementById("horizontalPhoneScreen").style.opacity = "0";
+    document.getElementById("horizontalPhoneScreen").style.pointerEvents = "none";
     
-    schedulePhoneTransition(() => {
-      resetPhoneOverlayState();
-      scrollTeller.classList.remove("displayHide");
-      moonContent.classList.remove("displayHide");
+    setTimeout(() => {
+      document.getElementById("horizontalPhoneScreen").classList.add("displayHide");
+      document.getElementById("scrollTeller").classList.remove("displayHide");
+      document.getElementById("moonContent").classList.remove("displayHide");
     }, 1200); // Match transition time in CSS
   }
 }
@@ -1264,7 +940,7 @@ async function fetchGitHubData(username) {
   try {
     const [profileRes, reposRes, eventsRes] = await Promise.all([
       fetch(`https://api.github.com/users/${username}`),
-      fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`),
+      fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`),
       fetch(`https://api.github.com/users/${username}/events/public?per_page=100`)
     ]);
 
@@ -1299,8 +975,7 @@ function updateGitHubUI(profile, repos, events) {
   const bio = document.getElementById('github-bio');
   const reposCount = document.getElementById('github-repos-count');
   const followers = document.getElementById('github-followers');
-  const totalStars = document.getElementById('github-total-stars');
-  const totalForks = document.getElementById('github-total-forks');
+  const following = document.getElementById('github-following');
   const profileLink = document.getElementById('github-profile-link');
   const reposList = document.getElementById('github-repos-list');
   const graph = document.getElementById('github-graph');
@@ -1318,14 +993,7 @@ function updateGitHubUI(profile, repos, events) {
   if (bio) bio.textContent = profile.bio || 'No bio available';
   if (reposCount) reposCount.textContent = profile.public_repos;
   if (followers) followers.textContent = profile.followers;
-  
-  if (repos) {
-    const starsSum = repos.reduce((acc, repo) => acc + repo.stargazers_count, 0);
-    const forksSum = repos.reduce((acc, repo) => acc + repo.forks_count, 0);
-    if (totalStars) totalStars.textContent = starsSum;
-    if (totalForks) totalForks.textContent = forksSum;
-  }
-
+  if (following) following.textContent = profile.following;
   if (profileLink) profileLink.href = profile.html_url;
 
   if (graphNew) {
@@ -1396,9 +1064,9 @@ function updateGitHubUI(profile, repos, events) {
           <h4 style="margin: 0 0 5px 0; color: #92fe9d;">${repo.name}</h4>
           <p style="font-size: 13px; margin-bottom: 10px;">${repo.description || 'No description available'}</p>
           <div class="repo-meta" style="display: flex; gap: 15px; font-size: 12px; opacity: 0.6;">
-            <span>Γ¡É ${repo.stargazers_count}</span>
-            <span>≡ƒì┤ ${repo.forks_count}</span>
-            <span>${repo.language || 'Code'}</span>
+            <span>??? ${repo.stargazers_count}</span>
+            <span>???? ${repo.forks_count}</span>
+            <span>${repo.language || 'JS'}</span>
           </div>
         </a>
       `;
@@ -1407,15 +1075,19 @@ function updateGitHubUI(profile, repos, events) {
   }
 }
 
-// Initial load for GitHub data when reaching home section
+// Initial fetch
 fetchGitHubData('momanamjad');
 
-// Handle scene changes
+// Handle scene changes to refresh data if needed
 const originalChangeScene = window.changeScene;
 window.changeScene = (to) => {
+  if (to === 'githubSection') {
+    fetchGitHubData('momanamjad');
+  }
   if (typeof originalChangeScene === 'function') {
     originalChangeScene(to);
   } else {
+    // Fallback if originalChangeScene is not available (though it should be)
     document.querySelectorAll('.fullHeight').forEach(s => s.classList.add('displayHide'));
     document.getElementById(to).classList.remove('displayHide');
   }

@@ -1446,11 +1446,11 @@ textarea {
 }
 
 @media (max-width: 1024px) {
-  #mobile-warning-overlay {
+  html:not(.in-iframe) #mobile-warning-overlay {
     display: flex;
   }
 
-  body {
+  html:not(.in-iframe) body {
     overflow: hidden !important;
   }
 }

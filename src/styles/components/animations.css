@@ -1,0 +1,47 @@
+/* Transitions and Animations */
+.hidden {
+  opacity: 0;
+  transition: opacity 0.3s linear;
+}
+
+.displayHide {
+  display: none !important;
+}
+
+.clickAnimations {
+  cursor: pointer;
+  color: white;
+  transition: transform 0.2s ease-in-out;
+}
+
+.clickAnimations:hover {
+  transform: scale(1.2);
+}
+
+.exitAnim {
+  transition: transform 0.3s ease;
+}
+
+.exitAnim:hover {
+  transform: scale(1.1);
+}
+
+.hoverLeft {
+  translate: -1000px 0px;
+  transition: translate 1s ease;
+}
+
+.hoverRight {
+  translate: 1000px 0px;
+  transition: translate 1s ease;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.pulse {
+  animation: pulse 4s infinite ease-in-out;
+}
