@@ -27,26 +27,29 @@ body {
   min-height: 100vh;
 }
 .shell {
-  place-items: center;
-  min-height: 100vh;
-  padding: 24px;
   display: grid;
+  place-items: start center;
+  align-content: start;
+  min-height: 100vh;
+  padding: 0;
 }
 .stage {
-  aspect-ratio: 4/3;
+  aspect-ratio: 2/3;
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   background: linear-gradient(#ffffff0a, #ffffff04), #03080fb3;
-  border-radius: 28px;
+  border-radius: 0;
   place-items: center;
-  width: min(96vw, 1120px);
-  padding: clamp(10px, 1.4vw, 18px);
+  width: 100vw;
+  padding: 0;
   display: grid;
   box-shadow:
     0 28px 80px #0006,
     inset 0 0 0 1px #add8ff17;
 }
 .game-canvas {
+  width: 100% !important;
+  height: auto !important;
   max-width: 100%;
   max-height: 100%;
   image-rendering: crisp-edges;
