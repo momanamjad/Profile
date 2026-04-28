@@ -1,1 +1,58 @@
-:root{color:#f6f2df;background:radial-gradient(circle at top,#5fd3e02b,#0000 32%),radial-gradient(circle at bottom,#ffa04b29,#0000 36%),linear-gradient(#02060d 0%,#0b1520 52%,#1b1009 100%);font-family:IBM Plex Mono,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,monospace}*{box-sizing:border-box}html,body,#app{width:100%;min-height:100%;margin:0}body{min-height:100vh}.shell{place-items:center;min-height:100vh;padding:24px;display:grid}.stage{aspect-ratio:4/3;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);background:linear-gradient(#ffffff0a,#ffffff04),#03080fb3;border-radius:28px;place-items:center;width:min(96vw,1120px);padding:clamp(10px,1.4vw,18px);display:grid;box-shadow:0 28px 80px #0006,inset 0 0 0 1px #add8ff17}.game-canvas{max-width:100%;max-height:100%;image-rendering:crisp-edges;border-radius:20px;display:block;box-shadow:0 0 0 1px #bce4ff14,0 18px 32px #00000059}
+:root {
+  color: #f6f2df;
+  background:
+    radial-gradient(circle at top, #5fd3e02b, #0000 32%),
+    radial-gradient(circle at bottom, #ffa04b29, #0000 36%),
+    linear-gradient(#02060d 0%, #0b1520 52%, #1b1009 100%);
+  font-family:
+    IBM Plex Mono,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    Liberation Mono,
+    monospace;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#app {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+body {
+  min-height: 100vh;
+}
+.shell {
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+  display: grid;
+}
+.stage {
+  aspect-ratio: 4/3;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  background: linear-gradient(#ffffff0a, #ffffff04), #03080fb3;
+  border-radius: 28px;
+  place-items: center;
+  width: min(96vw, 1120px);
+  padding: clamp(10px, 1.4vw, 18px);
+  display: grid;
+  box-shadow:
+    0 28px 80px #0006,
+    inset 0 0 0 1px #add8ff17;
+}
+.game-canvas {
+  max-width: 100%;
+  max-height: 100%;
+  image-rendering: crisp-edges;
+  border-radius: 20px;
+  display: block;
+  box-shadow:
+    0 0 0 1px #bce4ff14,
+    0 18px 32px #00000059;
+}
