@@ -27,12 +27,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Combined font request with display=swap to prevent FOIT -->
-  <link rel="preload" as="style"
-    href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-    onload="this.onload=null;this.rel='stylesheet'"><noscript>
-    <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap">
-  </noscript>
+  <link rel="preload" as="image" href="./assets/images/sun.webp">
+  <link rel="preload" as="font" href="./assets/fonts/font.json" type="application/json" crossorigin>
   <link rel="stylesheet" href="./src/styles/style.css">
   <script>
     // Detect if the page is being loaded in an iframe to bypass mobile restrictions
@@ -355,7 +351,7 @@
                 <div class="resumeDownload">
                   <hr>
                   <div class="flex gap" style="align-items:center">
-                    <img src="./assets/images/x.webp" height="65">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
                     <div>
                       <h3>Looking for my resume?</h3>
                       <h4><a href="./assets/resume.pdf" download>Click here to download</a></h4>
@@ -373,8 +369,9 @@
                   a natural extension of that curiosity, and I’m glad to be learning and building in an area that’s
                   always felt like home.</p>
                 <p>
-                  <img style="float:right" src="./assets/images/laptop.png" alt="laptop pic" height="250"
-                    class="ms-4 mb-4">
+                  <img style="float:right; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12);" 
+                    src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&q=80&w=400" 
+                    alt="Laptop Workspace" height="250" loading="lazy">
                   I've explored full-stack development, experimented with interactive games, and even created
                   browser extensions — mostly out of interest, sometimes out of necessity. Along the way, I’ve
                   worked with technologies like React, Node.js, MongoDB, Firebase, Tailwind CSS, and plain old
@@ -630,7 +627,7 @@
                 <div class="resumeDownload">
                   <hr>
                   <div class="flex gap" style="align-items:center">
-                    <img src="./assets/images/x.webp" height="65">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
                     <div>
                       <h5>Looking for my resume?</h5>
                       <h6><a href="./assets/resume.pdf" download>Click here to download</a></h6>
@@ -748,10 +745,10 @@
                 <ul>
                   <div class="video">
                     <iframe width="100%" height="250"
-                      style="float:right; max-width: 444px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);"
+                      style="float:right; max-width: 444px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12);"
                       data-src="https://employ-sigma.vercel.app/" title="Live Project" frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="ms-4"></iframe>
+                      referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="ms-4" loading="lazy"></iframe>
                   </div>
                   <li>Frontend: React, Tailwind CSS</li>
                   <li>Backend: Node.js, Express</li>
@@ -771,11 +768,11 @@
                 <p class="header">Technologies Used - </p>
                 <ul>
                   <iframe width="100%" height="250"
-                    style="float:right; max-width: 444px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);"
+                    style="float:right; max-width: 444px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12);"
                     data-src="https://www.youtube.com/embed/Zd9qLXUtKnA?si=T3AKVQDkGrCKQLL1"
                     title="YouTube video player" frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="ms-4"></iframe>
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="ms-4" loading="lazy"></iframe>
                   <li>Frontend: Frontend: React, HTML5, CSS3, tailwind</li>
                   <!-- <li>Backend/Logic: Node.js, Electron, JavaScript</li> -->
                   <li>Design/UI - Bootstrap 5, Google Fonts</li>
@@ -801,7 +798,7 @@
                 </p>
                 <p class="header">Technologies Used - </p>
                 <ul>
-                  <video preload="auto" type="video/mp4" muted playsinline class="ms-4" style="float:right;"
+                  <video preload="none" type="video/mp4" muted playsinline class="ms-4" style="float:right;"
                     src="./assets/images/projects/portfolio.mp4" height="250" autoplay loop></video>
                   <li>Frontend: HTML5, CSS3, Vanilla JavaScript, THREE JS</li>
                   <li>Design/UI - Bootstrap 5, Google Fonts, Custom SVGs / Icons</li>

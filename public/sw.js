@@ -4,20 +4,12 @@ const STATIC_ASSETS = [
   '/index.html',
   '/src/styles/style.css',
   '/src/main.js',
-  // GLB models — loaded on demand, cached after first use (amongus.glb is 5MB, don't pre-cache)
-  '/assets/models/newSmartphone.glb',
-  '/assets/models/laptop2.glb',
-  '/assets/models/rocket.glb',
-  // Textures
-  '/assets/images/sun.png',
-  '/assets/images/sunTexture.jpg',
+  // Essential textures only
+  '/assets/images/sun.webp',
   '/assets/images/moon.jpg',
-  '/assets/images/moonSurface.jpg',
-  '/assets/images/grad.jpg',
-  '/assets/images/space.png',
   '/assets/images/me.png',
-  // Font
-  '/assets/fonts/font2.json',
+  // Optimized 4KB Font
+  '/assets/fonts/font.json',
   // Iframe shell
   '/iframes/index.html',
   '/iframes/styles.css',

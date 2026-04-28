@@ -5,7 +5,8 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { CSS3DRenderer, FontLoader, TextGeometry } from "three/examples/jsm/Addons.js";
-import * as RAPIER from '@dimforge/rapier3d-compat';
+// Rapier physics engine imported dynamically later to save 889KB on initial load
+let RAPIER;
 import { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
 // Register Service Worker only in production. In local/dev, clear old SW caches so refreshes
@@ -168,9 +169,33 @@ let world;
 // Vite base URL - ensures paths work both in dev (/Portfolio/) and Vercel (/)
 const BASE = import.meta.env.BASE_URL;
 async function initRapier() {
-  await RAPIER.init() // This line is only needed if using the compat version
-  const gravity = new RAPIER.Vector3(0.0, 0, 0.0)
-  world = new RAPIER.World(gravity)
+  // Load Rapier dynamically to prevent blocking the main thread during initial asset load
+  const module = await import('@dimforge/rapier3d-compat');
+  RAPIER = module;
+  await RAPIER.init();
+  const gravity = new RAPIER.Vector3(0.0, 0, 0.0);
+  world = new RAPIER.World(gravity);
+  
+  // Re-initialize any components that depend on world being ready
+  initAmongusPhysics();
+  initTextPhysics();
+}
+
+function initTextPhysics() {
+  // Logic moved to a function that can be called when both font and Rapier are ready
+  if (window._textPendingPhysics) {
+    const { textMesh, size, center } = window._textPendingPhysics;
+    if (!world || !RAPIER) return;
+
+    const textBody = world.createRigidBody(
+      RAPIER.RigidBodyDesc.dynamic().setTranslation(center.x, center.y - 0.2, center.z).setAdditionalMass(1000000).enabledTranslations(true, true, false)
+    );
+    const textShape = RAPIER.ColliderDesc.cuboid(size.x / 2 - 0.17, size.y / 2 - 0.07, size.z / 2).setTranslation(0.58, 0, 0).setRestitution(1);
+    world.createCollider(textShape, textBody);
+
+    dynamicBodies.push([textMesh, textBody]);
+    delete window._textPendingPhysics;
+  }
 }
 const dynamicBodies = []
 
@@ -344,27 +369,34 @@ loader.load(BASE + 'assets/models/newSmartphone.glb', (gltf) => {
 });
 // gltf.scene.position.set(0, 0, 0);
 
+// Use a separate loader for heavy background assets so they don't block the initial page load
+const backgroundLoader = new GLTFLoader(); 
+
 //cursor
 var amongus, amongusCollider, amongusBody;
-loader.load(BASE + 'assets/models/amongus.glb', (gltf) => {
+backgroundLoader.load(BASE + 'assets/models/amongus.glb', (gltf) => {
   amongus = gltf.scene;
   amongus.position.set(0, 0, -2);
   scene.add(amongus);
+
+  initAmongusPhysics();
+}, undefined, (err) => {
+  console.log(err);
+});
+
+function initAmongusPhysics() {
+  if (!amongus || !world || !RAPIER) return;
 
   amongusBody = world.createRigidBody(
     RAPIER.RigidBodyDesc.kinematicPositionBased()
       .setTranslation(amongus.position.x, amongus.position.y, amongus.position.z)
   );
 
-  // ≡ƒºá Create a box collider ΓÇö adjust size to match your model
   amongusCollider = world.createCollider(
     RAPIER.ColliderDesc.cuboid(0.1, 0.1, 0.1).setRestitution(1),
     amongusBody
   );
-
-}, undefined, (err) => {
-  console.log(err);
-});
+}
 
 let mouse = new Vector2();
 document.addEventListener('pointermove', event => {
@@ -381,7 +413,7 @@ var string = `+------------------------------+
 |          Scroll Down           |
 +------------------------------+`
 const fontLoader = new FontLoader(loadingManager);
-fontLoader.load(BASE + 'assets/fonts/font2.json', function (font) {
+fontLoader.load(BASE + 'assets/fonts/font.json', function (font) {
   const textGeometry = new TextGeometry(string, {
     font: font,
     size: 0.1,
@@ -405,13 +437,8 @@ fontLoader.load(BASE + 'assets/fonts/font2.json', function (font) {
   const center = new THREE.Vector3();
   box.getCenter(center);
 
-  const textBody = world.createRigidBody(
-    RAPIER.RigidBodyDesc.dynamic().setTranslation(center.x, center.y - 0.2, center.z).setAdditionalMass(1000000).enabledTranslations(true, true, false)
-  );
-  const textShape = RAPIER.ColliderDesc.cuboid(size.x / 2 - 0.17, size.y / 2 - 0.07, size.z / 2).setTranslation(0.58, 0, 0).setRestitution(1);
-  world.createCollider(textShape, textBody);
-
-  dynamicBodies.push([textMesh, textBody]);
+  window._textPendingPhysics = { textMesh, size, center };
+  initTextPhysics();
 });
 
 
@@ -425,7 +452,7 @@ torus.position.set(2, 1.5, 0);
 scene.add(pivot);
 
 var rocket;
-loader.load(BASE + 'assets/models/rocket.glb', (gltf) => {
+backgroundLoader.load(BASE + 'assets/models/rocket.glb', (gltf) => {
   rocket = gltf.scene;
   rocket.traverse((child) => {
     if (child.isMesh) {
@@ -442,7 +469,7 @@ loader.load(BASE + 'assets/models/rocket.glb', (gltf) => {
 });
 
 var laptop;
-loader.load(BASE + 'assets/models/laptop2.glb', (gltf) => {
+backgroundLoader.load(BASE + 'assets/models/laptop2.glb', (gltf) => {
   laptop = gltf.scene;
   laptop.position.set(0, 300, -800)
   scene.add(laptop);
