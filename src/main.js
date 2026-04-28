@@ -412,8 +412,8 @@ var string = `+------------------------------+
 |    WELCOME STRANGER     |
 |          Scroll Down           |
 +------------------------------+`
-const fontLoader = new FontLoader(loadingManager);
-fontLoader.load(BASE + 'assets/fonts/font.json', function (font) {
+const fontLoader = new FontLoader(loadingManager); // Text is critical for first impression, so we wait for it
+fontLoader.load(BASE + 'assets/fonts/font2.json', function (font) {
   const textGeometry = new TextGeometry(string, {
     font: font,
     size: 0.1,
