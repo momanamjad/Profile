@@ -24,7 +24,7 @@ export async function createSceneObjects(scene, loadingManager, world, dynamicBo
   scene.add(starMesh);
 
   // Sun
-  const sunTexture = textureLoader.load(BASE + 'assets/images/sun.png');
+  const sunTexture = textureLoader.load(BASE + 'assets/images/sun.webp');
   const sunGeometry = new THREE.SphereGeometry(20, 25, 25);
   const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFF00, map: sunTexture });
   const sun = new THREE.Mesh(sunGeometry, sunMaterial);

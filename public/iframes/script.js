@@ -70,7 +70,10 @@ function showDesktop() {
     bootScreen.classList.add("displayHide");
     desktopView.classList.remove("displayHide");
     updateClock();
-    setInterval(updateClock, 1000);
+    // Store interval ID to avoid duplicate intervals if called again
+    if (!window._clockInterval) {
+        window._clockInterval = setInterval(updateClock, 1000);
+    }
 }
 
 // --- Clock Logic ---

@@ -1,19 +1,24 @@
-const CACHE_NAME = 'portfolio-v2';
+const CACHE_NAME = 'portfolio-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/src/styles/style.css',
   '/src/main.js',
+  // GLB models — loaded on demand, cached after first use (amongus.glb is 5MB, don't pre-cache)
   '/assets/models/newSmartphone.glb',
-  '/assets/models/amongus.glb',
   '/assets/models/laptop2.glb',
   '/assets/models/rocket.glb',
+  // Textures
   '/assets/images/sun.png',
   '/assets/images/sunTexture.jpg',
   '/assets/images/moon.jpg',
   '/assets/images/moonSurface.jpg',
   '/assets/images/grad.jpg',
+  '/assets/images/space.png',
+  '/assets/images/me.png',
+  // Font
   '/assets/fonts/font2.json',
+  // Iframe shell
   '/iframes/index.html',
   '/iframes/styles.css',
   '/iframes/script.js',

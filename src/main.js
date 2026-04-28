@@ -207,7 +207,8 @@ const bloomPass = new UnrealBloomPass(
 bloomPass.threshold = 0.1;
 bloomPass.strength = 1.4; //intensity of glow
 const bloomComposer = new EffectComposer(renderer);
-bloomComposer.setSize(window.innerWidth, window.innerHeight);
+// Render bloom at half resolution for better performance on low-end/mobile GPUs
+bloomComposer.setSize(Math.floor(window.innerWidth / 1.5), Math.floor(window.innerHeight / 1.5));
 bloomComposer.addPass(renderScene);
 bloomComposer.addPass(bloomPass);
 
@@ -230,12 +231,10 @@ scene.add(starMesh);
 
 //sun
 const textureLoader = new THREE.TextureLoader(loadingManager);
-const sunTexture = textureLoader.load(BASE + 'assets/images/sun.png');
-const sun3dTexture = textureLoader.load(BASE + 'assets/images/sunTexture.jpg');
+const sunTexture = textureLoader.load(BASE + 'assets/images/sun.webp');
 const sunGeometry = new THREE.SphereGeometry(20, 25, 25);
 const sunMaterial = new THREE.MeshBasicMaterial({
   color: 0xFFFF00, map: sunTexture,
-  // normalMap: sun3dTexture,
 });
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 
@@ -248,7 +247,8 @@ scene.add(sun);
 
 const moonTexture = textureLoader.load(BASE + 'assets/images/moon.jpg');
 const moon3dTexture = textureLoader.load(BASE + 'assets/images/moonSurface.jpg');
-const moonGeometry = new THREE.SphereGeometry(3, 64, 64); // 64 segments is plenty for this size
+// Reduced from 64x64 to 32x32 segments — virtually indistinguishable at render distance
+const moonGeometry = new THREE.SphereGeometry(3, 32, 32);
 const moonMaterial = new THREE.MeshStandardMaterial({
   color: 0x202020,
   map: moonTexture,
@@ -793,7 +793,7 @@ window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    bloomComposer.setSize(window.innerWidth, window.innerHeight);
+    bloomComposer.setSize(Math.floor(window.innerWidth / 1.5), Math.floor(window.innerHeight / 1.5));
     css3dRenderer.setSize(window.innerWidth, window.innerHeight);
   }, 150);
 }, false);
@@ -832,9 +832,14 @@ function updateSectionTargets() {
   }
 }
 
-function animate() {
-  let t = document.body.getBoundingClientRect().top;
+// Pre-allocate reusable vectors to avoid per-frame garbage collection
+const _animTargetPoint = new THREE.Vector3();
+const _animPhoneTargetPos = new THREE.Vector3();
+const _animDir = new THREE.Vector3();
+const _animPhonePos = new THREE.Vector3();
+const _animLaptopTargetCamPos = new THREE.Vector3();
 
+function animate() {
   requestAnimationFrame(animate);
   const deltaTime = clock.getDelta();
   const lerpSpeed = 6;
@@ -847,8 +852,7 @@ function animate() {
   if (Math.abs(camera.position.z - cameraTargetZ) < cameraSnapThreshold) {
     camera.position.z = cameraTargetZ;
   }
-  // camera.rotation.z = t * 0.0002;
-  // console.log(camera.fov);
+
   sun.rotation.x += 0.0001;
   sun.rotation.y += 0.0002;
 
@@ -864,23 +868,18 @@ function animate() {
 
   if (amongus) {
     rayCaster.setFromCamera(mouse, camera);
-    const targetPoint = new THREE.Vector3();
-    rayCaster.ray.intersectPlane(plane, targetPoint);
+    // Reuse pre-allocated vector instead of allocating each frame
+    rayCaster.ray.intersectPlane(plane, _animTargetPoint);
 
-    // Optionally smooth the movement
-    amongus.position.lerp(targetPoint, 1 - Math.exp(-1.5 * deltaTime));
+    amongus.position.lerp(_animTargetPoint, 1 - Math.exp(-1.5 * deltaTime));
     var x = amongus.position.x;
     var y = amongus.position.y;
     var z = amongus.position.z;
     amongusBody.setNextKinematicTranslation({ x, y, z });
-    // amongus.rotation.x += 0.001;
-    // amongus.rotation.y += 0.001;
     amongus.rotation.z += Math.sin(60) * 0.006;
 
     amongus.rotation.x += (mouse.x - amongus.rotation.x) * 0.1;
     amongus.rotation.y += (mouse.y - amongus.rotation.y) * 0.1;
-    // amongus.rotation.z += 0.003;
-
   }
   updateSectionTargets();
   smoothToTarget(moon, moonPos, 1 - Math.exp(-10 * deltaTime));
@@ -893,41 +892,37 @@ function animate() {
     torus.rotation.y += 0.005;
     torus.rotation.z += 0.005;
 
-    const targetPos = new THREE.Vector3(
+    // Reuse pre-allocated vector
+    _animPhoneTargetPos.set(
       moon.position.x + -0.1,
       moon.position.y + 2.701,
       moon.position.z - 1.3
     );
 
-
-    smartphone.position.lerp(targetPos, 1 - Math.exp(-lerpSpeed * deltaTime));
+    smartphone.position.lerp(_animPhoneTargetPos, 1 - Math.exp(-lerpSpeed * deltaTime));
     if (smartphone && currentSection == 1) {
       if (phoneFullscreen == true) {
-        smartphone.rotation.z = smartphone.rotation.z + ((-(Math.PI / 2)) - smartphone.rotation.z) * 0.04;     //magic happening here 
+        smartphone.rotation.z = smartphone.rotation.z + ((-(Math.PI / 2)) - smartphone.rotation.z) * 0.04;
 
-        //smartphone moving
-        const dir = new THREE.Vector3();
-        camera.getWorldDirection(dir);
-        const phonePos = new THREE.Vector3();
-        phonePos.copy(camera.position).add(dir.multiplyScalar(0));
-        phonePos.x += -0.7;
-        phonePos.y += 1.4;
-        phonePos.z += 1;
-        smartphone.position.lerp(phonePos, 1 - Math.exp(-6 * deltaTime));
+        camera.getWorldDirection(_animDir);
+        _animPhonePos.copy(camera.position).add(_animDir.multiplyScalar(0));
+        _animPhonePos.x += -0.7;
+        _animPhonePos.y += 1.4;
+        _animPhonePos.z += 1;
+        smartphone.position.lerp(_animPhonePos, 1 - Math.exp(-6 * deltaTime));
 
       }
 
       else if (nophonefullscreen) {
-        smartphone.rotation.z = smartphone.rotation.z + (smartphoneZrotation - smartphone.rotation.z) * 0.04
-        // smartphone.rotation.z = smartphoneZrotation;
+        smartphone.rotation.z = smartphone.rotation.z + (smartphoneZrotation - smartphone.rotation.z) * 0.04;
 
-        const targetPos = new THREE.Vector3(
+        _animPhoneTargetPos.set(
           moon.position.x + 0.3,
           moon.position.y + 2.701,
           moon.position.z - 1.3
         );
 
-        smartphone.position.lerp(targetPos, 1 - Math.exp(-lerpSpeed * deltaTime));
+        smartphone.position.lerp(_animPhoneTargetPos, 1 - Math.exp(-lerpSpeed * deltaTime));
       }
 
     }
@@ -935,16 +930,15 @@ function animate() {
   }
 
   if (currentSection == 2 && onceForLaptop) {
-    if ((-t < (vh * 2 + 50)) && (-t >= (vh * 2) - 50)) { // Wider trigger for reliability
-      const dir = new THREE.Vector3();
-      camera.getWorldDirection(dir);
-      
-      // Use the final target camera Z for section 2 to prevent drifting
-      const targetZ = getSectionCameraZ(2);
-      const targetCameraPosition = new THREE.Vector3(0, 0, targetZ);
+    let t = document.body.getBoundingClientRect().top;
+    if ((-t < (vh * 2 + 50)) && (-t >= (vh * 2) - 50)) {
+      camera.getWorldDirection(_animDir);
 
-      laptopPos.copy(targetCameraPosition).add(dir.multiplyScalar(0.18));
-      laptop.lookAt(targetCameraPosition);
+      const targetZ = getSectionCameraZ(2);
+      _animLaptopTargetCamPos.set(0, 0, targetZ);
+
+      laptopPos.copy(_animLaptopTargetCamPos).add(_animDir.multiplyScalar(0.18));
+      laptop.lookAt(_animLaptopTargetCamPos);
       laptop.rotation.x = 0;
       laptop.rotation.y = 0;
       laptop.rotation.z = 0;
@@ -964,9 +958,6 @@ function animate() {
     screen.position.x += 0;
     screen.position.y += 50;
     screen.position.z -= 800;
-
-
-
   }
 
   bloomComposer.render();
@@ -1108,7 +1099,9 @@ function getScreenPosition(object3D, camera) {
 let homeSection = document.getElementById("homeSection");
 let aboutSection = document.getElementById("aboutSection");
 let experienceSection = document.getElementById("experienceSection");
+let openSourceSection = document.getElementById("openSourceSection");
 let projectSection = document.getElementById("projectSection");
+let githubSection = document.getElementById("githubSection");
 let contactSection = document.getElementById("contactSection");
 
 let currentScene = homeSection;

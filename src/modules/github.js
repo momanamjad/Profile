@@ -1,8 +1,19 @@
+// In-memory cache so navigating back to GitHub section doesn't re-fetch
+let _githubCache = null;
+
 export async function fetchGitHubData(username) {
   const contentEl = document.getElementById('github-content');
   const errorEl = document.getElementById('github-error');
 
   if (!contentEl || !errorEl) return;
+
+  // Return cached data immediately if we already fetched
+  if (_githubCache) {
+    updateGitHubUI(_githubCache.profile, _githubCache.repos, _githubCache.events);
+    contentEl.classList.remove('displayHide');
+    contentEl.style.opacity = '1';
+    return;
+  }
 
   contentEl.style.opacity = '0.3';
   errorEl.classList.add('displayHide');
@@ -22,9 +33,11 @@ export async function fetchGitHubData(username) {
 
     const profileData = await profileRes.json();
     const reposData = await reposRes.json();
-    const eventsData = await eventsRes.json();
+    const eventsData = eventsRes.ok ? await eventsRes.json() : [];
 
-    window.githubData = { profile: profileData, repos: reposData, events: eventsData };
+    // Store in cache
+    _githubCache = { profile: profileData, repos: reposData, events: eventsData };
+    window.githubData = _githubCache;
     updateGitHubUI(profileData, reposData, eventsData);
 
     contentEl.classList.remove('displayHide');
@@ -99,11 +112,14 @@ function updateGitHubUI(profile, repos, events) {
   }
 
   if (statsCard) {
-    statsCard.src = `https://github-readme-stats.vercel.app/api?username=${profile.login}&show_icons=true&theme=github_dark&hide_border=true&title_color=00c9ff&text_color=ffffff&icon_color=92fe9d&t=${Date.now()}`;
+    // No cache-busting param — let browser cache these for repeat visits
+    statsCard.src = `https://github-readme-stats.vercel.app/api?username=${profile.login}&show_icons=true&theme=github_dark&hide_border=true&title_color=00c9ff&text_color=ffffff&icon_color=92fe9d`;
+    statsCard.loading = 'lazy';
   }
 
   if (languagesCard) {
-    languagesCard.src = `https://github-readme-stats.vercel.app/api/top-langs/?username=${profile.login}&layout=compact&theme=github_dark&hide_border=true&title_color=00c9ff&text_color=ffffff&t=${Date.now()}`;
+    languagesCard.src = `https://github-readme-stats.vercel.app/api/top-langs/?username=${profile.login}&layout=compact&theme=github_dark&hide_border=true&title_color=00c9ff&text_color=ffffff`;
+    languagesCard.loading = 'lazy';
   }
 
   if (timeline && events) {
