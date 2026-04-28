@@ -3170,7 +3170,7 @@ TO PLAY THIS INSTEAD`,
       let e = K.y + 18,
         t = K.y + 24,
         n = this.getAudioButtonRect(),
-        r = this.renderer.getBlock(`HI EVERYONE`, W.title, G.title),
+        r = this.renderer.getBlock(`PRETEXT BREAKER`, W.title, G.title),
         i = this.renderer.getBlock(
           `SCORE ${wn(this.score)}   LIVES ${`♥`.repeat(this.lives)}   LEVEL ${this.level.toString().padStart(2, `0`)}`,
           W.status,
