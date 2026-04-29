@@ -819,8 +819,8 @@
                   It was my first project using Three.js, and a great introduction to working with 3D on the web.
                 </p>
                 <p class="header">Technologies Used - </p>
-                <video preload="auto" type="video/mp4" muted playsinline class="ms-4" style="float:right;"
-                  src="./assets/images/projects/portfolio.mp4" height="250" autoplay loop></video>
+                <video preload="none" type="video/mp4" muted playsinline class="ms-4" style="float:right;"
+                  data-src="./assets/images/projects/portfolio.mp4" height="250" autoplay loop></video>
                 <ul>
                   <li>Frontend: HTML5, CSS3, Vanilla JavaScript, THREE JS</li>
                   <li>Design/UI - Bootstrap 5, Google Fonts, Custom SVGs / Icons</li>
@@ -1102,7 +1102,47 @@
     </section>
   </main>
 
-  <script type="module" src="./src/main.js">
+  <script type="module">
+    function loadDesktopEnvironment() {
+      if (window._desktopLoadingStarted) return;
+      window._desktopLoadingStarted = true;
+      
+      // Load main 3D engine and assets
+      import('./src/main.js').catch(err => console.error("Failed to load main.js", err));
+
+      // Also load any heavy videos
+      const videos = document.querySelectorAll('video[data-src]');
+      videos.forEach(v => {
+        v.src = v.getAttribute('data-src');
+        v.load();
+      });
+    }
+
+    if (window.innerWidth <= 1024) {
+      // Mobile Flow: ONLY load the breaker game initially
+      const frame = document.getElementById('mobile-game-frame');
+      if (frame && frame.getAttribute('data-src')) {
+        frame.src = frame.getAttribute('data-src');
+        
+        // Wait for the iframe to load, then fetch desktop assets smoothly in background
+        frame.addEventListener('load', () => {
+          // Wait 1.5s after game loads to ensure no stuttering during gameplay start
+          setTimeout(loadDesktopEnvironment, 1500); 
+        });
+      } else {
+        setTimeout(loadDesktopEnvironment, 1500);
+      }
+    } else {
+      // Desktop Flow: Load everything immediately
+      loadDesktopEnvironment();
+    }
+    
+    // Failsafe resize listener in case they rotate device before game loads
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 1024) {
+        loadDesktopEnvironment();
+      }
+    });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
 
@@ -1110,22 +1150,11 @@
   <div id="mobile-warning-overlay" style="background-color: #000000 !important;">
 
     <div class="game-container">
-      <iframe src="./mobile-breaker/index.html" title="Pretext Breaker Game"></iframe>
+      <iframe id="mobile-game-frame" data-src="./mobile-breaker/index.html" title="Pretext Breaker Game"></iframe>
     </div>
 
     <div class="game-footer">
       <p class="space-mono-regular">Portfolio of Moman Amjad | Creative Frontend Developer</p>
-    </div>
-  </div>
-
-  <!-- Mobile Warning Overlay -->
-  <div id="mobile-warning-overlay">
-      <div class="game-container">
-      <iframe src="./mobile-breaker/index.html" title="Pretext Breaker Game"></iframe>
-    </div>
-
-    <div class="game-footer">
-      <p>HOLD THE LINE TO PLAY THIS INSTEAD</p>
     </div>
   </div>
 

@@ -199,7 +199,18 @@ function initTextPhysics() {
 }
 const dynamicBodies = []
 
-initRapier();
+const desktopAssetLoaders = [];
+let desktopAssetsLoaded = false;
+
+window.loadDesktopAssets = function() {
+  if (desktopAssetsLoaded) return;
+  desktopAssetsLoaded = true;
+  desktopAssetLoaders.forEach(fn => fn());
+};
+
+desktopAssetLoaders.push(() => {
+  initRapier();
+});
 
 const canvas = document.getElementById("bg");
 
@@ -338,34 +349,36 @@ profileTexture.flipY = false;
 profileTexture.repeat.set(1, 1);
 profileTexture.offset.set(0, 0);
 
-loader.load(BASE + 'assets/models/newSmartphone.glb', (gltf) => {
-  smartphone = gltf.scene;
-  smartphone.position.set(100, 100, -400);
-  smartphone.scale.setScalar(0.64);
-  smartphoneZrotation = smartphone.rotation.z;
+desktopAssetLoaders.push(() => {
+  loader.load(BASE + 'assets/models/newSmartphone.glb', (gltf) => {
+    smartphone = gltf.scene;
+    smartphone.position.set(100, 100, -400);
+    smartphone.scale.setScalar(0.64);
+    smartphoneZrotation = smartphone.rotation.z;
 
-  // Directly remap the phone's main screen mesh only (Plane007_1 = glass display)
-  smartphone.traverse(child => {
-    if (child.isMesh && child.name === "Plane007_1") {
-      child.material = child.material.clone(); // clone to avoid mutating shared material
-      child.material.map = profileTexture;
-      child.material.emissive = new THREE.Color(0x4a5ca8);
-      child.material.emissiveMap = profileTexture;
-      child.material.emissiveIntensity = 0.025;
-      child.material.needsUpdate = true;
-      child.frustumCulled = false;
-    }
+    // Directly remap the phone's main screen mesh only (Plane007_1 = glass display)
+    smartphone.traverse(child => {
+      if (child.isMesh && child.name === "Plane007_1") {
+        child.material = child.material.clone(); // clone to avoid mutating shared material
+        child.material.map = profileTexture;
+        child.material.emissive = new THREE.Color(0x4a5ca8);
+        child.material.emissiveMap = profileTexture;
+        child.material.emissiveIntensity = 0.025;
+        child.material.needsUpdate = true;
+        child.frustumCulled = false;
+      }
+    });
+
+    // Add a screen backlight glow ΓÇö soft blue light emanating from the front of the phone
+    const screenGlow = new THREE.PointLight(0x4a5ca8, 0.22, 2.4);
+    screenGlow.position.set(0, 0.65, 0.3); // Slightly in front of screen
+    smartphone.add(screenGlow);
+
+    window.debugSmartphone = smartphone;
+    scene.add(smartphone);
+  }, undefined, (err) => {
+    console.log(err);
   });
-
-  // Add a screen backlight glow ΓÇö soft blue light emanating from the front of the phone
-  const screenGlow = new THREE.PointLight(0x4a5ca8, 0.22, 2.4);
-  screenGlow.position.set(0, 0.65, 0.3); // Slightly in front of screen
-  smartphone.add(screenGlow);
-
-  window.debugSmartphone = smartphone;
-  scene.add(smartphone);
-}, undefined, (err) => {
-  console.log(err);
 });
 // gltf.scene.position.set(0, 0, 0);
 
@@ -374,14 +387,16 @@ const backgroundLoader = new GLTFLoader();
 
 //cursor
 var amongus, amongusCollider, amongusBody;
-backgroundLoader.load(BASE + 'assets/models/amongus.glb', (gltf) => {
-  amongus = gltf.scene;
-  amongus.position.set(0, 0, -2);
-  scene.add(amongus);
+desktopAssetLoaders.push(() => {
+  backgroundLoader.load(BASE + 'assets/models/amongus.glb', (gltf) => {
+    amongus = gltf.scene;
+    amongus.position.set(0, 0, -2);
+    scene.add(amongus);
 
-  initAmongusPhysics();
-}, undefined, (err) => {
-  console.log(err);
+    initAmongusPhysics();
+  }, undefined, (err) => {
+    console.log(err);
+  });
 });
 
 function initAmongusPhysics() {
@@ -452,27 +467,31 @@ torus.position.set(2, 1.5, 0);
 scene.add(pivot);
 
 var rocket;
-backgroundLoader.load(BASE + 'assets/models/rocket.glb', (gltf) => {
-  rocket = gltf.scene;
-  rocket.traverse((child) => {
-    if (child.isMesh) {
-      child.layers.set(1); // Set to layer 1
-    }
-  });
-  // rocket.position.set(0, 0, -10);
+desktopAssetLoaders.push(() => {
+  backgroundLoader.load(BASE + 'assets/models/rocket.glb', (gltf) => {
+    rocket = gltf.scene;
+    rocket.traverse((child) => {
+      if (child.isMesh) {
+        child.layers.set(1); // Set to layer 1
+      }
+    });
+    // rocket.position.set(0, 0, -10);
 
-  pivot.add(rocket);
-  rocket.position.set(0, 0, 50);
-  rocket.rotation.x = 2.8;
-  rocket.rotation.y = 3;
-  rocket.rotation.z = 1.5;
+    pivot.add(rocket);
+    rocket.position.set(0, 0, 50);
+    rocket.rotation.x = 2.8;
+    rocket.rotation.y = 3;
+    rocket.rotation.z = 1.5;
+  });
 });
 
 var laptop;
-backgroundLoader.load(BASE + 'assets/models/laptop2.glb', (gltf) => {
-  laptop = gltf.scene;
-  laptop.position.set(0, 300, -800)
-  scene.add(laptop);
+desktopAssetLoaders.push(() => {
+  backgroundLoader.load(BASE + 'assets/models/laptop2.glb', (gltf) => {
+    laptop = gltf.scene;
+    laptop.position.set(0, 300, -800)
+    scene.add(laptop);
+  });
 });
 
 
@@ -825,6 +844,20 @@ window.addEventListener('resize', () => {
   }, 150);
 }, false);
 
+function checkMobileOverlay() {
+  if (window.innerWidth <= 1024) {
+    const frame = document.getElementById('mobile-game-frame');
+    if (frame && !frame.src && frame.getAttribute('data-src')) {
+      frame.src = frame.getAttribute('data-src');
+    }
+  } else {
+    if (window.loadDesktopAssets) {
+      window.loadDesktopAssets();
+    }
+  }
+}
+window.addEventListener('resize', checkMobileOverlay);
+checkMobileOverlay();
 
 const moonPos = new THREE.Vector3(100, 100, -400);
 const laptopPos = new THREE.Vector3(0, 300, -800);
@@ -868,6 +901,7 @@ const _animLaptopTargetCamPos = new THREE.Vector3();
 
 function animate() {
   requestAnimationFrame(animate);
+  if (window.innerWidth <= 1024) return; // Pause heavy 3D rendering on mobile for performance
   const deltaTime = clock.getDelta();
   const lerpSpeed = 6;
   const cameraTargetZ = getSectionCameraZ(currentSection);
