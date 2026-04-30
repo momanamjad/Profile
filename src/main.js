@@ -695,36 +695,96 @@ function syncInitialSectionState() {
 
 syncInitialSectionState();
 
+function navigateToSection(index) {
+  if (index < 0 || index >= totalSections || smartphoneMode || timerStarted) return;
+  
+  timerStarted = true;
+  lastSection = currentSection;
+  currentSection = parseInt(index);
+
+  // Update dots
+  document.getElementById(lastSection).classList.remove("selected");
+  document.getElementById(currentSection).classList.add("selected");
+
+  // Perform scroll
+  window.scrollTo({
+    top: currentSection * window.innerHeight,
+    behavior: 'smooth'
+  });
+
+  // Handle laptop screen visibility
+  if (currentSection != 2) {
+    hideLaptopScreen();
+  } else {
+    if (laptopInitiated) {
+      queueLaptopScreenShow(lastSection == 0 ? 800 : 500);
+    } else {
+      laptopInitiated = true;
+      queueLaptopScreenShow(2500);
+    }
+  }
+
+  // Debounce
+  setTimeout(() => {
+    timerStarted = false;
+  }, 1400);
+}
+
 document.querySelectorAll(".dot").forEach((el) => {
   el.addEventListener("click", (e) => {
-    lastSection = currentSection;
-    document.getElementById(lastSection).classList.remove("selected");
-    currentSection = el.id;
-    // console.log(nextSection);
-    window.scrollTo({
-      top: currentSection * window.innerHeight,
-      behavior: 'smooth'
-    });
-    document.getElementById(currentSection).classList.add("selected");
-    console.log(lastSection, currentSection);
+    navigateToSection(el.id);
+  });
+});
 
+// Keyboard navigation (Arrows, PageUp/Down, Home/End)
+window.addEventListener('keydown', (e) => {
+  if (smartphoneMode) return;
+  
+  const keys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '];
+  if (keys.includes(e.key)) {
+    e.preventDefault(); // Stop native scrolling
+    
+    if (timerStarted) return;
 
-    if (currentSection != 2) {
-      hideLaptopScreen();
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) {
+      navigateToSection(currentSection + 1);
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)) {
+      navigateToSection(currentSection - 1);
+    } else if (e.key === 'Home') {
+      navigateToSection(0);
+    } else if (e.key === 'End') {
+      navigateToSection(totalSections - 1);
     }
-    else if (currentSection == 2) {
-      if (laptopInitiated) {
-        if (lastSection == 0) {
-          queueLaptopScreenShow(800);
-        } else {
-          queueLaptopScreenShow(500);
-        }
+  }
+});
+
+// Focus/Tab navigation synchronization
+window.addEventListener('focusin', (e) => {
+  const section = e.target.closest('.scroll-section');
+  if (section) {
+    const sections = Array.from(document.querySelectorAll('.scroll-section'));
+    const index = sections.indexOf(section);
+    if (index !== -1 && index !== currentSection) {
+      // Don't prevent default here as we want the focus to happen, 
+      // but sync our internal state and 3D camera.
+      lastSection = currentSection;
+      currentSection = index;
+      
+      document.getElementById(lastSection).classList.remove("selected");
+      document.getElementById(currentSection).classList.add("selected");
+      
+      if (currentSection != 2) {
+        hideLaptopScreen();
       } else {
-        laptopInitiated = true;
-        queueLaptopScreenShow(2500);
+        if (laptopInitiated) {
+          queueLaptopScreenShow(500);
+        } else {
+          laptopInitiated = true;
+          queueLaptopScreenShow(2500);
+        }
       }
     }
-  });
+  }
 });
 
 document.getElementById(currentSection).classList.add("selected");
@@ -737,45 +797,14 @@ document.querySelectorAll(".body").forEach((el) => {
 })
 
 window.addEventListener('wheel', (e) => {
-
-  // console.log(e);
   e.preventDefault();
-  if (!smartphoneMode && timerStarted == false) {
-    timerStarted = true;
-    lastSection = currentSection;
-    if (e.deltaY > 0 && currentSection < totalSections - 1) {
-      currentSection++;
-    } else if (e.deltaY < 0 && currentSection > 0) {
-      currentSection--;
-    }
-    console.log(lastSection, currentSection);
+  if (timerStarted || smartphoneMode) return;
 
-    if (currentSection != 2) {
-      hideLaptopScreen();
-    }
-    else if (currentSection == 2) {
-      if (laptopInitiated) {
-        queueLaptopScreenShow(500);
-      } else {
-        laptopInitiated = true;
-        queueLaptopScreenShow(2500);
-      }
-    }
-    // console.log(currentSection);
-    document.getElementById(lastSection).classList.remove("selected");
-    document.getElementById(currentSection).classList.add("selected");
-    window.scrollTo({
-      top: currentSection * window.innerHeight,
-      behavior: 'smooth'
-    });
-
-
-    setTimeout(() => {
-      timerStarted = false;
-    }, 1400); // Increased debounce to handle trackpad momentum scrolling
+  if (e.deltaY > 0) {
+    navigateToSection(currentSection + 1);
+  } else if (e.deltaY < 0) {
+    navigateToSection(currentSection - 1);
   }
-
-
 }, { passive: false });
 
 
