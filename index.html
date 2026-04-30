@@ -263,9 +263,9 @@
           <div style="display:block; text-align: center">
             <div class="loader">
             </div>
-            <h4>
+            <div class="h4" style="margin-top: 10px;">
               Turning On Device
-            </h4>
+            </div>
           </div>
         </div>
 
@@ -289,7 +289,7 @@
             <div class="screenContentBody">
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
-                  <h3 class="marginzero">EXIT</h3>
+                  <div class="h3 marginzero">EXIT</div>
                   <svg fill="#ffffff" viewBox="0 0 16 16" height="30" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M12.207 9H5V7h7.136L11.05 5.914 12.464 4.5 16 8.036l-3.536 3.535-1.414-1.414L12.207 9zM10 4H8V2H2v12h6v-2h2v4H0V0h10v4z"
@@ -299,7 +299,7 @@
               </div>
               <div class="title flex-col flex-left">
                 <h1 class="bold"> MOMAN <br> AMJAD</h1>
-                <h3 class="">Showcase 2026</h3>
+                <h2 class="">Showcase 2026</h2>
               </div>
 
               <div class="sidebar space-mono-regular flex-col normalText flex-start">
@@ -341,7 +341,7 @@
             <div class="screenContentBody">
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
-                  <h3 class="marginzero">EXIT</h3>
+                  <div class="h3 marginzero">EXIT</div>
                   <svg fill="#ffffff" viewBox="0 0 16 16" height="30" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M12.207 9H5V7h7.136L11.05 5.914 12.464 4.5 16 8.036l-3.536 3.535-1.414-1.414L12.207 9zM10 4H8V2H2v12h6v-2h2v4H0V0h10v4z"
@@ -351,7 +351,7 @@
               </div>
               <div class="title flex-col flex-left">
                 <h1 class="bold">Moman <br> Amjad</h1>
-                <h3 class="">Showcase 2026</h3>
+                <h2 class="">Showcase 2026</h2>
               </div>
 
               <div class="sidebar space-mono-regular flex-col normalText flex-start">
@@ -380,7 +380,7 @@
                   Thank you for checking out my portfolio website — I really appreciate you taking the time.
                   I genuinely hope you enjoy exploring it as much as I enjoyed building it. Crafting web apps, designing
                   interfaces, and solving little coding puzzles is my kind of fun! If you have any comments or questions
-                  feel free to contact me using <a onclick="changeScene('contactSection')" class="textLink">This
+                  feel free to contact me using <a href="#contactSection" onclick="changeScene('contactSection')" class="textLink">This
                     Form</a> or shoot me an email at <a
                     href="mailto:momanamjad07@gmail.com"><u>momanamjad07@gmail.com</u></a>
                 </p>
@@ -388,18 +388,18 @@
                 <div class="resumeDownload">
                   <hr>
                   <div class="flex gap" style="align-items:center">
-                    <img src="./assets/images/x.webp" height="65">
+                    <img src="./assets/images/x.webp" height="65" alt="Resume icon" loading="lazy">
                     <div>
-                      <h3>Looking for my resume?</h3>
-                      <h4><a href="./assets/resume.pdf" download>Click here to download</a></h4>
-                      <h4><a
+                      <h2 class="h3">Looking for my resume?</h2>
+                      <h3 class="h4"><a href="./assets/resume.pdf" download>Click here to download</a></h3>
+                      <h3 class="h4"><a
                           href="https://docs.google.com/document/d/1LlfNWSqvcL76hCxQD2O4te-xABO0aiP3/edit?usp=sharing&ouid=101804073816581409929&rtpof=true&sd=true"
-                          target="_blank" rel="noopener noreferrer">Click here to view (without downloading)</a></h4>
+                          target="_blank" rel="noopener noreferrer">Click here to view (without downloading)</a></h3>
                     </div>
                   </div>
                   <hr>
                 </div>
-                <h3 class="mb-4 mt-4">About Me</h3>
+                <h2 class="h3 mb-4 mt-4">About Me</h2>
                 <p>I'm currently in my fourth sem of university, studying a subject I genuinely enjoy. I've always
                   had a deep curiosity about technology — even as a kid, I was the one fiddling with gadgets
                   and taking things apart just to see how they worked. Pursuing a degree in this field feels like
@@ -407,7 +407,7 @@
                   always felt like home.</p>
                 <p>
                   <img style="float:right" src="./assets/images/laptop.png" alt="laptop pic" height="250"
-                    class="ms-4 mb-4">
+                    class="ms-4 mb-4" loading="lazy">
                   I've explored full-stack development, experimented with interactive games, and even created
                   browser extensions — mostly out of interest, sometimes out of necessity. Along the way, I’ve
                   worked with technologies like React, Node.js, MongoDB, Firebase, Tailwind CSS, and plain old
@@ -424,7 +424,7 @@
                   skills.
                 </p>
                 <img src="./assets/images/me.png" alt="picture of me" height="250" style="float:right"
-                  class="ms-4 mb-4">
+                  class="ms-4 mb-4" loading="lazy">
 
                 <h3>My Hobbies</h3>
                 <p>
@@ -437,7 +437,7 @@
                 <p>
                   Thank you for taking the time to read my About Me page. I hope you enjoy exploring the rest of my
                   portfolio.
-                  If you'd like to get in touch, feel free to reach out via the <a class="textLink"
+                  If you'd like to get in touch, feel free to reach out via the <a href="#contactSection" class="textLink"
                     onclick="changeScene('contactSection')">Contact Me</a> page or send an email to
                   <a href="mailto:momanamjad07@gmail.com"><u>momanamjad07@gmail.com</u></a>
                 </p>
@@ -452,7 +452,7 @@
             <div class="screenContentBody">
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
-                  <h3 class="marginzero">EXIT</h3>
+                  <div class="h3 marginzero">EXIT</div>
                   <svg fill="#ffffff" viewBox="0 0 16 16" height="30" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M12.207 9H5V7h7.136L11.05 5.914 12.464 4.5 16 8.036l-3.536 3.535-1.414-1.414L12.207 9zM10 4H8V2H2v12h6v-2h2v4H0V0h10v4z"
@@ -462,7 +462,7 @@
               </div>
               <div class="title flex-col flex-left">
                 <h1 class="bold"> Moman <br> Amjad</h1>
-                <h3 class="">Showcase 2026</h3>
+                <h2 class="">Showcase 2026</h2>
               </div>
 
               <div class="sidebar space-mono-regular flex-col normalText flex-start">
@@ -477,7 +477,7 @@
 
               <div class="bodyHeader">
                 <h1 class="bold big">Experience</h1>
-                <h3 class="">My Learning Journey</h3>
+                <h2 class="h3">My Learning Journey</h2>
               </div>
 
               <div class="body">
@@ -499,7 +499,7 @@
                   combining frontend and backend technologies to build complete web applications.
                 </p>
 
-                <h3 class="mb-3 mt-4">Technical Skills:</h3>
+                <h2 class="h3 mb-3 mt-4">Technical Skills:</h2>
                 <ul>
                   <li><strong>HTML</strong></li>
                   <li><strong>CSS</strong></li>
@@ -526,7 +526,7 @@
             <div class="screenContentBody">
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
-                  <h3 class="marginzero">EXIT</h3>
+                  <div class="h3 marginzero">EXIT</div>
                   <svg fill="#ffffff" viewBox="0 0 16 16" height="30" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M12.207 9H5V7h7.136L11.05 5.914 12.464 4.5 16 8.036l-3.536 3.535-1.414-1.414L12.207 9zM10 4H8V2H2v12h6v-2h2v4H0V0h10v4z"
@@ -536,7 +536,7 @@
               </div>
               <div class="title flex-col flex-left">
                 <h1 class="bold"> Moman <br> Amjad</h1>
-                <h3 class="">Showcase 2026</h3>
+                <h2 class="">Showcase 2026</h2>
               </div>
 
               <div class="sidebar space-mono-regular flex-col normalText flex-start">
@@ -551,7 +551,7 @@
 
               <div class="bodyHeader">
                 <h1 class="bold big">Contributions</h1>
-                <h3 class="">Open Source Work</h3>
+                <h2 class="h3">Open Source Work</h2>
               </div>
 
               <div class="body">
@@ -573,7 +573,7 @@
                     </div>
                     <div class="os-info">
                       <span class="os-tag">adrianhajdin / project_youtube_clone &nbsp;⭐ 1.5k+</span>
-                      <h4>Fixed the broken YouTube clone</h4>
+                      <h3 class="h4">Fixed the broken YouTube clone</h3>
                       <p>The RapidAPI it was using stopped working and the whole project was dead. I switched it over to
                         the official YouTube Data API v3 — had to rewrite the fetch logic and touch a bunch of
                         components
@@ -598,7 +598,7 @@
                     </div>
                     <div class="os-info">
                       <span class="os-tag">bradtraversy / expense-tracker-react &nbsp;⭐ 1.1k+</span>
-                      <h4>Persistence & Dark Mode System</h4>
+                      <h3 class="h4">Persistence & Dark Mode System</h3>
                       <p>Implemented a robust ThemeContext using React Context API and CSS variables. Added localStorage persistence to maintain user preferences across sessions and integrated a sleek toggle in the header.</p>
                       <div class="os-meta">
                         <span class="os-badge os-badge-merged">Merged</span>
@@ -620,7 +620,7 @@
                     </div>
                     <div class="os-info">
                       <span class="os-tag">momanamjad / project_youtube_clone</span>
-                      <h4>Cleaned up the mess I made earlier</h4>
+                      <h3 class="h4">Cleaned up the mess I made earlier</h3>
                       <p>Accidentally committed my API keys early on — classic. Scrubbed them from git history, moved to
                         Cloudinary for image hosting, and stopped burning through API quota by capping requests
                         properly.
@@ -645,7 +645,7 @@
             <div class="screenContentBody">
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
-                  <h3 class="marginzero">EXIT</h3>
+                  <div class="h3 marginzero">EXIT</div>
                   <svg fill="#ffffff" viewBox="0 0 16 16" height="30" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M12.207 9H5V7h7.136L11.05 5.914 12.464 4.5 16 8.036l-3.536 3.535-1.414-1.414L12.207 9zM10 4H8V2H2v12h6v-2h2v4H0V0h10v4z"
@@ -655,7 +655,7 @@
               </div>
               <div class="title flex-col flex-left">
                 <h1 class="bold"> Moman <br> Amjad</h1>
-                <h3 class="">Showcase 2026</h3>
+                <h2 class="">Showcase 2026</h2>
               </div>
 
               <div class="sidebar space-mono-regular flex-col normalText flex-start">
@@ -670,20 +670,20 @@
 
               <div class="bodyHeader">
                 <h1 class="bold big">Projects</h1>
-                <h3 class="">I have Built</h3>
+                <h2 class="h3">I have Built</h2>
               </div>
 
               <div class="body">
                 <div class="resumeDownload">
                   <hr>
                   <div class="flex gap" style="align-items:center">
-                    <img src="./assets/images/x.webp" height="65">
+                    <img src="./assets/images/x.webp" height="65" alt="Resume icon" loading="lazy">
                     <div>
-                      <h5>Looking for my resume?</h5>
-                      <h6><a href="./assets/resume.pdf" download>Click here to download</a></h6>
-                      <h6><a
+                      <h2 class="h5">Looking for my resume?</h2>
+                      <h3 class="h6"><a href="./assets/resume.pdf" download>Click here to download</a></h3>
+                      <h3 class="h6"><a
                           href="https://docs.google.com/document/d/1LlfNWSqvcL76hCxQD2O4te-xABO0aiP3/edit?usp=sharing&ouid=101804073816581409929&rtpof=true&sd=true"
-                          target="_blank" rel="noopener noreferrer">Click here to view (without downloading)</a></h6>
+                          target="_blank" rel="noopener noreferrer">Click here to view (without downloading)</a></h3>
                     </div>
                   </div>
                   <hr>
@@ -710,7 +710,7 @@
                 <div class="project-preview-window" style="background-image: url('./assets/images/img1.webp');">
                 </div>
                 <p>Experience the application live: <a target="_blank" rel="noopener noreferrer"
-                    href="https://github-kappa-two.vercel.app/">HERE</a></p>
+                    href="https://github-kappa-two.vercel.app/">Experience Github Clone Live</a></p>
                 <p class="header">Technologies Used - </p>
                 <ul>
                   <li>Frontend: HTML, CSS, JavaScript ,Tailwind,React</li>
@@ -737,7 +737,7 @@
                 <div class="project-preview-window" style="background-image: url('./assets/images/img2.webp');">
                 </div>
                 <p>Experience the application live: <a target="_blank" rel="noopener noreferrer"
-                    href="https://theater-web-in-react-orco.vercel.app/">HERE</a></p>
+                    href="https://theater-web-in-react-orco.vercel.app/">Experience Theater Web Live</a></p>
                 <p class="header">Technologies Used - </p>
                 <ul>
                   <li>Frontend: React, Tailwind CSS, JavaScript</li>
@@ -859,7 +859,7 @@
             <div class="screenContentBody">
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
-                  <h3 class="marginzero">EXIT</h3>
+                  <div class="h3 marginzero">EXIT</div>
                   <svg fill="#ffffff" viewBox="0 0 16 16" height="30" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M12.207 9H5V7h7.136L11.05 5.914 12.464 4.5 16 8.036l-3.536 3.535-1.414-1.414L12.207 9zM10 4H8V2H2v12h6v-2h2v4H0V0h10v4z"
@@ -869,7 +869,7 @@
               </div>
               <div class="title flex-col flex-left">
                 <h1 class="bold"> MOMAN <br> AMJAD</h1>
-                <h3 class="">Showcase 2026</h3>
+                <h2 class="">Showcase 2026</h2>
               </div>
 
               <div class="sidebar space-mono-regular flex-col normalText flex-start">
@@ -953,7 +953,7 @@
             <div class="screenContentBody">
               <div class="exitButton">
                 <div class="flex gap exitAnim" onclick="PhoneFullscreenModeSwitch()" style="cursor:pointer;">
-                  <h3 class="marginzero">EXIT</h3>
+                  <div class="h3 marginzero">EXIT</div>
                   <svg fill="#ffffff" viewBox="0 0 16 16" height="30" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M12.207 9H5V7h7.136L11.05 5.914 12.464 4.5 16 8.036l-3.536 3.535-1.414-1.414L12.207 9zM10 4H8V2H2v12h6v-2h2v4H0V0h10v4z"
@@ -963,7 +963,7 @@
               </div>
               <div class="title flex-col flex-left">
                 <h1 class="bold"> MOMAN <br> AMJAD</h1>
-                <h3 class="">Showcase 2026</h3>
+                <h2 class="">Showcase 2026</h2>
               </div>
 
               <div class="sidebar space-mono-regular flex-col normalText flex-start">
@@ -978,13 +978,13 @@
 
               <div class="bodyHeader">
                 <h1 class="bold big">GitHub</h1>
-                <h3 class="">Real-time Profile Data</h3>
+                <h2 class="h3">Real-time Profile Data</h2>
               </div>
 
               <div class="body github-body">
                 <div id="github-content" class="displayHide" style="transition: opacity 0.5s ease;">
                   <div class="github-profile-header flex gap mb-4">
-                    <img id="github-avatar" src="" alt="Avatar" height="100" style="border-radius: 50%;">
+                    <img id="github-avatar" src="" alt="Avatar" height="100" width="100" style="border-radius: 50%; object-fit: cover;" loading="lazy">
                     <div class="github-bio-box">
                       <h2 id="github-name" class="bold"></h2>
                       <p id="github-bio"></p>
@@ -1155,7 +1155,7 @@
       }
     });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
 
   <!-- Mobile Warning Overlay -->
   <div id="mobile-warning-overlay" style="background-color: #000000 !important;">
