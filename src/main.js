@@ -282,8 +282,8 @@ scene.add(sun);
 
 //moon
 
-const moonTexture = textureLoader.load(BASE + 'assets/images/moon.jpg');
-const moon3dTexture = textureLoader.load(BASE + 'assets/images/moonSurface.jpg');
+const moonTexture = textureLoader.load(BASE + 'assets/images/moon.webp');
+const moon3dTexture = textureLoader.load(BASE + 'assets/images/moonSurface.webp');
 // Reduced from 64x64 to 32x32 segments — virtually indistinguishable at render distance
 const moonGeometry = new THREE.SphereGeometry(3, 32, 32);
 const moonMaterial = new THREE.MeshStandardMaterial({

@@ -6,7 +6,7 @@ const STATIC_ASSETS = [
   '/src/main.js',
   // Essential textures only
   '/assets/images/sun.webp',
-  '/assets/images/moon.jpg',
+  '/assets/images/moon.webp',
   './assets/images/me.png',
   // Optimized 4KB Font
   '/assets/fonts/font.json',

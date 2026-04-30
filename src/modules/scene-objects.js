@@ -32,8 +32,8 @@ export async function createSceneObjects(scene, loadingManager, world, dynamicBo
   scene.add(sun);
 
   // Moon
-  const moonTexture = textureLoader.load(BASE + 'assets/images/moon.jpg');
-  const moon3dTexture = textureLoader.load(BASE + 'assets/images/moonSurface.jpg');
+  const moonTexture = textureLoader.load(BASE + 'assets/images/moon.webp');
+  const moon3dTexture = textureLoader.load(BASE + 'assets/images/moonSurface.webp');
   const moonGeometry = new THREE.SphereGeometry(3, 64, 64);
   const moonMaterial = new THREE.MeshStandardMaterial({ color: 0x202020, map: moonTexture, normalMap: moon3dTexture });
   const moon = new THREE.Mesh(moonGeometry, moonMaterial);
