@@ -36,12 +36,18 @@
   <meta name="twitter:image" content="https://momanamjad.vercel.app/og-image.jpg" />
   <meta name="twitter:image:alt" content="Moman — Frontend Developer Portfolio" />
 
+  <link rel="icon" href="data:,">
   <link rel="canonical" href="https://momanamjad.github.io/Portfolio/" />
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#00c9ff">
   <!-- Preconnect to speed up font loading -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <!-- Preconnect for GitHub API (deferred fetch, but saves handshake time) -->
+  <link rel="preconnect" href="https://api.github.com">
+  <!-- Preconnect for CDN icons -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <!-- Combined font request with display=swap to prevent FOIT -->
   <link rel="preload" as="style"
     href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
@@ -49,6 +55,11 @@
     <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap">
   </noscript>
+  <!-- Preload critical-path sun texture so it starts downloading during HTML parse -->
+  <link rel="preload" href="./assets/images/sun.webp" as="image">
+  <link rel="preload" href="./assets/images/moon.jpg" as="image">
+  <link rel="preload" href="./assets/images/moonSurface.jpg" as="image">
+  <link rel="preload" href="./assets/fonts/font2.json" as="fetch" crossorigin="anonymous">
   <link rel="stylesheet" href="./src/styles/style.css">
   <script>
     // Detect if the page is being loaded in an iframe to bypass mobile restrictions
@@ -175,60 +186,60 @@
                   <h2 align="center" class="moonTitle">Tech I have worked with</h2>
                   <div class="flex flex-row gap-4">
                     <div class="flex flex-col">
-                      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg"
-                        alt="HTML5 icon" height="56" width="56">
+                      <img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg"
+                        alt="HTML5 icon" height="56" width="56" loading="lazy" decoding="async">
                       <p>HTML</p>
                     </div>
                     <div class="flex flex-col">
-                      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
-                        alt="CSS3 icon" height="56" width="56">
+                      <img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+                        alt="CSS3 icon" height="56" width="56" loading="lazy" decoding="async">
                       <p>CSS</p>
                     </div>
                     <div class="flex flex-col">
-                      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
-                        alt="JavaScript icon" height="56" width="56">
+                      <img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+                        alt="JavaScript icon" height="56" width="56" loading="lazy" decoding="async">
                       <p>JS</p>
                     </div>
                     <div class="flex flex-col">
-                      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
-                        alt="React.js icon" height="56" width="56">
+                      <img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
+                        alt="React.js icon" height="56" width="56" loading="lazy" decoding="async">
                       <p>React</p>
                     </div>
                     <div class="flex flex-col">
-                      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg"
-                        alt="Bootstrap 5 icon" height="56" width="56">
+                      <img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg"
+                        alt="Bootstrap 5 icon" height="56" width="56" loading="lazy" decoding="async">
                       <p>Bootstrap</p>
                     </div>
                   </div>
                   <div class="flex flex-row gap-4">
                     <div class="flex flex-col">
-                      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg"
-                        alt="Tailwind CSS icon" height="56" width="56">
+                      <img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg"
+                        alt="Tailwind CSS icon" height="56" width="56" loading="lazy" decoding="async">
                       <p>Tailwind</p>
                     </div>
                     <div class="flex flex-col">
-                      <img src="https://simpleicons.org/icons/greensock.svg" alt="GSAP Animation icon" height="56"
-                        width="56" style="filter: brightness(0) invert(1);">
+                      <img data-src="https://simpleicons.org/icons/greensock.svg" alt="GSAP Animation icon" height="56"
+                        width="56" style="filter: brightness(0) invert(1);" loading="lazy" decoding="async">
                       <p>GSAP</p>
                     </div>
                     <div class="flex flex-col">
-                      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
-                        alt="Node.js icon" height="56" width="56">
+                      <img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
+                        alt="Node.js icon" height="56" width="56" loading="lazy" decoding="async">
                       <p>Node</p>
                     </div>
                     <div class="flex flex-col">
-                      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg"
-                        alt="MongoDB icon" height="56" width="56">
+                      <img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg"
+                        alt="MongoDB icon" height="56" width="56" loading="lazy" decoding="async">
                       <p>MongoDB</p>
                     </div>
                     <div class="flex flex-col">
-                      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git icon"
-                        height="56" width="56">
+                      <img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git icon"
+                        height="56" width="56" loading="lazy" decoding="async">
                       <p>Git</p>
                     </div>
                     <div class="flex flex-col">
-                      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
-                        alt="GitHub icon" height="56" width="56" style="filter: brightness(0) invert(1);">
+                      <img data-src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+                        alt="GitHub icon" height="56" width="56" style="filter: brightness(0) invert(1);" loading="lazy" decoding="async">
                       <p>GitHub</p>
                     </div>
                   </div>
@@ -388,7 +399,7 @@
                 <div class="resumeDownload">
                   <hr>
                   <div class="flex gap" style="align-items:center">
-                    <img src="./assets/images/x.webp" height="65" alt="Resume icon" loading="lazy">
+                    <img src="./assets/images/x.webp" height="65" width="65" alt="Resume icon" loading="lazy" decoding="async">
                     <div>
                       <h2 class="h3">Looking for my resume?</h2>
                       <h3 class="h4"><a href="./assets/resume.pdf" download>Click here to download</a></h3>
@@ -406,8 +417,8 @@
                   a natural extension of that curiosity, and I’m glad to be learning and building in an area that’s
                   always felt like home.</p>
                 <p>
-                  <img style="float:right" src="./assets/images/laptop.png" alt="laptop pic" height="250"
-                    class="ms-4 mb-4" loading="lazy">
+                  <img style="float:right" src="./assets/images/laptop.webp" alt="laptop pic" height="250"
+                    class="ms-4 mb-4" loading="lazy" decoding="async">
                   I've explored full-stack development, experimented with interactive games, and even created
                   browser extensions — mostly out of interest, sometimes out of necessity. Along the way, I’ve
                   worked with technologies like React, Node.js, MongoDB, Firebase, Tailwind CSS, and plain old
@@ -424,7 +435,7 @@
                   skills.
                 </p>
                 <img src="./assets/images/me.png" alt="picture of me" height="250" style="float:right"
-                  class="ms-4 mb-4" loading="lazy">
+                  class="ms-4 mb-4" loading="lazy" decoding="async">
 
                 <h3>My Hobbies</h3>
                 <p>
@@ -677,7 +688,7 @@
                 <div class="resumeDownload">
                   <hr>
                   <div class="flex gap" style="align-items:center">
-                    <img src="./assets/images/x.webp" height="65" alt="Resume icon" loading="lazy">
+                    <img src="./assets/images/x.webp" height="65" width="65" alt="Resume icon" loading="lazy" decoding="async">
                     <div>
                       <h2 class="h5">Looking for my resume?</h2>
                       <h3 class="h6"><a href="./assets/resume.pdf" download>Click here to download</a></h3>
@@ -707,7 +718,7 @@
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="ms-4"></iframe>
                 </div> -->
-                <div class="project-preview-window" style="background-image: url('./assets/images/img1.webp');">
+                <div class="project-preview-window" data-bg="./assets/images/img1.webp">
                 </div>
                 <p>Experience the application live: <a target="_blank" rel="noopener noreferrer"
                     href="https://github-kappa-two.vercel.app/">Experience Github Clone Live</a></p>
@@ -734,7 +745,7 @@
                   search, watch trailers, and view detailed movie listings. It includes secure authentication
                   via Clerk, allowing users to reserve seats for different screenings across various timezones.
                 </p>
-                <div class="project-preview-window" style="background-image: url('./assets/images/img2.webp');">
+                <div class="project-preview-window" data-bg="./assets/images/img2.webp">
                 </div>
                 <p>Experience the application live: <a target="_blank" rel="noopener noreferrer"
                     href="https://theater-web-in-react-orco.vercel.app/">Experience Theater Web Live</a></p>
@@ -760,7 +771,7 @@
 
                 </p>
                 <p class="header">Technologies Used - </p>
-                <div class="project-preview-window" style="background-image: url('./assets/images/img3.webp');">
+                <div class="project-preview-window" data-bg="./assets/images/img3.webp">
                 </div>
                 <ul>
                   <li>Frontend: HTML5, tailwind, react, GSAP animation</li>
@@ -782,7 +793,7 @@
                   professional interface.
                 </p>
                 <p class="header">Technologies Used - </p>
-                <div class="project-preview-window" style="background-image: url('./assets/images/img4.webp');">
+                <div class="project-preview-window" data-bg="./assets/images/img4.webp">
                 </div>
                 <ul>
                   <li>Frontend: React, Tailwind CSS</li>
@@ -803,7 +814,7 @@
                   options
                 </p>
                 <p class="header">Technologies Used - </p>
-                <div class="project-preview-window" style="background-image: url('./assets/images/img5.webp');">
+                <div class="project-preview-window" data-bg="./assets/images/img5.webp">
                 </div>
                 <ul>
                   <li>Frontend: Frontend: React, HTML5, CSS3, tailwind</li>
@@ -830,8 +841,14 @@
                   It was my first project using Three.js, and a great introduction to working with 3D on the web.
                 </p>
                 <p class="header">Technologies Used - </p>
-                <video preload="none" type="video/mp4" muted playsinline class="ms-4" style="float:right;"
-                  data-src="./assets/images/projects/portfolio.mp4" height="250" autoplay loop></video>
+                <video data-src="./assets/videos/portfolio-compressed.mp4" 
+                  preload="none" 
+                  muted 
+                  playsinline 
+                  class="ms-4" 
+                  style="float:right;"
+                  height="250" 
+                  loop></video>
                 <ul>
                   <li>Frontend: HTML5, CSS3, Vanilla JavaScript, THREE JS</li>
                   <li>Design/UI - Bootstrap 5, Google Fonts, Custom SVGs / Icons</li>
@@ -1120,13 +1137,6 @@
       
       // Load main 3D engine and assets
       import('./src/main.js').catch(err => console.error("Failed to load main.js", err));
-
-      // Also load any heavy videos
-      const videos = document.querySelectorAll('video[data-src]');
-      videos.forEach(v => {
-        v.src = v.getAttribute('data-src');
-        v.load();
-      });
     }
 
     if (window.innerWidth <= 1024) {

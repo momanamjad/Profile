@@ -7,7 +7,7 @@ const STATIC_ASSETS = [
   // Essential textures only
   '/assets/images/sun.webp',
   '/assets/images/moon.jpg',
-  '/assets/images/me.png',
+  './assets/images/me.png',
   // Optimized 4KB Font
   '/assets/fonts/font.json',
   // Iframe shell

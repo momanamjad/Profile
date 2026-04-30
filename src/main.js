@@ -4,6 +4,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { CSS3DRenderer, FontLoader, TextGeometry } from "three/examples/jsm/Addons.js";
 // Rapier physics engine imported dynamically later to save 889KB on initial load
 let RAPIER;
@@ -385,10 +386,17 @@ desktopAssetLoaders.push(() => {
 // Use a separate loader for heavy background assets so they don't block the initial page load
 const backgroundLoader = new GLTFLoader(); 
 
+// Draco decoder for geometry-compressed models
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath(
+  'https://www.gstatic.com/draco/versioned/decoders/1.5.7/'
+);
+backgroundLoader.setDRACOLoader(dracoLoader);
+
 //cursor
 var amongus, amongusCollider, amongusBody;
 desktopAssetLoaders.push(() => {
-  backgroundLoader.load(BASE + 'assets/models/amongus.glb', (gltf) => {
+  backgroundLoader.load(BASE + 'assets/models/amongus-draco.glb', (gltf) => {
     amongus = gltf.scene;
     amongus.position.set(0, 0, -2);
     scene.add(amongus);
@@ -427,7 +435,9 @@ var string = `+------------------------------+
 |    WELCOME STRANGER     |
 |          Scroll Down           |
 +------------------------------+`
-const fontLoader = new FontLoader(loadingManager); // Text is critical for first impression, so we wait for it
+// Font loaded with a separate loader so it doesn't block the loading overlay
+// (font2.json is 370KB — keeping it off loadingManager saves ~10s on slow 3G)
+const fontLoader = new FontLoader();
 fontLoader.load(BASE + 'assets/fonts/font2.json', function (font) {
   const textGeometry = new TextGeometry(string, {
     font: font,
@@ -1333,173 +1343,71 @@ document.addEventListener('mousedown', (e) => {
 //   }
 // }
 
-// GitHub Integration Functions
-async function fetchGitHubData(username) {
-  const contentEl = document.getElementById('github-content');
-  const errorEl = document.getElementById('github-error');
+// GitHub Integration — imported from module, deferred until section is visible
+import { fetchGitHubData } from './modules/github.js';
 
-  if (!contentEl || !errorEl) return;
-
-  // No more explicit loader element, just fade in the content once ready
-  contentEl.style.opacity = '0.3';
-  errorEl.classList.add('displayHide');
-
-  try {
-    const [profileRes, reposRes, eventsRes] = await Promise.all([
-      fetch(`https://api.github.com/users/${username}`),
-      fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`),
-      fetch(`https://api.github.com/users/${username}/events/public?per_page=100`)
-    ]);
-
-    if (profileRes.status === 403 || reposRes.status === 403) {
-      throw new Error('RATE_LIMIT');
-    }
-
-    if (!profileRes.ok || !reposRes.ok) throw new Error('FAILED');
-
-    const profileData = await profileRes.json();
-    const reposData = await reposRes.json();
-    const eventsData = await eventsRes.json();
-
-    updateGitHubUI(profileData, reposData, eventsData);
-
-    contentEl.classList.remove('displayHide');
-    contentEl.style.opacity = '1';
-  } catch (error) {
-    console.error('GitHub Fetch Error:', error);
-    errorEl.classList.remove('displayHide');
-    if (error.message === 'RATE_LIMIT') {
-      errorEl.innerHTML = '<p>GitHub API Rate Limit reached. <br> Please wait a few minutes and try again.</p>';
-    } else {
-      errorEl.innerHTML = '<p>Failed to load GitHub data. <br> Please check your connection.</p>';
-    }
-  }
-}
-
-function updateGitHubUI(profile, repos, events) {
-  const avatar = document.getElementById('github-avatar');
-  const name = document.getElementById('github-name');
-  const bio = document.getElementById('github-bio');
-  const reposCount = document.getElementById('github-repos-count');
-  const followers = document.getElementById('github-followers');
-  const totalStars = document.getElementById('github-total-stars');
-  const totalForks = document.getElementById('github-total-forks');
-  const profileLink = document.getElementById('github-profile-link');
-  const reposList = document.getElementById('github-repos-list');
-  const graph = document.getElementById('github-graph');
-  const statsCard = document.getElementById('github-stats-card');
-  const languagesCard = document.getElementById('github-languages-card');
-  const graphNew = document.getElementById('github-graph-new');
-  const reviewsCount = document.getElementById('github-reviews');
-  const commitsCount = document.getElementById('github-commits-count');
-  const issuesCount = document.getElementById('github-issues-count');
-  const prsCount = document.getElementById('github-prs-count');
-  const timeline = document.getElementById('github-recent-activity');
-
-  if (avatar) avatar.src = profile.avatar_url;
-  if (name) name.textContent = profile.name || profile.login;
-  if (bio) bio.textContent = profile.bio || 'No bio available';
-  if (reposCount) reposCount.textContent = profile.public_repos;
-  if (followers) followers.textContent = profile.followers;
-  
-  if (repos) {
-    const starsSum = repos.reduce((acc, repo) => acc + repo.stargazers_count, 0);
-    const forksSum = repos.reduce((acc, repo) => acc + repo.forks_count, 0);
-    if (totalStars) totalStars.textContent = starsSum;
-    if (totalForks) totalForks.textContent = forksSum;
-  }
-
-  if (profileLink) profileLink.href = profile.html_url;
-
-  if (graphNew) {
-    graphNew.src = `https://ghchart.rshah.org/409ba5/${profile.login}`;
-  }
-
-  // Calculate Activity Stats from events
-  if (events) {
-    let commits = 0;
-    let issues = 0;
-    let prs = 0;
-    let reviews = 0;
-
-    events.forEach(event => {
-      if (event.type === 'PushEvent') commits += event.payload.commits ? event.payload.commits.length : 1;
-      if (event.type === 'IssuesEvent') issues++;
-      if (event.type === 'PullRequestEvent') prs++;
-      if (event.type === 'PullRequestReviewCommentEvent') reviews++;
-    });
-
-    if (commitsCount) commitsCount.textContent = commits;
-    if (issuesCount) issuesCount.textContent = issues;
-    if (prsCount) prsCount.textContent = prs;
-    if (reviewsCount) reviewsCount.textContent = reviews;
-  }
-
-  if (statsCard) {
-    statsCard.src = `https://github-readme-stats.vercel.app/api?username=${profile.login}&show_icons=true&theme=github_dark&hide_border=true&title_color=00c9ff&text_color=ffffff&icon_color=92fe9d&t=${Date.now()}`;
-  }
-
-  if (languagesCard) {
-    languagesCard.src = `https://github-readme-stats.vercel.app/api/top-langs/?username=${profile.login}&layout=compact&theme=github_dark&hide_border=true&title_color=00c9ff&text_color=ffffff&t=${Date.now()}`;
-  }
-
-  if (timeline && events) {
-    timeline.innerHTML = '';
-    events.slice(0, 5).forEach(event => {
-      let action = '';
-      let target = event.repo.name.split('/')[1];
-
-      switch (event.type) {
-        case 'PushEvent': action = `Pushed commits to <span class="activity-action">${target}</span>`; break;
-        case 'WatchEvent': action = `Starred <span class="activity-action">${target}</span>`; break;
-        case 'CreateEvent': action = `Created <span class="activity-action">${target}</span>`; break;
-        case 'PullRequestEvent': action = `${event.payload.action.charAt(0).toUpperCase() + event.payload.action.slice(1)} PR on <span class="activity-action">${target}</span>`; break;
-        default: action = `Activity on <span class="activity-action">${target}</span>`;
+// Use IntersectionObserver to lazy-fetch GitHub data only when the section appears
+const _githubSection = document.getElementById('githubSection');
+if (_githubSection) {
+  const _githubObserver = new IntersectionObserver((entries, observer) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        fetchGitHubData('momanamjad');
+        observer.disconnect();
+        break;
       }
-
-      const date = new Date(event.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-      const item = document.createElement('div');
-      item.className = 'activity-item';
-      item.innerHTML = `
-        <span class="activity-date">${date}</span>
-        <p style="margin:0">${action}</p>
-      `;
-      timeline.appendChild(item);
-    });
-  }
-
-  if (reposList) {
-    reposList.innerHTML = '';
-    repos.forEach(repo => {
-      const repoCard = document.createElement('div');
-      repoCard.className = 'repo-card';
-      repoCard.innerHTML = `
-        <a href="${repo.html_url}" target="_blank" style="text-decoration: none; color: inherit;">
-          <h4 style="margin: 0 0 5px 0; color: #92fe9d;">${repo.name}</h4>
-          <p style="font-size: 13px; margin-bottom: 10px;">${repo.description || 'No description available'}</p>
-          <div class="repo-meta" style="display: flex; gap: 15px; font-size: 12px; opacity: 0.6;">
-            <span>Γ¡É ${repo.stargazers_count}</span>
-            <span>≡ƒì┤ ${repo.forks_count}</span>
-            <span>${repo.language || 'Code'}</span>
-          </div>
-        </a>
-      `;
-      reposList.appendChild(repoCard);
-    });
-  }
+    }
+  }, { threshold: 0.1 });
+  _githubObserver.observe(_githubSection);
 }
 
-// Initial load for GitHub data when reaching home section
-fetchGitHubData('momanamjad');
+// Lazy Load Video
+const videoEl = document.querySelector('video[data-src]');
+if (videoEl) {
+  const videoObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const src = videoEl.dataset.src;
+        if (src && !videoEl.src) {
+          videoEl.src = src;
+          videoEl.load();
+          videoEl.play().catch(() => {});
+        }
+        videoObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  videoObserver.observe(videoEl);
+}
 
-// Handle scene changes
-const originalChangeScene = window.changeScene;
-window.changeScene = (to) => {
-  if (typeof originalChangeScene === 'function') {
-    originalChangeScene(to);
-  } else {
-    document.querySelectorAll('.fullHeight').forEach(s => s.classList.add('displayHide'));
-    document.getElementById(to).classList.remove('displayHide');
-  }
-};
+// Lazy Load Background Images
+const bgImages = document.querySelectorAll('[data-bg]');
+if (bgImages.length > 0) {
+  const bgObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        el.style.backgroundImage = `url('${el.dataset.bg}')`;
+        observer.unobserve(el);
+      }
+    });
+  }, { rootMargin: '200px' });
+  bgImages.forEach(el => bgObserver.observe(el));
+}
+
+// Lazy Load Images
+const lazyImgs = document.querySelectorAll('img[data-src]');
+if (lazyImgs.length > 0) {
+  const imgObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        el.src = el.dataset.src;
+        observer.unobserve(el);
+      }
+    });
+  }, { rootMargin: '200px' });
+  lazyImgs.forEach(el => imgObserver.observe(el));
+}
+

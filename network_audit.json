@@ -1,0 +1,288 @@
+{
+  "summary": {
+    "totalRequests": 35,
+    "totalTransferSize": 3503135,
+    "finishTimeMs": 2233,
+    "domContentLoadedMs": 265,
+    "loadTimeMs": 2188
+  },
+  "requests": [
+    {
+      "url": "http://localhost:4174/Portfolio/",
+      "type": "Document",
+      "status": 200,
+      "startMs": 0,
+      "endMs": 33,
+      "sizeBytes": 14627
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap",
+      "type": "Stylesheet",
+      "status": 200,
+      "startMs": 42,
+      "endMs": 580,
+      "sizeBytes": 1384
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/images/sun.webp",
+      "type": "Image",
+      "status": 200,
+      "startMs": 43,
+      "endMs": 147,
+      "sizeBytes": 164718
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/images/moon.jpg",
+      "type": "Image",
+      "status": 200,
+      "startMs": 43,
+      "endMs": 155,
+      "sizeBytes": 139338
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/images/moonSurface.jpg",
+      "type": "Image",
+      "status": 200,
+      "startMs": 43,
+      "endMs": 171,
+      "sizeBytes": 87629
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/fonts/font2.json",
+      "type": "Other",
+      "status": 200,
+      "startMs": 44,
+      "endMs": 214,
+      "sizeBytes": 74099
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css",
+      "type": "Stylesheet",
+      "status": 200,
+      "startMs": 44,
+      "endMs": 243,
+      "sizeBytes": 33975
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/index-DnOS9gqy.js",
+      "type": "Script",
+      "status": 200,
+      "startMs": 44,
+      "endMs": 150,
+      "sizeBytes": 1064
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/three-z7AtgjVJ.js",
+      "type": "Script",
+      "status": 200,
+      "startMs": 44,
+      "endMs": 224,
+      "sizeBytes": 155618
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/index-ByJnzM7y.css",
+      "type": "Stylesheet",
+      "status": 200,
+      "startMs": 44,
+      "endMs": 153,
+      "sizeBytes": 5921
+    },
+    {
+      "url": "https://img.shields.io/badge/@is--a--dev-0D1117?style=flat-square&logo=github&logoColor=white",
+      "type": "Image",
+      "status": 200,
+      "startMs": 44,
+      "endMs": 353,
+      "sizeBytes": 1854
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js",
+      "type": "Script",
+      "status": 200,
+      "startMs": 45,
+      "endMs": 245,
+      "sizeBytes": 29722
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/manifest.json",
+      "type": "Manifest",
+      "status": 200,
+      "startMs": 229,
+      "endMs": 247,
+      "sizeBytes": 783
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/main-DmMtQOrS.js",
+      "type": "Script",
+      "status": 200,
+      "startMs": 242,
+      "endMs": 254,
+      "sizeBytes": 9173
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/images/sun.webp",
+      "type": "Image",
+      "status": 200,
+      "startMs": 1038,
+      "endMs": 1047,
+      "sizeBytes": 164770
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/images/moon.jpg",
+      "type": "Image",
+      "status": 200,
+      "startMs": 1039,
+      "endMs": 1048,
+      "sizeBytes": 139390
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/images/moonSurface.jpg",
+      "type": "Image",
+      "status": 200,
+      "startMs": 1040,
+      "endMs": 1048,
+      "sizeBytes": 87681
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/models/newSmartphone.glb",
+      "type": "Fetch",
+      "status": 200,
+      "startMs": 1050,
+      "endMs": 1056,
+      "sizeBytes": 227421
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/models/amongus-draco.glb",
+      "type": "Fetch",
+      "status": 200,
+      "startMs": 1050,
+      "endMs": 1058,
+      "sizeBytes": 271337
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/models/rocket.glb",
+      "type": "Fetch",
+      "status": 200,
+      "startMs": 1051,
+      "endMs": 1056,
+      "sizeBytes": 170029
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/models/laptop2.glb",
+      "type": "Fetch",
+      "status": 200,
+      "startMs": 1051,
+      "endMs": 1062,
+      "sizeBytes": 620165
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/images/grad.jpg",
+      "type": "Image",
+      "status": 200,
+      "startMs": 1256,
+      "endMs": 1263,
+      "sizeBytes": 28973
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/rapier-D-mgTEro.js",
+      "type": "Script",
+      "status": 200,
+      "startMs": 1256,
+      "endMs": 1348,
+      "sizeBytes": 891586
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dMIFZifjKcF5UAWdDRaPpZUFWaHg.woff2",
+      "type": "Font",
+      "status": 200,
+      "startMs": 1627,
+      "endMs": 1771,
+      "sizeBytes": 16753
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/anton/v27/1Ptgg87LROyAm3Kz-C8.woff2",
+      "type": "Font",
+      "status": 200,
+      "startMs": 1628,
+      "endMs": 1924,
+      "sizeBytes": 18641
+    },
+    {
+      "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2",
+      "type": "Font",
+      "status": 200,
+      "startMs": 1631,
+      "endMs": 1743,
+      "sizeBytes": 16549
+    },
+    {
+      "url": "https://www.gstatic.com/draco/versioned/decoders/1.5.7/draco_wasm_wrapper.js",
+      "type": "Fetch",
+      "status": 200,
+      "startMs": 1649,
+      "endMs": 1726,
+      "sizeBytes": 11875
+    },
+    {
+      "url": "https://www.gstatic.com/draco/versioned/decoders/1.5.7/draco_decoder.wasm",
+      "type": "Fetch",
+      "status": 200,
+      "startMs": 1650,
+      "endMs": 1782,
+      "sizeBytes": 88898
+    },
+    {
+      "url": "blob:http://localhost:4174/6d9651a2-6e05-4dfe-ad3b-b4b4656a604d",
+      "type": "Fetch",
+      "status": 200,
+      "startMs": 1659,
+      "endMs": 1661,
+      "sizeBytes": 0
+    },
+    {
+      "url": "blob:http://localhost:4174/2f5ed69e-7c05-4e1b-9124-c3cfc704a500",
+      "type": "Fetch",
+      "status": 200,
+      "startMs": 1660,
+      "endMs": 1661,
+      "sizeBytes": 0
+    },
+    {
+      "url": "blob:http://localhost:4174/ab609667-1885-4868-b1c4-f2a9d675407f",
+      "type": "Fetch",
+      "status": 200,
+      "startMs": 1660,
+      "endMs": 1662,
+      "sizeBytes": 0
+    },
+    {
+      "url": "blob:http://localhost:4174/d42c0407-341c-4483-8b00-8bc15ed2a7ef",
+      "type": "Script",
+      "startMs": 2224,
+      "endMs": null,
+      "sizeBytes": 0
+    },
+    {
+      "url": "http://localhost:4174/Portfolio/assets/images/me.png",
+      "type": "Other",
+      "status": 200,
+      "startMs": 2224,
+      "endMs": 2233,
+      "sizeBytes": 29162
+    },
+    {
+      "url": "blob:http://localhost:4174/d42c0407-341c-4483-8b00-8bc15ed2a7ef",
+      "type": "Script",
+      "startMs": 2225,
+      "endMs": null,
+      "sizeBytes": 0
+    },
+    {
+      "url": "blob:http://localhost:4174/d42c0407-341c-4483-8b00-8bc15ed2a7ef",
+      "type": "Script",
+      "startMs": 2227,
+      "endMs": null,
+      "sizeBytes": 0
+    }
+  ]
+}

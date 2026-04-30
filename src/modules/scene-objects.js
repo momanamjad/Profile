@@ -51,7 +51,7 @@ export async function createSceneObjects(scene, loadingManager, world, dynamicBo
 
   // Loaders as Promises
   const loadAmongus = () => new Promise((resolve) => {
-    loader.load(BASE + 'assets/models/amongus.glb', (gltf) => {
+    loader.load(BASE + 'assets/models/amongus-draco.glb', (gltf) => {
       const amongus = gltf.scene;
       amongus.position.set(0, 0, -2);
       scene.add(amongus);
