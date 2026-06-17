@@ -33,6 +33,22 @@ const apps = {
         title: "Theater Web",
         url: "https://theater-web-in-react-orco.vercel.app/"
     },
+    tinted: {
+        title: "Tinted Extension",
+        url: "https://tinted-orpin.vercel.app/",
+        isExternal: true,
+        tech: "React & Tailwind",
+        previewImg: "../assets/images/img6.webp",
+        description: "Customize your screen color temperature, reduce eye strain, and protect your eyes using custom warm overlays and scheduling features."
+    },
+    spotify: {
+        title: "Spotify Player",
+        url: "https://marketplace.visualstudio.com/items?itemName=momanamjad.spotify-mini-player&ssr=false#review-details",
+        isExternal: true,
+        tech: "VS Code Extension",
+        previewImg: "../assets/images/img7.webp",
+        description: "A premium Spotify sidebar music controller and mini-player for Visual Studio Code, complete with keyboard shortcuts, OAuth, and voice control."
+    },
     profile: {
         title: "User Profile",
         isProfile: true
@@ -152,7 +168,7 @@ function openApp(appKey) {
         content = `
             <div class="user-card">
                 <div class="user-header">
-                    <img src="./assets/profile.png" alt="Profile">
+                    <img src="./assets/profile.webp" alt="Profile">
                     <h3>Moman Amjad</h3>
                     <p>Web Developer & Intern</p>
                 </div>
@@ -163,9 +179,29 @@ function openApp(appKey) {
                 <button class="view-resume-btn" onclick="window.open('https://docs.google.com/document/d/1LlfNWSqvcL76hCxQD2O4te-xABO0aiP3/edit?usp=sharing&ouid=101804073816581409929&rtpof=true&sd=true', '_blank')">View Resume</button>
             </div>
         `;
+    } else if (app.isExternal) {
+        windowEl.classList.add("external-window");
+        content = `
+            <div class="external-project-view">
+                <div class="project-header">
+                    <h2>${app.title}</h2>
+                    <span class="tech-stack">${app.tech || ''}</span>
+                </div>
+                <div class="project-preview-container">
+                    <img src="${app.previewImg}" alt="${app.title} preview" class="project-preview-img">
+                </div>
+                <div class="project-footer">
+                    <p class="project-desc">${app.description || ''}</p>
+                    <button class="launch-btn" onclick="window.open('${app.url}', '_blank')">
+                        Launch Live Project
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 8px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </button>
+                </div>
+            </div>
+        `;
     }
 
-    const windowIcon = app.isProfile ? "./assets/profile.png" : "./assets/globe.png";
+    const windowIcon = app.isProfile ? "./assets/profile.webp" : "./assets/globe.webp";
 
     windowEl.innerHTML = `
         <div class="title-bar">
