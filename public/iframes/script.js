@@ -34,12 +34,12 @@ const apps = {
         url: "https://theater-web-in-react-orco.vercel.app/"
     },
     tinted: {
-        title: "Tinted Extension",
-        url: "https://tinted-orpin.vercel.app/",
+        title: "Tintd Pro",
+        url: "https://github.com/momanamjad/Tinted-",
         isExternal: true,
-        tech: "React & Tailwind",
+        tech: "React, TypeScript, Electron",
         previewImg: "../assets/images/img6.webp",
-        description: "Customize your screen color temperature, reduce eye strain, and protect your eyes using custom warm overlays and scheduling features."
+        description: "Premium Windows desktop app to customize folder icons. Features multi-folder styling, theme presets, custom icons, and Context Menu integration."
     },
     spotify: {
         title: "Spotify Player",
