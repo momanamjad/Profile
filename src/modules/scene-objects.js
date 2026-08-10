@@ -10,23 +10,83 @@ export async function createSceneObjects(scene, loadingManager, world, dynamicBo
   const loader = new GLTFLoader(loadingManager);
   const fontLoader = new FontLoader(loadingManager);
 
-  // Stars
-  const starCount = 450;
-  const starGeometry = new THREE.SphereGeometry(0.26, 6, 6);
-  const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-  const starMesh = new THREE.InstancedMesh(starGeometry, starMaterial, starCount);
-  const dummy = new THREE.Object3D();
+  // Dynamic Lighting
+  const solarLight = new THREE.DirectionalLight(0xffea9f, 2.2);
+  solarLight.position.set(100, 40, -110);
+  scene.add(solarLight);
+
+  const ambientLight = new THREE.AmbientLight(0x1a2638, 1.5);
+  scene.add(ambientLight);
+
+  const cyanPointLight = new THREE.PointLight(0x00c9ff, 3, 50);
+  cyanPointLight.position.set(0, 5, 0);
+  scene.add(cyanPointLight);
+
+  // Multi-layered Starfield Particles
+  const starCount = 1200;
+  const starGeometry = new THREE.BufferGeometry();
+  const starPositions = new Float32Array(starCount * 3);
+  const starColors = new Float32Array(starCount * 3);
+
+  const palette = [
+    new THREE.Color(0xffffff),
+    new THREE.Color(0x00c9ff),
+    new THREE.Color(0x9d4edd),
+    new THREE.Color(0x00ffb4)
+  ];
+
   for (let i = 0; i < starCount; i++) {
-    dummy.position.set(THREE.MathUtils.randFloat(-300, 300), THREE.MathUtils.randFloat(-200, 200), THREE.MathUtils.randFloat(-600, -100));
-    dummy.updateMatrix();
-    starMesh.setMatrixAt(i, dummy.matrix);
+    starPositions[i * 3] = THREE.MathUtils.randFloat(-400, 400);
+    starPositions[i * 3 + 1] = THREE.MathUtils.randFloat(-300, 300);
+    starPositions[i * 3 + 2] = THREE.MathUtils.randFloat(-700, -50);
+
+    const color = palette[Math.floor(Math.random() * palette.length)];
+    starColors[i * 3] = color.r;
+    starColors[i * 3 + 1] = color.g;
+    starColors[i * 3 + 2] = color.b;
   }
+
+  starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+  starGeometry.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+
+  const starMaterial = new THREE.PointsMaterial({
+    size: 1.2,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.85,
+    sizeAttenuation: true
+  });
+
+  const starMesh = new THREE.Points(starGeometry, starMaterial);
   scene.add(starMesh);
+
+  // Floating Cyber Dust Field near foreground
+  const dustCount = 300;
+  const dustGeometry = new THREE.BufferGeometry();
+  const dustPositions = new Float32Array(dustCount * 3);
+
+  for (let i = 0; i < dustCount; i++) {
+    dustPositions[i * 3] = THREE.MathUtils.randFloat(-20, 20);
+    dustPositions[i * 3 + 1] = THREE.MathUtils.randFloat(-15, 15);
+    dustPositions[i * 3 + 2] = THREE.MathUtils.randFloat(-25, 15);
+  }
+
+  dustGeometry.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
+  const dustMaterial = new THREE.PointsMaterial({
+    size: 0.12,
+    color: 0x00c9ff,
+    transparent: true,
+    opacity: 0.6,
+    blending: THREE.AdditiveBlending
+  });
+
+  const dustParticles = new THREE.Points(dustGeometry, dustMaterial);
+  scene.add(dustParticles);
 
   // Sun
   const sunTexture = textureLoader.load(BASE + 'assets/images/sun.webp');
-  const sunGeometry = new THREE.SphereGeometry(20, 25, 25);
-  const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFF00, map: sunTexture });
+  const sunGeometry = new THREE.SphereGeometry(20, 32, 32);
+  const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFF88, map: sunTexture });
   const sun = new THREE.Mesh(sunGeometry, sunMaterial);
   sun.position.set(100, 40, -110);
   scene.add(sun);
@@ -35,7 +95,7 @@ export async function createSceneObjects(scene, loadingManager, world, dynamicBo
   const moonTexture = textureLoader.load(BASE + 'assets/images/moon.webp');
   const moon3dTexture = textureLoader.load(BASE + 'assets/images/moonSurface.webp');
   const moonGeometry = new THREE.SphereGeometry(3, 64, 64);
-  const moonMaterial = new THREE.MeshStandardMaterial({ color: 0x202020, map: moonTexture, normalMap: moon3dTexture });
+  const moonMaterial = new THREE.MeshStandardMaterial({ color: 0x303030, map: moonTexture, normalMap: moon3dTexture, roughness: 0.8 });
   const moon = new THREE.Mesh(moonGeometry, moonMaterial);
   moon.position.set(1000, 1000, -500);
   moon.rotation.set(0.775, 0.674, 0);
@@ -91,5 +151,5 @@ export async function createSceneObjects(scene, loadingManager, world, dynamicBo
 
   const [{ amongus, amongusBody }, rocket] = await Promise.all([loadAmongus(), loadRocket(), loadText()]);
 
-  return { sun, moon, amongus, amongusBody, pivot, torus, rocket };
+  return { sun, moon, amongus, amongusBody, pivot, torus, rocket, starMesh, dustParticles };
 }

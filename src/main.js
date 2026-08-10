@@ -956,6 +956,12 @@ function animate() {
   sun.rotation.x += 0.0001;
   sun.rotation.y += 0.0002;
 
+  if (typeof starMesh !== 'undefined' && starMesh) starMesh.rotation.y += 0.00015;
+  if (typeof dustParticles !== 'undefined' && dustParticles) {
+    dustParticles.rotation.y -= 0.00025;
+    dustParticles.rotation.x += 0.0001;
+  }
+
   if (world)
     world.step();
 

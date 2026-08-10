@@ -1,11 +1,11 @@
 :root {
-    --primary: #00ADB5;
-    --secondary: #393E46;
-    --dark: #222831;
-    --light: #EEEEEE;
-    --glass: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glow: 0 0 20px rgba(0, 173, 181, 0.5);
+    --primary: #00c9ff;
+    --secondary: #1a1a2e;
+    --dark: #07090e;
+    --light: #ffffff;
+    --glass: rgba(13, 17, 26, 0.7);
+    --glass-border: rgba(0, 201, 255, 0.25);
+    --glow: 0 0 25px rgba(0, 201, 255, 0.6);
 }
 
 * {

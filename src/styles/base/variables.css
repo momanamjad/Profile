@@ -2,14 +2,43 @@
   --app-frame-width: min(76vw, calc(78vh * 1.6), 1120px);
   --app-frame-height: calc(var(--app-frame-width) / 1.6);
   --app-frame-radius: 26px;
-  --app-frame-shadow: 0 36px 120px rgba(0, 0, 0, 0.5);
+  --app-frame-shadow: 0 36px 120px rgba(0, 0, 0, 0.7);
+
+  /* Typography */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Space Grotesk', 'Outfit', sans-serif;
+  --font-heading: 'Anton', sans-serif;
+  --font-mono: 'Space Mono', monospace;
 
   /* Colors */
-  --bg-dark: #0c0c0c;
-  --bg-gradient-start: #27163d;
-  --bg-gradient-end: #170f29;
-  --accent-green: #92fe9d;
-  --accent-blue: #00c9ff;
+  --bg-dark: #07090e;
+  --bg-darker: #040508;
+  --bg-gradient-start: #1c0e33;
+  --bg-gradient-end: #0a0614;
+
+  /* Neon Accents */
+  --neon-cyan: #00c9ff;
+  --neon-purple: #9d4edd;
+  --neon-pink: #f72585;
+  --neon-green: #00ffb4;
+  --neon-amber: #ffb703;
+
+  /* Legacy Accent Mappings */
+  --accent-green: var(--neon-green);
+  --accent-blue: var(--neon-cyan);
+
+  /* Glassmorphism System */
+  --glass-bg: rgba(13, 17, 26, 0.65);
+  --glass-bg-hover: rgba(22, 28, 42, 0.78);
+  --glass-border: rgba(0, 201, 255, 0.18);
+  --glass-border-hover: rgba(0, 201, 255, 0.45);
+  --glass-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+  --glass-glow: 0 0 30px rgba(0, 201, 255, 0.2);
+  --glass-glow-purple: 0 0 30px rgba(157, 78, 221, 0.25);
+
+  /* Text Colors */
   --text-white: #ffffff;
-  --text-dim: rgba(255, 255, 255, 0.6);
+  --text-dim: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.45);
 }
+

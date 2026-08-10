@@ -15,10 +15,13 @@ export function setupThree() {
     canvas,
     antialias: true,
     powerPreference: 'high-performance',
+    alpha: true,
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setClearColor(0x000000);
+  renderer.setClearColor(0x05070c, 1);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.2;
 
   const css3dRenderer = new CSS3DRenderer();
   css3dRenderer.setSize(window.innerWidth, window.innerHeight);
@@ -28,11 +31,13 @@ export function setupThree() {
   css3dRenderer.domElement.style.zIndex = '10';
   document.body.appendChild(css3dRenderer.domElement);
 
-  // Post-processing
+  // Post-processing: Glowing bloom pass tailored for neon space theme
   const renderScene = new RenderPass(scene, camera);
   const bloomPass = new UnrealBloomPass(
-    new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2),
-    1.4, 0.4, 0.1
+    new THREE.Vector2(window.innerWidth, window.innerHeight),
+    1.2, // strength
+    0.45, // radius
+    0.15 // threshold
   );
   const composer = new EffectComposer(renderer);
   composer.addPass(renderScene);
