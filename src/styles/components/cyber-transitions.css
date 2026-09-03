@@ -1,0 +1,71 @@
+/* ═══════════════════════════════════════════════════════════════
+   Cyber Scene Transitions & Terminal Typewriter Styling
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Smooth Scene Slide & Fade */
+@keyframes sceneFadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.scene-fade-slide {
+  animation: sceneFadeSlide 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform, filter;
+}
+
+/* ── Terminal Typewriter ── */
+.terminal-title-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 44px;
+}
+
+.terminal-title-text {
+  font-family: "Space Mono", monospace;
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 14px rgba(0, 201, 255, 0.4);
+}
+
+.terminal-cursor {
+  display: inline-block;
+  font-family: "Space Mono", monospace;
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 700;
+  color: #00c9ff;
+  text-shadow: 0 0 10px #00c9ff, 0 0 20px #00c9ff;
+  animation: terminalBlink 0.9s infinite ease-in-out;
+  margin-left: 4px;
+  line-height: 1;
+}
+
+@keyframes terminalBlink {
+  0%, 45% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50%, 95% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ── Magnetic Target Smooth Return ── */
+.magnetic-target {
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}

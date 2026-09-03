@@ -1,5 +1,9 @@
 @import './components/text-selection.css';
 @import './components/skill-tags.css';
+@import './components/cyber-cursor.css';
+@import './components/cyber-transitions.css';
+@import './components/command-palette.css';
+@import './components/analytics-dashboard.css';
 
 /* Laptop screen animation */
 #saviorOfScrolls {

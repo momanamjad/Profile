@@ -1,0 +1,299 @@
+/* ═══════════════════════════════════════════════════════════════
+   Command Palette (Ctrl + K) & Cyber Toast Styling
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Floating Trigger Badge ── */
+#cmd-palette-trigger-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 28px;
+  z-index: 99980;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(13, 17, 26, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 201, 255, 0.3);
+  border-radius: 50px;
+  color: #ffffff;
+  font-family: "Space Mono", monospace;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 201, 255, 0.15);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+#cmd-palette-trigger-btn:hover {
+  border-color: #00c9ff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 201, 255, 0.35);
+  transform: translateY(-2px);
+}
+
+#cmd-palette-trigger-btn .cmd-kbd {
+  background: rgba(0, 201, 255, 0.15);
+  border: 1px solid rgba(0, 201, 255, 0.4);
+  color: #00c9ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ── Modal Overlay ── */
+#command-palette-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100010;
+  background: rgba(3, 5, 12, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 12vh;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+
+#command-palette-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Modal Card ── */
+.cmd-palette-card {
+  width: min(92vw, 620px);
+  background: linear-gradient(145deg, rgba(22, 12, 38, 0.97) 0%, rgba(10, 8, 20, 0.98) 100%);
+  border: 1px solid rgba(0, 201, 255, 0.35);
+  border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.8), 0 0 35px rgba(0, 201, 255, 0.2);
+  overflow: hidden;
+  transform: scale(0.96) translateY(-12px);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+#command-palette-modal.active .cmd-palette-card {
+  transform: scale(1) translateY(0);
+}
+
+/* ── Search Input Header ── */
+.cmd-search-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 12px;
+}
+
+.cmd-search-icon {
+  color: #00c9ff;
+  font-size: 18px;
+  font-family: "Space Mono", monospace;
+  font-weight: 700;
+  text-shadow: 0 0 10px #00c9ff;
+}
+
+.cmd-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: "Space Mono", monospace;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+.cmd-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.cmd-search-esc {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.6);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: "Space Mono", monospace;
+}
+
+/* ── Command Results List ── */
+.cmd-results-list {
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 10px 12px;
+  list-style: none;
+  margin: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 201, 255, 0.3) transparent;
+}
+
+.cmd-group-title {
+  font-size: 10px;
+  font-family: "Space Mono", monospace;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(0, 201, 255, 0.7);
+  padding: 10px 12px 4px;
+}
+
+.cmd-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  margin-bottom: 3px;
+  border: 1px solid transparent;
+}
+
+.cmd-item:hover,
+.cmd-item.selected {
+  background: rgba(0, 201, 255, 0.12);
+  border-color: rgba(0, 201, 255, 0.35);
+  box-shadow: 0 0 15px rgba(0, 201, 255, 0.1);
+  transform: translateX(3px);
+}
+
+.cmd-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cmd-item-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #00c9ff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cmd-item.selected .cmd-item-icon {
+  background: rgba(0, 201, 255, 0.2);
+  border-color: rgba(0, 201, 255, 0.5);
+  color: #ffffff;
+}
+
+.cmd-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cmd-item-title {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.cmd-item-desc {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+}
+
+.cmd-item-badge {
+  font-size: 10px;
+  font-family: "Space Mono", monospace;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.cmd-item.selected .cmd-item-badge {
+  color: #92fe9d;
+  border-color: rgba(146, 254, 157, 0.3);
+  background: rgba(146, 254, 157, 0.08);
+}
+
+.cmd-empty-state {
+  text-align: center;
+  padding: 30px;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: "Space Mono", monospace;
+  font-size: 13px;
+}
+
+/* ── Modal Footer ── */
+.cmd-palette-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.25);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: "Space Mono", monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.cmd-hints {
+  display: flex;
+  gap: 14px;
+}
+
+.cmd-hints span kbd {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 10px;
+  margin-right: 4px;
+}
+
+/* ── Cyber Toast Notification ── */
+#cyber-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  z-index: 100020;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: rgba(13, 20, 32, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid #00c9ff;
+  border-radius: 50px;
+  color: #ffffff;
+  font-family: "Space Mono", monospace;
+  font-size: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 201, 255, 0.35);
+  pointer-events: none;
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+}
+
+#cyber-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+#cyber-toast .toast-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #92fe9d;
+  box-shadow: 0 0 8px #92fe9d;
+}

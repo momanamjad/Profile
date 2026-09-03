@@ -1217,9 +1217,22 @@ function changeScene(to) {
     el.classList.remove('visible');
   });
 
+  currentScene.classList.remove("scene-fade-slide");
   currentScene.classList.add("displayHide");
   currentScene = document.getElementById(to);
   currentScene.classList.remove("displayHide");
+
+  // Trigger smooth cyber fade-slide transition
+  requestAnimationFrame(() => {
+    currentScene.classList.add("scene-fade-slide");
+  });
+
+  // Re-trigger typewriter if navigating to Welcome/homeSection
+  if (to === 'homeSection') {
+    if (typeof window.restartTypingTerminal === 'function') {
+      window.restartTypingTerminal();
+    }
+  }
 
   // Trigger skill-tag slide-up animations with staggered delays
   const tags = currentScene.querySelectorAll('.skill-tag');
@@ -1233,7 +1246,20 @@ function changeScene(to) {
   });
 }
 
-window.changeScene = changeScene
+window.changeScene = changeScene;
+
+function navigateToScreenSection(sectionId) {
+  const phoneDOM = document.getElementById('horizontalPhoneScreen');
+  const isPhoneOpen = phoneDOM && phoneDOM.style.opacity === '1' && !phoneDOM.classList.contains('displayHide');
+
+  if (!isPhoneOpen && typeof PhoneFullscreenModeSwitch === 'function') {
+    PhoneFullscreenModeSwitch();
+  }
+
+  changeScene(sectionId);
+}
+
+window.navigateToScreenSection = navigateToScreenSection;
 
 // Contact Form AJAX Submission
 document.addEventListener('DOMContentLoaded', () => {
@@ -1369,6 +1395,22 @@ import { fetchGitHubData } from './modules/github.js';
 // Futuristic text selection glow effect
 import { initSelectionGlow } from './modules/selection-glow.js';
 initSelectionGlow();
+
+// Futuristic Cyber Cursor & Magnetic Interaction Suite
+import { initCyberCursor } from './modules/cyber-cursor.js';
+import { initMagneticEffects } from './modules/magnetic-effects.js';
+import { initTypingTerminal, restartTypingTerminal } from './modules/typing-terminal.js';
+
+window.restartTypingTerminal = restartTypingTerminal;
+initCyberCursor();
+initMagneticEffects();
+initTypingTerminal();
+
+// Command Palette (Ctrl + K) & Visitor Analytics Dashboard
+import { initCommandPalette } from './modules/command-palette.js';
+import { initAnalyticsDashboard } from './modules/analytics-dashboard.js';
+initCommandPalette();
+initAnalyticsDashboard();
 
 // Use IntersectionObserver to lazy-fetch GitHub data only when the section appears
 const _githubSection = document.getElementById('githubSection');

@@ -1,0 +1,103 @@
+/* ═══════════════════════════════════════════════════════════════
+   Cyber Cursor — Precision Neon Pinpoint & Trailing Aura Ring
+   ═══════════════════════════════════════════════════════════════ */
+
+.cyber-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00c9ff;
+  box-shadow: 0 0 10px #00c9ff, 0 0 20px #00c9ff;
+  pointer-events: none;
+  z-index: 100002;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.15s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform, left, top;
+}
+
+.cyber-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 201, 255, 0.6);
+  background: rgba(0, 201, 255, 0.03);
+  box-shadow: 0 0 14px rgba(0, 201, 255, 0.25), inset 0 0 8px rgba(0, 201, 255, 0.1);
+  pointer-events: none;
+  z-index: 100001;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease,
+              background 0.25s ease,
+              box-shadow 0.25s ease,
+              opacity 0.25s ease;
+  will-change: transform, left, top;
+}
+
+/* Cursor Visible */
+.cyber-cursor-dot.visible,
+.cyber-cursor-ring.visible {
+  opacity: 1;
+}
+
+/* Interactive Hover state */
+.cyber-cursor-ring.cursor-hover {
+  width: 52px;
+  height: 52px;
+  border-color: rgba(146, 254, 157, 0.85);
+  background: rgba(0, 201, 255, 0.08);
+  box-shadow: 0 0 22px rgba(146, 254, 157, 0.4), inset 0 0 12px rgba(0, 201, 255, 0.18);
+}
+
+.cyber-cursor-dot.cursor-hover {
+  transform: translate(-50%, -50%) scale(1.6);
+  background: #92fe9d;
+  box-shadow: 0 0 14px #92fe9d, 0 0 24px #00c9ff;
+}
+
+/* Click Shockwave Burst */
+@keyframes cursorShockwave {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    border-color: #00c9ff;
+  }
+  50% {
+    border-color: #92fe9d;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.8);
+    opacity: 0;
+    border-color: #9d4edd;
+  }
+}
+
+.cyber-cursor-burst {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #00c9ff;
+  pointer-events: none;
+  z-index: 100000;
+  animation: cursorShockwave 0.4s ease-out forwards;
+}
+
+/* Disabled on touch/mobile devices */
+@media (hover: none) or (pointer: coarse) or (max-width: 1024px) {
+  .cyber-cursor-dot,
+  .cyber-cursor-ring,
+  .cyber-cursor-burst {
+    display: none !important;
+  }
+}
