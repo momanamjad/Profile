@@ -1212,11 +1212,25 @@ let contactSection = document.getElementById("contactSection");
 
 let currentScene = homeSection;
 function changeScene(to) {
-  // console.log(to);
+  // Reset skill-tag animations in the section we're leaving
+  currentScene.querySelectorAll('.skill-tag').forEach(el => {
+    el.classList.remove('visible');
+  });
+
   currentScene.classList.add("displayHide");
   currentScene = document.getElementById(to);
   currentScene.classList.remove("displayHide");
 
+  // Trigger skill-tag slide-up animations with staggered delays
+  const tags = currentScene.querySelectorAll('.skill-tag');
+  tags.forEach((el, i) => {
+    el.style.animationDelay = `${i * 0.07}s`;
+    // Reset animation by removing/re-adding class after a frame
+    el.classList.remove('visible');
+    requestAnimationFrame(() => {
+      el.classList.add('visible');
+    });
+  });
 }
 
 window.changeScene = changeScene
@@ -1351,6 +1365,10 @@ document.addEventListener('mousedown', (e) => {
 
 // GitHub Integration — imported from module, deferred until section is visible
 import { fetchGitHubData } from './modules/github.js';
+
+// Futuristic text selection glow effect
+import { initSelectionGlow } from './modules/selection-glow.js';
+initSelectionGlow();
 
 // Use IntersectionObserver to lazy-fetch GitHub data only when the section appears
 const _githubSection = document.getElementById('githubSection');

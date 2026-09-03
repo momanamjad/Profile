@@ -1,0 +1,48 @@
+/* ═══════════════════════════════════════════════════════════════
+   Skill Tags — Font-styled with upward entrance animation.
+   No colors or backgrounds — purely typographic distinction.
+   ═══════════════════════════════════════════════════════════════ */
+
+.skill-tag {
+  display: inline-block;
+  font-family: "Space Mono", monospace;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: #ffffff;
+
+  /* Start hidden below, animate in */
+  opacity: 0;
+  transform: translateY(14px);
+  animation: skillSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-play-state: paused;
+}
+
+/* Stagger the animation delays for a wave effect */
+.skill-tag:nth-child(2)  { animation-delay: 0.08s; }
+.skill-tag:nth-child(3)  { animation-delay: 0.16s; }
+.skill-tag:nth-child(4)  { animation-delay: 0.24s; }
+.skill-tag:nth-child(5)  { animation-delay: 0.32s; }
+.skill-tag:nth-child(6)  { animation-delay: 0.4s; }
+.skill-tag:nth-child(7)  { animation-delay: 0.48s; }
+.skill-tag:nth-child(8)  { animation-delay: 0.56s; }
+.skill-tag:nth-child(9)  { animation-delay: 0.64s; }
+.skill-tag:nth-child(10) { animation-delay: 0.72s; }
+
+/* When parent section is visible, play the animation */
+.skill-tag.visible {
+  animation-play-state: running;
+}
+
+@keyframes skillSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,3 +1,6 @@
+@import './components/text-selection.css';
+@import './components/skill-tags.css';
+
 /* Laptop screen animation */
 #saviorOfScrolls {
   opacity: 0;
@@ -460,6 +463,7 @@ html {
 .title {
   grid-area: 2/2/4/5;
   z-index: 5;
+  overflow: hidden;
 }
 
 .gap2 {
@@ -471,8 +475,9 @@ html {
 }
 
 .sidebar {
-  grid-area: 6/2/9/4;
+  grid-area: 5/2/9/4;
   z-index: 5;
+  padding-top: 10px;
 }
 
 .link {
@@ -519,6 +524,7 @@ html {
   /* Added right padding for safety */
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* sections(project screen stylings) */

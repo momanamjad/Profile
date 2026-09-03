@@ -2,6 +2,7 @@
 @import './layout/grid.css';
 @import './components/github.css';
 @import './components/animations.css';
+@import './components/text-selection.css';
 
 /* Base Styles */
 * {
