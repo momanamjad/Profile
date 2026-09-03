@@ -807,6 +807,9 @@ document.querySelectorAll(".body").forEach((el) => {
 })
 
 window.addEventListener('wheel', (e) => {
+  if (window.isModalActive) {
+    return;
+  }
   e.preventDefault();
   if (timerStarted || smartphoneMode) return;
 
@@ -1156,7 +1159,9 @@ function PhoneFullscreenModeSwitch() {
     schedulePhoneTransition(() => {
       loadingScreen.style.display = "none";
       screenContent.classList.remove("displayHide");
-      homeSection.classList.remove("displayHide");
+      const targetSec = pendingScreenSection || 'homeSection';
+      changeScene(targetSec);
+      pendingScreenSection = null;
       curtains.classList.remove("displayHide");
     }, 2400);
     schedulePhoneTransition(() => {
@@ -1210,22 +1215,39 @@ let projectSection = document.getElementById("projectSection");
 let githubSection = document.getElementById("githubSection");
 let contactSection = document.getElementById("contactSection");
 
-let currentScene = homeSection;
+const ALL_SCREEN_SECTIONS = [
+  'homeSection',
+  'aboutSection',
+  'experienceSection',
+  'openSourceSection',
+  'projectSection',
+  'githubSection',
+  'contactSection'
+];
+
+let pendingScreenSection = null;
+
 function changeScene(to) {
-  // Reset skill-tag animations in the section we're leaving
-  currentScene.querySelectorAll('.skill-tag').forEach(el => {
-    el.classList.remove('visible');
+  const target = document.getElementById(to);
+  if (!target) return;
+
+  ALL_SCREEN_SECTIONS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.querySelectorAll('.skill-tag').forEach(tag => tag.classList.remove('visible'));
+      if (id !== to) {
+        el.classList.remove('scene-fade-slide');
+        el.classList.add('displayHide');
+      }
+    }
   });
 
-  currentScene.classList.remove("scene-fade-slide");
-  currentScene.classList.add("displayHide");
-  currentScene = document.getElementById(to);
-  currentScene.classList.remove("displayHide");
-
-  // Trigger smooth cyber fade-slide transition
+  target.classList.remove('displayHide');
   requestAnimationFrame(() => {
-    currentScene.classList.add("scene-fade-slide");
+    target.classList.add('scene-fade-slide');
   });
+
+  currentScene = target;
 
   // Re-trigger typewriter if navigating to Welcome/homeSection
   if (to === 'homeSection') {
@@ -1235,10 +1257,9 @@ function changeScene(to) {
   }
 
   // Trigger skill-tag slide-up animations with staggered delays
-  const tags = currentScene.querySelectorAll('.skill-tag');
+  const tags = target.querySelectorAll('.skill-tag');
   tags.forEach((el, i) => {
     el.style.animationDelay = `${i * 0.07}s`;
-    // Reset animation by removing/re-adding class after a frame
     el.classList.remove('visible');
     requestAnimationFrame(() => {
       el.classList.add('visible');
@@ -1252,11 +1273,17 @@ function navigateToScreenSection(sectionId) {
   const phoneDOM = document.getElementById('horizontalPhoneScreen');
   const isPhoneOpen = phoneDOM && phoneDOM.style.opacity === '1' && !phoneDOM.classList.contains('displayHide');
 
-  if (!isPhoneOpen && typeof PhoneFullscreenModeSwitch === 'function') {
-    PhoneFullscreenModeSwitch();
+  if (!isPhoneOpen) {
+    pendingScreenSection = sectionId;
+    if (typeof PhoneFullscreenModeSwitch === 'function') {
+      PhoneFullscreenModeSwitch();
+    }
+    setTimeout(() => {
+      changeScene(sectionId);
+    }, 2450);
+  } else {
+    changeScene(sectionId);
   }
-
-  changeScene(sectionId);
 }
 
 window.navigateToScreenSection = navigateToScreenSection;

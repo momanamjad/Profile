@@ -200,6 +200,9 @@ function createAnalyticsDOM() {
 export function openAnalyticsDashboard() {
   if (!modalEl) createAnalyticsDOM();
 
+  window.isModalActive = true;
+  document.body.style.overflow = 'hidden';
+
   updateHUDValues();
   modalEl.classList.add('active');
 
@@ -219,6 +222,8 @@ export function openAnalyticsDashboard() {
 
 export function closeAnalyticsDashboard() {
   if (!modalEl) return;
+  window.isModalActive = false;
+  document.body.style.overflow = '';
   modalEl.classList.remove('active');
   if (clockInterval) {
     clearInterval(clockInterval);
