@@ -232,9 +232,9 @@ function createPaletteDOM() {
   triggerBtnEl.id = 'cmd-palette-trigger-btn';
   triggerBtnEl.innerHTML = `
     <span class="cmd-spaceship-icon">${SPACESHIP_SVG}</span>
-    <span class="cmd-kbd">Alt Space</span>
+    <span class="cmd-kbd">Ctrl K</span>
   `;
-  triggerBtnEl.title = 'Open Command Palette (Alt + Space or Ctrl + K)';
+  triggerBtnEl.title = 'Open Command Palette (Ctrl + K or click)';
   document.body.appendChild(triggerBtnEl);
 
   // Modal Structure
@@ -369,12 +369,13 @@ export function initCommandPalette() {
 
   // Global Keyboard Listener
   window.addEventListener('keydown', (e) => {
-    // 1. Primary: Alt + Space (like Raycast, Flow Launcher)
-    const isAltSpace = e.altKey && (e.code === 'Space' || e.key === ' ' || e.keyCode === 32);
-    // 2. Secondary: Ctrl + K / Cmd + K
+    // 1. Primary web shortcuts: Ctrl + K, Cmd + K, or Ctrl + Space
     const isCtrlK = (e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K');
+    const isCtrlSpace = (e.ctrlKey || e.metaKey) && (e.code === 'Space' || e.key === ' ');
+    // 2. Alt + Space (fallback if not captured by desktop OS)
+    const isAltSpace = e.altKey && (e.code === 'Space' || e.key === ' ' || e.keyCode === 32);
 
-    if (isAltSpace || isCtrlK) {
+    if (isCtrlK || isCtrlSpace || isAltSpace) {
       e.preventDefault();
       e.stopPropagation();
       if (isPaletteOpen) {
