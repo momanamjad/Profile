@@ -9,6 +9,10 @@ import { CSS3DRenderer, FontLoader, TextGeometry } from "three/examples/jsm/Addo
 // Rapier physics engine imported dynamically later to save 889KB on initial load
 let RAPIER;
 import { CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
+import { initClarity } from './utils/clarity.js';
+
+// Initialize Microsoft Clarity User Experience Analytics
+initClarity();
 
 // Register Service Worker only in production. In local/dev, clear old SW caches so refreshes
 // always use the latest animation code instead of stale cached bundles.

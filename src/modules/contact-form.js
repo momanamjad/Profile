@@ -1,3 +1,5 @@
+import { trackClarityEvent } from '../utils/clarity.js';
+
 export function initContactForm() {
   const contactForm = document.getElementById('contact-form');
   const formStatus = document.getElementById('form-status');
@@ -32,6 +34,7 @@ export function initContactForm() {
           formStatus.style.backgroundColor = 'rgba(40, 167, 69, 0.2)';
           formStatus.style.color = '#28a745';
           formStatus.textContent = 'Message sent successfully!';
+          trackClarityEvent('contact_form_submit');
           contactForm.reset();
         } else {
           const data = await response.json();
