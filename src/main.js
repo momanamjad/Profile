@@ -1238,7 +1238,6 @@ function changeScene(to) {
   ALL_SCREEN_SECTIONS.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
-      el.querySelectorAll('.skill-tag').forEach(tag => tag.classList.remove('visible'));
       if (id !== to) {
         el.classList.remove('scene-fade-slide');
         el.classList.add('displayHide');
@@ -1247,9 +1246,8 @@ function changeScene(to) {
   });
 
   target.classList.remove('displayHide');
-  requestAnimationFrame(() => {
-    target.classList.add('scene-fade-slide');
-  });
+  void target.offsetWidth; // Force reflow to cleanly restart scene animations
+  target.classList.add('scene-fade-slide');
 
   currentScene = target;
 
@@ -1263,11 +1261,8 @@ function changeScene(to) {
   // Trigger skill-tag slide-up animations with staggered delays
   const tags = target.querySelectorAll('.skill-tag');
   tags.forEach((el, i) => {
-    el.style.animationDelay = `${i * 0.07}s`;
-    el.classList.remove('visible');
-    requestAnimationFrame(() => {
-      el.classList.add('visible');
-    });
+    el.style.animationDelay = `${i * 0.05}s`;
+    el.classList.add('visible');
   });
 }
 
