@@ -13,6 +13,22 @@ const profileIcon = document.querySelector(".taskbar-profile");
 
 // --- App Data ---
 const apps = {
+    dry: {
+        title: "DRY Monorepo",
+        url: "https://github.com/momanamjad/iframe",
+        isExternal: true,
+        tech: "Rust, Hono.js, React 19, TypeScript, Docker",
+        previewImg: "../assets/images/img8.webp",
+        description: "High-performance fullstack monorepo scaffolding engine built in Rust with MiniJinja. Features sub-millisecond offline extraction, an automated 13-phase QA audit, and production cloud deployment generation."
+    },
+    bridge: {
+        title: "Device Bridge",
+        url: "https://github.com/momanamjad/Cross-device-bridge",
+        isExternal: true,
+        tech: "Kotlin (Android), Swift (CallKit), Node.js, WebRTC, Socket.io",
+        previewImg: "../assets/images/img9.webp",
+        description: "Seamless cross-device bridge forwarding cellular voice calls, SMS, and OTP tokens from Android to iOS. Features a native Android app with embedded Node runtime, CallKit incoming calls on iPhone, and WebRTC audio loopback."
+    },
     github: {
         title: "GitHub Clone",
         url: "https://github-kappa-two.vercel.app/"
